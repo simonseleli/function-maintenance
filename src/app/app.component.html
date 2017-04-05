@@ -1,3 +1,95 @@
-<h1>
-  {{title}}
-</h1>
+<div class="container">
+  <h1>
+    {{title}}
+  </h1>
+  <div class="row">
+    <div class="col-sm-4">
+      <ng-select [allowClear]="true"
+                 [items]="items"
+                 [disabled]="disabled"
+                 (data)="refreshValue($event)"
+                 (selected)="selected($event)"
+                 (removed)="removed($event)"
+                 (typed)="typed($event)"
+                 placeholder="No city selected">
+      </ng-select>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <input class="form-control" [(ngModel)]="parameters.dx">
+    </div>
+    <div class="col-sm-4">
+      <input class="form-control" [(ngModel)]="parameters.ou">
+    </div>
+    <div class="col-sm-4">
+      <input class="form-control" [(ngModel)]="parameters.pe">
+    </div>
+    <br/><br/>
+    <div class="col-sm-12">
+      <ace-editor
+        [(text)]="text"
+        [mode]="'javascript'"
+        [options]="options"
+        [readOnly]="false"
+        [autoUpdateContent]="true"
+        [durationBeforeCallback]="1000"
+        style="min-height: 200px; width:100%; overflow: auto;" #editor></ace-editor>
+    </div>
+    <div class="col-sm-12">
+      <br/>
+      <button class="btn btn-primary pull-right" (click)="onRun()">Run</button>
+    </div>
+    <div class="col-sm-12">
+
+      <br/>
+      <div *ngIf="loading">
+        <svg width='120px' height='120px' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
+             preserveAspectRatio="xMidYMid" class="uil-balls">
+          <rect x="0" y="0" width="100" height="100" fill="none" class="bk"></rect>
+          <g transform="rotate(0 50 50)">
+            <circle r="5" cx="30" cy="50">
+              <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                                dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+              <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                       values="#c5523f;#f2b736"/>
+            </circle>
+          </g>
+          <g transform="rotate(120 50 50)">
+            <circle r="5" cx="30" cy="50">
+              <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                                dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+              <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                       values="#f2b736;#499255"/>
+            </circle>
+          </g>
+          <g transform="rotate(240 50 50)">
+            <circle r="5" cx="30" cy="50">
+              <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                                dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+              <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                       values="#499255;#c5523f"/>
+            </circle>
+          </g>
+        </svg>
+      </div>
+      <div *ngIf="!loading && loadingError" class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Oh snap!</h4>
+        {{loadingError |json}}
+      </div>
+      <div *ngIf="!loading && results" class="col-sm-12">
+        <br/>
+        <div class="col-sm-6">
+          <input class="form-control" [(ngModel)]="name">
+        </div>
+        <div class="col-sm-6">
+          <button class="btn btn-primary" (click)="save()"><span *ngIf="!currentId">Save</span><span *ngIf="currentId">Update</span></button>
+        </div>
+        <br/><br/>
+      </div>
+      <div *ngIf="!loading && results" class="alert alert-success" role="alert">
+        <t-json-viewer [json]="results"></t-json-viewer>
+      </div>
+    </div>
+  </div>
+</div>
