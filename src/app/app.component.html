@@ -88,7 +88,7 @@
         <br/><br/>
       </div>
       <div *ngIf="!loading && results" class="alert alert-success" role="alert">
-        <t-json-viewer [json]="results"></t-json-viewer>
+        <pre [innerHtml]="results | prettyjson:3"></pre>
       </div>
     </div>
   </div>

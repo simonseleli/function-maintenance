@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AceEditorModule } from 'ng2-ace-editor';
-import {TJsonViewerModule} from 't-json-viewer';
+import {PrettyJsonModule} from 'angular2-prettyjson';
 
 import { AppComponent } from './app.component';
 import {HttpClientService} from "./services/http-client.service";
@@ -18,7 +18,7 @@ import {SelectModule} from 'ng2-select';
     FormsModule,
     HttpModule,
     AceEditorModule,
-    TJsonViewerModule,
+    PrettyJsonModule,
     SelectModule
   ],
   providers: [HttpClientService],
