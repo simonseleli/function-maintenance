@@ -11,21 +11,36 @@
                  (selected)="selected($event)"
                  (removed)="removed($event)"
                  (typed)="typed($event)"
-                 placeholder="No city selected">
+                 placeholder="No Function Selected">
       </ng-select>
     </div>
+    <div class="col-sm-4"><button class="btn btn-primary" (click)="newFunction()">New</button></div>
+    <br/><br/>
   </div>
   <div class="row">
-    <div class="col-sm-4">
-      <input class="form-control" [(ngModel)]="parameters.dx">
-    </div>
-    <div class="col-sm-4">
-      <input class="form-control" [(ngModel)]="parameters.ou">
-    </div>
-    <div class="col-sm-4">
-      <input class="form-control" [(ngModel)]="parameters.pe">
+    <div>
+      <div class="form-group col-sm-4">
+        <label for="dx">Data:</label>
+        <input id="dx" class="form-control" [(ngModel)]="parameters.dx">
+      </div>
+      <div class="form-group col-sm-4">
+        <label for="ou">Organisation Units:</label>
+        <input id="ou" class="form-control" [(ngModel)]="parameters.ou">
+      </div>
+      <div class="form-group col-sm-4">
+        <label for="pe">Periods:</label>
+        <input id="pe" class="form-control" [(ngModel)]="parameters.pe">
+      </div>
     </div>
     <br/><br/>
+
+    <div class="col-sm-12">
+      <div class="alert alert-success" role="alert">
+        <div class="">
+          <pre [innerHtml]="parameters | prettyjson:3"></pre>
+        </div>
+      </div>
+    </div>
     <div class="col-sm-12">
       <ace-editor
         [(text)]="text"
@@ -77,17 +92,17 @@
         <h4 class="alert-heading">Oh snap!</h4>
         {{loadingError |json}}
       </div>
-      <div *ngIf="!loading && results" class="col-sm-12">
-        <br/>
-        <div class="col-sm-6">
-          <input class="form-control" [(ngModel)]="name">
-        </div>
-        <div class="col-sm-6">
-          <button class="btn btn-primary" (click)="save()"><span *ngIf="!currentId">Save</span><span *ngIf="currentId">Update</span></button>
-        </div>
-        <br/><br/>
-      </div>
+
       <div *ngIf="!loading && results" class="alert alert-success" role="alert">
+        <div class="row">
+          <div class="col-sm-6">
+            <input class="form-control" [(ngModel)]="name">
+          </div>
+          <div class="col-sm-6">
+            <button class="btn btn-primary" (click)="save()"><span *ngIf="!currentId">Save</span><span *ngIf="currentId">Update</span></button>
+          </div>
+          <br/><br/>
+        </div>
         <pre [innerHtml]="results | prettyjson:3"></pre>
       </div>
     </div>

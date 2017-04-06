@@ -47,6 +47,7 @@ export class AppComponent {
 
   }
   ngOnInit() {
+    console.log(this.editor);
     this.http.get("dataStore/functions").subscribe((results)=>{
       console.log(results.json())
       results.json().forEach((id)=>{
@@ -68,6 +69,12 @@ export class AppComponent {
     //console.log("Now:",this.text);
 
   }
+  newFunction() {
+    this.text = null;
+    this.name = null;
+    this.currentId = null;
+    this.items = [];
+  }
 
   public removed(value:any):void {
     console.log('Removed value is: ', value);
@@ -85,12 +92,22 @@ export class AppComponent {
   loadingError = false;
   results = false;
   onRun() {
-    console.log("new code", this.text);
-    this.loading = true;
-    this.loadingError = false;
-    this.results = false;
-    let execute = Function('parameters', this.text);
-    execute(this.parameters);
+    console.log("Code:", this.text,this.editor.oldText);
+    if(this.text && this.text != ""){
+      this.loading = true;
+      this.loadingError = false;
+      this.results = false;
+      try{
+        let execute = Function('parameters', this.editor.oldText);
+        execute(this.parameters);
+      }catch(e){
+        console.log("Error:",JSON.stringify(e.stack));
+        this.loading = false;
+        this.loadingError = e.stack;
+      }
+    }else{
+      alert("Please write code")
+    }
   }
   name;
   save(){
