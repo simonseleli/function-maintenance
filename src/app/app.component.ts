@@ -93,7 +93,7 @@ export class AppComponent {
   results = false;
   onRun() {
     console.log("Code:",this.editor.oldText);
-    if(this.text && this.text != ""){
+    if(this.editor.oldText && this.editor.oldText != ""){
       this.loading = true;
       this.loadingError = false;
       this.results = false;
