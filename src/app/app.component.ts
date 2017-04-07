@@ -92,7 +92,7 @@ export class AppComponent {
   loadingError = false;
   results = false;
   onRun() {
-    console.log("Code:", this.text,this.editor.oldText);
+    console.log("Code:",this.editor.oldText);
     if(this.text && this.text != ""){
       this.loading = true;
       this.loadingError = false;
@@ -113,12 +113,12 @@ export class AppComponent {
   save(){
     if(this.name && this.name != ""){
       if(this.currentId){
-        this.http.put("dataStore/functions/" + this.currentId,{id:this.currentId,name:this.name,code:this.text}).subscribe((results)=>{
+        this.http.put("dataStore/functions/" + this.currentId,{id:this.currentId,name:this.name,code:this.editor.oldText}).subscribe((results)=>{
           console.log(results)
         })
       }else{
         let id = (new Date()).getTime();
-        this.http.post("dataStore/functions/" + id,{id:id,name:this.name,code:this.text}).subscribe((results)=>{
+        this.http.post("dataStore/functions/" + id,{id:id,name:this.name,code:this.editor.oldText}).subscribe((results)=>{
           console.log(results)
         })
       }
