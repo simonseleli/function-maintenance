@@ -72,7 +72,9 @@ export class AppComponent {
             this.items = [{id:this.functions[response.json().id].id,text:this.functions[response.json().id].name}]
           })
           this.loadItems = true;
-          this.selectedFunction.code = '//Example of function implementation \n$.ajax({\n' +
+          this.selectedFunction.code = '//Example of function implementation\n' +
+            'parameters.progress(50);\n' +
+            '$.ajax({\n' +
             '\turl: parameters.DHIS2URL + "/analytics.json?dimension=dx:" + parameters.dx + "&dimension=pe:" + parameters.pe + "&filter=ou:" + parameters.ou,\n' +
             '\ttype: "GET",\n' +
             '\tsuccess: function(analyticsResults) {\n' +
@@ -192,7 +194,9 @@ export class AppComponent {
     this.loading = false;
     this.loadingError = error;
   }
+  progressPercent;
   progress(progress) {
+    this.progressPercent = progress;
     console.log("Progress:", progress);
   }
 }

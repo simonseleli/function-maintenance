@@ -18,7 +18,7 @@ export class VisualizerComponent implements OnInit {
       'type':"pie",
       'title': "Title",
       'xAxisType': ['pe'],
-      'yAxisType': ['ou']
+      'yAxisType': ['dx']
     });*/
   }
 
