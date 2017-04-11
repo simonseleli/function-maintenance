@@ -6,6 +6,7 @@ interface FunctionObject{
   id?:string;
   name?:string;
   code?:string;
+  description?:string;
   lastUpdated?:Date;
   created?:Date
 }

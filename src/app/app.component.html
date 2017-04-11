@@ -108,15 +108,23 @@
       <div *ngIf="!loading && results" class="alert alert-success" role="alert">
         <div class="row">
           <div class="col-sm-6">
-            <input class="form-control" [(ngModel)]="selectedFunction.name">
+            <label for="name">Name:</label>
+            <input id="name" class="form-control" [(ngModel)]="selectedFunction.name">
+            <br />
           </div>
-          <div class="col-sm-6">
-            <button class="btn btn-primary" (click)="save()"><span *ngIf="!selectedFunction.id">Save</span><span *ngIf="selectedFunction.id">Update</span></button>
+          <div class="col-sm-12">
+            <label for="name">Description:</label>
+            <textarea class="form-control" [(ngModel)]="selectedFunction.description"></textarea>
+            <br />
+          </div>
+          <div class="col-sm-12">
+            <button class="btn btn-primary pull-right" (click)="save()"><span *ngIf="!selectedFunction.id">Save</span><span *ngIf="selectedFunction.id">Update</span></button>
+            <br />
           </div>
           <br/><br/>
         </div>
         <div style="">
-          <pre [innerHtml]="results | prettyjson:3" style="height: 100px;overflow: auto;"></pre>
+          <app-visualizer [analyticsResults]="results"></app-visualizer>
         </div>
       </div>
     </div>

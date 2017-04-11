@@ -9,11 +9,14 @@ import { AppComponent } from './app.component';
 import {HttpClientService} from "./services/http-client.service";
 import {SelectModule} from 'ng2-select';
 import { RunnerComponent } from './components/runner/runner.component';
+import { VisualizerComponent } from './components/visualizer/visualizer.component';
+import {Ng2HighchartsModule} from "ng2-highcharts";
 
 @NgModule({
   declarations: [
     AppComponent,
-    RunnerComponent
+    RunnerComponent,
+    VisualizerComponent
   ],
   imports: [
     BrowserModule,
@@ -21,7 +24,8 @@ import { RunnerComponent } from './components/runner/runner.component';
     HttpModule,
     AceEditorModule,
     PrettyJsonModule,
-    SelectModule
+    SelectModule,
+    Ng2HighchartsModule
   ],
   providers: [HttpClientService],
   bootstrap: [AppComponent]
