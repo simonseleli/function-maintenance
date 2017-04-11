@@ -8,10 +8,12 @@ import {PrettyJsonModule} from 'angular2-prettyjson';
 import { AppComponent } from './app.component';
 import {HttpClientService} from "./services/http-client.service";
 import {SelectModule} from 'ng2-select';
+import { RunnerComponent } from './components/runner/runner.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    RunnerComponent
   ],
   imports: [
     BrowserModule,
