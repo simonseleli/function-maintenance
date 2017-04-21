@@ -11,12 +11,15 @@ import {SelectModule} from 'ng2-select';
 import { RunnerComponent } from './components/runner/runner.component';
 import { VisualizerComponent } from './components/visualizer/visualizer.component';
 import {Ng2HighchartsModule} from "ng2-highcharts";
+import { RulesComponent } from './components/rules/rules.component';
+import { RouterModule,Routes }   from '@angular/router';
 
 @NgModule({
   declarations: [
     AppComponent,
     RunnerComponent,
-    VisualizerComponent
+    VisualizerComponent,
+    RulesComponent
   ],
   imports: [
     BrowserModule,
