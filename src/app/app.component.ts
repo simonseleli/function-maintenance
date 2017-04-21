@@ -25,7 +25,7 @@ interface FunctionParameters{
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'Function Manager!';
+  title = 'Directive Maintenance';
 
   @ViewChild('editor') editor;
 

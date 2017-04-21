@@ -13,13 +13,16 @@ import { VisualizerComponent } from './components/visualizer/visualizer.componen
 import {Ng2HighchartsModule} from "ng2-highcharts";
 import { RulesComponent } from './components/rules/rules.component';
 import { RouterModule,Routes }   from '@angular/router';
+import { MessageComponent } from './components/message/message.component';
+import { TooltipModule } from 'ng2-bootstrap/tooltip';
 
 @NgModule({
   declarations: [
     AppComponent,
     RunnerComponent,
     VisualizerComponent,
-    RulesComponent
+    RulesComponent,
+    MessageComponent
   ],
   imports: [
     BrowserModule,
@@ -28,7 +31,8 @@ import { RouterModule,Routes }   from '@angular/router';
     AceEditorModule,
     PrettyJsonModule,
     SelectModule,
-    Ng2HighchartsModule
+    Ng2HighchartsModule,
+    TooltipModule.forRoot()
   ],
   providers: [HttpClientService],
   bootstrap: [AppComponent]
