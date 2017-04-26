@@ -20,6 +20,9 @@ import {OrgUnitFilterComponent} from "./components/organisation-unit/org-unit-fi
 import TreeModule from "angular2-tree-component/dist/angular2-tree-component";
 import {FilterLevelPipe} from "./services/filter-level.pipe";
 import { SelectorComponent } from './components/selector/selector.component';
+import {PeriodFilterComponent} from "./components/period-filter/period-filter.component";
+import {FilterService} from "./services/filter.service";
+import {Constants} from "./services/constants";
 
 @NgModule({
   declarations: [
@@ -30,7 +33,8 @@ import { SelectorComponent } from './components/selector/selector.component';
     MessageComponent,
     OrgUnitFilterComponent,
     FilterLevelPipe,
-    SelectorComponent
+    SelectorComponent,
+    PeriodFilterComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +48,7 @@ import { SelectorComponent } from './components/selector/selector.component';
     TooltipModule.forRoot(),
     AccordionModule.forRoot()
   ],
-  providers: [HttpClientService],
+  providers: [HttpClientService,FilterService,Constants],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
