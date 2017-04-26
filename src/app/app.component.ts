@@ -5,7 +5,10 @@ import {Observable} from 'rxjs/Rx';
 interface FunctionObject{
   id?:string;
   name?:string;
-  code?:string;
+  displayName?:string;
+  function?:string;
+  rules?:Array<any>;
+  user?:Object;
   description?:string;
   lastUpdated?:Date;
   created?:Date
@@ -14,7 +17,6 @@ interface FunctionParameters{
   dx:string;
   ou:string;
   pe:string;
-  DHIS2URL:string;
   success: Function,
   error: Function,
   progress: Function
@@ -33,7 +35,6 @@ export class AppComponent {
     dx: "FwpCBGQvYdL.BktmzfgqCjX",
     ou: "v5UR6nUPljk",
     pe: "2016Q4",
-    DHIS2URL: "/api",
     success: (results)=>{
       this.success(results);
     },
@@ -50,7 +51,7 @@ export class AppComponent {
   text:string;
   options:any = {fontSize:"20px",maxLines: Infinity};
 
-  items;
+  items = [];
   loadItems;
   functions={
 
@@ -67,15 +68,19 @@ export class AppComponent {
           observable.push(this.http.get("dataStore/functions/" + id))
         });
         Observable.forkJoin(observable).subscribe((responses:any)=>{
-          responses.forEach((response)=>{
+          console.log("Responses:",responses);
+          responses.forEach((response,index)=>{
+            console.log("Index:",index)
             this.functions[response.json().id] = response.json();
-            this.items = [{id:this.functions[response.json().id].id,text:this.functions[response.json().id].name}]
+            this.items.push({id:this.functions[response.json().id].id,text:this.functions[response.json().id].name});
           })
+          console.log("Items:",this.items);
+          this.items = this.items.splice(0,this.items.length);
           this.loadItems = true;
-          this.selectedFunction.code = '//Example of function implementation\n' +
+          this.selectedFunction.function = '//Example of function implementation\n' +
             'parameters.progress(50);\n' +
             '$.ajax({\n' +
-            '\turl: parameters.DHIS2URL + "/analytics.json?dimension=dx:" + parameters.dx + "&dimension=pe:" + parameters.pe + "&filter=ou:" + parameters.ou,\n' +
+            '\turl: "api/analytics.json?dimension=dx:" + parameters.dx + "&dimension=pe:" + parameters.pe + "&filter=ou:" + parameters.ou,\n' +
             '\ttype: "GET",\n' +
             '\tsuccess: function(analyticsResults) {\n' +
             '\t\t  parameters.success(analyticsResults);\n' +
@@ -91,7 +96,8 @@ export class AppComponent {
     })
   }
   selectedFunction:FunctionObject={
-    code:""
+    function:"",
+    rules:[]
   };
   public selected(value:any):void {
     this.selectedFunction = this.functions[value.id];
@@ -100,7 +106,8 @@ export class AppComponent {
   }
   newFunction() {
     this.selectedFunction = {
-
+      function:"",
+      rules:[]
     };
   }
 
@@ -162,6 +169,7 @@ export class AppComponent {
   }
   save(){
     if(this.selectedFunction.name && this.selectedFunction.name != ""){
+      this.selectedFunction.displayName = this.selectedFunction.name
       if(this.selectedFunction.id){
         this.selectedFunction.lastUpdated = new Date();
         this.http.put("dataStore/functions/" + this.selectedFunction.id,this.selectedFunction).subscribe((results)=>{

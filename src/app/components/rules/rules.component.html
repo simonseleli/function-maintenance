@@ -1,5 +1,5 @@
 <div class="col-sm-12">
-  <table class="table table-bordered table-hover table-striped">
+  <table *ngIf="rules" class="table table-bordered table-hover table-striped">
     <thead>
     <tr><th>Name</th><th>Action</th></tr>
     </thead>
@@ -37,6 +37,14 @@
         </div>
         <div class="col-sm-12">
           <label for="name">JSON:</label>
+          <ace-editor
+            [(text)]="newRule.json"
+            [mode]="'javascript'"
+            [options]="options"
+            [readOnly]="false"
+            [autoUpdateContent]="true"
+            [durationBeforeCallback]="1000"
+            style="min-height: 500px; width:100%; overflow: auto;" #editor></ace-editor>
           <textarea class="form-control" [(ngModel)]="newRule.json"></textarea>
           <br />
         </div>

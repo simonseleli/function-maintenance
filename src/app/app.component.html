@@ -18,11 +18,12 @@
     <br/><br/>
   </div>
   <div class="row">
-    <app-rules></app-rules>
+    <app-rules  name="rules" [(ngModel)]="selectedFunction.rules"></app-rules>
     <br/><br/>
   </div>
   <div class="row">
     <div>
+      <app-selector></app-selector>
       <div class="form-group col-sm-3">
         <label for="dx">Data:</label>
         <input id="dx" class="form-control" [(ngModel)]="parameters.dx">
@@ -35,31 +36,38 @@
         <label for="pe">Periods:</label>
         <input id="pe" class="form-control" [(ngModel)]="parameters.pe">
       </div>
-      <div class="form-group col-sm-3">
-        <label for="url">DHIS 2 URL:</label>
-        <input id="url" class="form-control" [(ngModel)]="parameters.DHIS2URL">
-      </div>
     </div>
     <br/><br/>
-
     <div class="col-sm-12">
-      <div class="alert alert-success" role="alert">
-        <h4 class="alert-heading">Parameters passed to function!</h4>
-        <div class="">
-          <pre [innerHtml]="parameters | prettyjson:3"></pre>
+      <app-visualizer [analyticsResults]="results"></app-visualizer>
+    </div>
+    <accordion class="col-sm-12">
+      <accordion-group heading="Parameters passed to function">
+        <div class="col-sm-12">
+          <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading"></h4>
+            <div class="">
+              <pre [innerHtml]="parameters | prettyjson:3"></pre>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="col-sm-12">
-      <ace-editor
-        [(text)]="selectedFunction.code"
-        [mode]="'javascript'"
-        [options]="options"
-        [readOnly]="false"
-        [autoUpdateContent]="true"
-        [durationBeforeCallback]="1000"
-        style="min-height: 500px; width:100%; overflow: auto;" #editor></ace-editor>
-    </div>
+      </accordion-group>
+      <accordion-group heading="Function">
+        <div class="row">
+          <div class="col-sm-12">
+            <ace-editor
+              [(text)]="selectedFunction.function"
+              [mode]="'javascript'"
+              [options]="options"
+              [readOnly]="false"
+              [autoUpdateContent]="true"
+              [durationBeforeCallback]="1000"
+              style="min-height: 500px; width:100%; overflow: auto;" #editor></ace-editor>
+          </div>
+        </div>
+      </accordion-group>
+    </accordion>
+
     <div class="col-sm-12">
       <br/>
       <button class="btn btn-primary pull-right" (click)="onRun()">Run</button>
@@ -132,9 +140,6 @@
             <br />
           </div>
           <br/><br/>
-        </div>
-        <div style="">
-          <app-visualizer [analyticsResults]="results"></app-visualizer>
         </div>
       </div>
     </div>

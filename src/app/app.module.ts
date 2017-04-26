@@ -15,6 +15,11 @@ import { RulesComponent } from './components/rules/rules.component';
 import { RouterModule,Routes }   from '@angular/router';
 import { MessageComponent } from './components/message/message.component';
 import { TooltipModule } from 'ng2-bootstrap/tooltip';
+import { AccordionModule } from 'ng2-bootstrap/accordion';
+import {OrgUnitFilterComponent} from "./components/organisation-unit/org-unit-filter.component";
+import TreeModule from "angular2-tree-component/dist/angular2-tree-component";
+import {FilterLevelPipe} from "./services/filter-level.pipe";
+import { SelectorComponent } from './components/selector/selector.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +27,10 @@ import { TooltipModule } from 'ng2-bootstrap/tooltip';
     RunnerComponent,
     VisualizerComponent,
     RulesComponent,
-    MessageComponent
+    MessageComponent,
+    OrgUnitFilterComponent,
+    FilterLevelPipe,
+    SelectorComponent
   ],
   imports: [
     BrowserModule,
@@ -30,9 +38,11 @@ import { TooltipModule } from 'ng2-bootstrap/tooltip';
     HttpModule,
     AceEditorModule,
     PrettyJsonModule,
+    TreeModule,
     SelectModule,
     Ng2HighchartsModule,
-    TooltipModule.forRoot()
+    TooltipModule.forRoot(),
+    AccordionModule.forRoot()
   ],
   providers: [HttpClientService],
   bootstrap: [AppComponent]
