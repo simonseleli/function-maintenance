@@ -73,12 +73,16 @@ export class AppComponent {
         });
         Observable.forkJoin(observable).subscribe((responses:any)=>{
           responses.forEach((response,index)=>{
-            this.functions[response.json().id] = response.json();
-            this.items.push({id:this.functions[response.json().id].id,text:this.functions[response.json().id].name});
+            let json = response.json();
+            this.functions[json.id] = json;
+            this.items.push({id:this.functions[json.id].id,text:this.functions[json.id].name});
+            if(json.name == "Basic"){
+              this.selectedFunction = json;
+            }
           })
           this.items = this.items.splice(0,this.items.length);
           this.loadItems = true;
-          this.selectedFunction.function = '//Example of function implementation\n' +
+          /*this.selectedFunction.function = '//Example of function implementation\n' +
             'parameters.progress(50);\n' +
             '$.ajax({\n' +
             '\turl: "api/analytics.json?dimension=dx:" + parameters.dx + "&dimension=pe:" + parameters.pe + "&filter=ou:" + parameters.ou,\n' +
@@ -90,9 +94,13 @@ export class AppComponent {
             '\terror:function(error){\n' +
             '\t\t  parameters.error(error);\n' +
             '\t}\n' +
-            '});'
+            '});'*/
           //this.editor.oldText = this.selectedFunction.code;
+        },(error)=>{
+
         })
+      },(error)=>{
+
       })
     })
   }
@@ -219,5 +227,8 @@ export class AppComponent {
     currentDimensions.push({name: 'pe', value: this.parameters.pe});
     currentDimensions.push({name: 'ou', value: this.parameters.ou});
     return currentDimensions;
+  }
+  onLayoutUpdate(event){
+    this.currentLayout = event;
   }
 }
