@@ -93,7 +93,7 @@ export class AppComponent {
       this.selectedFunction.function = '//Example of function implementation\n' +
         'parameters.progress(50);\n' +
         '$.ajax({\n' +
-        '\turl: "api/analytics.json?dimension=dx:" + parameters.dx + "&dimension=pe:" + parameters.pe + "&filter=ou:" + parameters.ou,\n' +
+        '\turl: "../../../api/analytics.json?dimension=dx:" + parameters.dx + "&dimension=pe:" + parameters.pe + "&filter=ou:" + parameters.ou,\n' +
         '\ttype: "GET",\n' +
         '\tsuccess: function(analyticsResults) {\n' +
         '\t\t  parameters.success(analyticsResults);\n' +
