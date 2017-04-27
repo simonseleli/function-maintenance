@@ -8,6 +8,7 @@ import { Component, OnInit, EventEmitter,Output } from '@angular/core';
 export class SelectorComponent implements OnInit {
 
   showOrgTree:boolean = true;
+  @Output() onLayoutUpdate = new EventEmitter();
   constructor() { }
 
   parameters:any = {
@@ -38,5 +39,13 @@ export class SelectorComponent implements OnInit {
   onDataUpdate(event){
     this.parameters.dx = event.selectedData.value;
     this.dataNames = event.selectedData.names
+  }
+  currentLayout = {
+  rows: ['pe'],
+  columns: ['dx'],
+  filters: ['ou']
+}
+  onLayUpdate(event) {
+    this.onLayoutUpdate.emit(event);
   }
 }
