@@ -1,26 +1,10 @@
 import { Component,ViewChild } from '@angular/core';
 import {HttpClientService} from "./services/http-client.service";
 import {Observable} from 'rxjs/Rx';
+import {FunctionService} from "./services/function.service";
+import {FunctionParameters} from "./models/function-parameters";
+import {FunctionObject} from "./models/function-object";
 
-interface FunctionObject{
-  id?:string;
-  name?:string;
-  displayName?:string;
-  function?:string;
-  rules?:Array<any>;
-  user?:Object;
-  description?:string;
-  lastUpdated?:Date;
-  created?:Date
-}
-interface FunctionParameters{
-  dx:string;
-  ou:string;
-  pe:string;
-  success: Function,
-  error: Function,
-  progress: Function
-}
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -45,7 +29,7 @@ export class AppComponent {
       this.progress(progress);
     }
   }
-  constructor(private http:HttpClientService){
+  constructor(/*private http:HttpClientService,*/private functionService:FunctionService){
 
   }
   text:string;
@@ -64,46 +48,30 @@ export class AppComponent {
       columns: ['dx'],
       filters: ['ou']
     }
-    this.http.get("me").subscribe((userResult)=>{
-      this.user = userResult;
-      this.http.get("dataStore/functions").subscribe((results)=>{
-        let observable = [];
-        results.json().forEach((id)=>{
-          observable.push(this.http.get("dataStore/functions/" + id))
-        });
-        Observable.forkJoin(observable).subscribe((responses:any)=>{
-          responses.forEach((response,index)=>{
-            let json = response.json();
-            this.functions[json.id] = json;
-            this.items.push({id:this.functions[json.id].id,text:this.functions[json.id].name});
-            if(json.name == "Basic"){
-              this.selectedFunction = json;
-            }
-          })
-          this.items = this.items.splice(0,this.items.length);
-          this.loadItems = true;
-
-          //this.editor.oldText = this.selectedFunction.code;
-        },(error)=>{
-
-        })
-      },(error)=>{
-
+    this.functionService.getAll().subscribe((functions:any)=> {
+      functions.forEach((sFunction, index)=> {
+        this.functions[sFunction.id] = sFunction;
+        this.items.push({id: this.functions[sFunction.id].id, text: this.functions[sFunction.id].name});
+        if (sFunction.name == "Basic") {
+          this.selectedFunction = sFunction;
+        }
       })
-      this.selectedFunction.function = '//Example of function implementation\n' +
-        'parameters.progress(50);\n' +
-        '$.ajax({\n' +
-        '\turl: "../../../api/analytics.json?dimension=dx:" + parameters.dx + "&dimension=pe:" + parameters.pe + "&filter=ou:" + parameters.ou,\n' +
-        '\ttype: "GET",\n' +
-        '\tsuccess: function(analyticsResults) {\n' +
-        '\t\t  parameters.success(analyticsResults);\n' +
-
-        '\t},\n' +
-        '\terror:function(error){\n' +
-        '\t\t  parameters.error(error);\n' +
-        '\t}\n' +
-        '});'
+      this.items = this.items.splice(0, this.items.length);
+      this.loadItems = true;
     })
+    this.selectedFunction.function = '//Example of function implementation\n' +
+      'parameters.progress(50);\n' +
+      '$.ajax({\n' +
+      '\turl: "../../../api/analytics.json?dimension=dx:" + parameters.dx + "&dimension=pe:" + parameters.pe + "&filter=ou:" + parameters.ou,\n' +
+      '\ttype: "GET",\n' +
+      '\tsuccess: function(analyticsResults) {\n' +
+      '\t\t  parameters.success(analyticsResults);\n' +
+
+      '\t},\n' +
+      '\terror:function(error){\n' +
+      '\t\t  parameters.error(error);\n' +
+      '\t}\n' +
+      '});'
   }
   selectedFunction:FunctionObject={
     function:"",
@@ -191,26 +159,17 @@ export class AppComponent {
     }
   }
   save(){
-    console.log(this.editor.oldText);
-    console.log(this.selectedFunction.function);
+    this.loading = true;
+    this.loadingError = false;
     if(this.selectedFunction.name && this.selectedFunction.name != ""){
-      this.selectedFunction.displayName = this.selectedFunction.name;
       this.selectedFunction.function = this.editor.oldText;
-      if(this.selectedFunction.id){
-        this.selectedFunction.lastUpdated = new Date();
-        this.http.put("dataStore/functions/" + this.selectedFunction.id,this.selectedFunction).subscribe((results)=>{
-          console.log(results)
-        })
-      }else{
-        this.http.get("system/id").subscribe((results)=>{
-          this.selectedFunction.id = results.json().codes[0];
-          this.selectedFunction.created = new Date();
-          this.selectedFunction.lastUpdated = new Date();
-          this.http.post("dataStore/functions/" + this.selectedFunction.id,this.selectedFunction).subscribe((results)=>{
-            console.log(results)
-          })
-        })
-      }
+      this.functionService.save(this.selectedFunction).subscribe((results)=>{
+        this.selectedFunction = results;
+        this.loading = false;
+      },(error)=>{
+        this.loading = false;
+        this.loadingError = error;
+      })
     }else{
       alert("Please write name for function.");
     }

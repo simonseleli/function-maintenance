@@ -29,6 +29,7 @@ import {FilterByNamePipe} from "./services/filter-by-name.pipe";
 import {DataFilterService} from "./services/data-filter.service";
 import {Store} from "./dashboard-card/providers/store";
 import {TreeModule} from "angular2-tree-component";
+import {FunctionService} from "./services/function.service";
 
 @NgModule({
   declarations: [
@@ -59,7 +60,7 @@ import {TreeModule} from "angular2-tree-component";
     DashboardCardModule,
     DndModule
   ],
-  providers: [HttpClientService,FilterService,Constants,DragDropService,DragDropConfig,DataFilterService,Store],
+  providers: [HttpClientService,FilterService,Constants,DragDropService,DragDropConfig,DataFilterService,Store,FunctionService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
