@@ -1,5 +1,5 @@
 import { Component, OnInit, Input} from '@angular/core';
-import {VisualizerService} from "../../services/visualizer.service";
+import {VisualizerService} from "../../dashboard-card/providers/visualizer.service";
 
 @Component({
   selector: 'app-visualizer',

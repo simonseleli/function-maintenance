@@ -57,24 +57,25 @@ export class AppComponent {
 
   };
   user;
+  currentLayout
   ngOnInit() {
-    console.log(this.editor);
+    this.currentLayout = {
+      rows: ['pe'],
+      columns: ['dx'],
+      filters: ['ou']
+    }
     this.http.get("me").subscribe((userResult)=>{
       this.user = userResult;
       this.http.get("dataStore/functions").subscribe((results)=>{
-        console.log(results.json())
         let observable = [];
         results.json().forEach((id)=>{
           observable.push(this.http.get("dataStore/functions/" + id))
         });
         Observable.forkJoin(observable).subscribe((responses:any)=>{
-          console.log("Responses:",responses);
           responses.forEach((response,index)=>{
-            console.log("Index:",index)
             this.functions[response.json().id] = response.json();
             this.items.push({id:this.functions[response.json().id].id,text:this.functions[response.json().id].name});
           })
-          console.log("Items:",this.items);
           this.items = this.items.splice(0,this.items.length);
           this.loadItems = true;
           this.selectedFunction.function = '//Example of function implementation\n' +
@@ -101,7 +102,6 @@ export class AppComponent {
   };
   public selected(value:any):void {
     this.selectedFunction = this.functions[value.id];
-    //console.log("Now:",this.text);
 
   }
   newFunction() {
@@ -135,7 +135,6 @@ export class AppComponent {
     this.errorError = false;
     this.progressError = false;
     let value = this.editor.oldText.split(" ").join("").split("\n").join("").split("\t").join("");
-    console.log(value);
     if(value.indexOf("parameters.success(") == -1){
       this.successError = true;
     }
@@ -147,8 +146,10 @@ export class AppComponent {
     }
     return this.successError || this.errorError;
   }
-  onRun() {
-    console.log("Code:",this.editor);
+  onRun(event) {
+    this.parameters.ou = event.ou;
+    this.parameters.dx = event.dx;
+    this.parameters.pe = event.pe;
     if(this.editor.oldText && this.editor.oldText != ""){
       if(!this.isError()){
         this.loading = true;
@@ -158,7 +159,6 @@ export class AppComponent {
           let execute = Function('parameters', this.editor.oldText);
           execute(this.parameters);
         }catch(e){
-          console.log("Error:",JSON.stringify(e.stack));
           this.loading = false;
           this.loadingError = e.stack;
         }
@@ -205,6 +205,19 @@ export class AppComponent {
   progressPercent;
   progress(progress) {
     this.progressPercent = progress;
-    console.log("Progress:", progress);
+  }
+  prepareCardData() {
+    return {
+      id: 'pivot',
+      type: 'TABLE',
+      shape: 'FULL_WIDTH'
+    }
+  }
+  getCurrentDimension() {
+    let currentDimensions = [];
+    currentDimensions.push({name: 'dx', value: this.parameters.dx});
+    currentDimensions.push({name: 'pe', value: this.parameters.pe});
+    currentDimensions.push({name: 'ou', value: this.parameters.ou});
+    return currentDimensions;
   }
 }

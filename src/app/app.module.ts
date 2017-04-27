@@ -22,7 +22,8 @@ import {FilterLevelPipe} from "./services/filter-level.pipe";
 import { SelectorComponent } from './components/selector/selector.component';
 import {PeriodFilterComponent} from "./components/period-filter/period-filter.component";
 import {FilterService} from "./services/filter.service";
-import {Constants} from "./services/constants";
+import {Constants} from "./dashboard-card/providers/constants";
+import {DashboardCardModule} from "./dashboard-card/dashboard-card.module";
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import {Constants} from "./services/constants";
     SelectModule,
     Ng2HighchartsModule,
     TooltipModule.forRoot(),
-    AccordionModule.forRoot()
+    AccordionModule.forRoot(),
+    DashboardCardModule
   ],
   providers: [HttpClientService,FilterService,Constants],
   bootstrap: [AppComponent]

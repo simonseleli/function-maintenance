@@ -63,10 +63,6 @@ export class VisualizerService {
         break;
     }
     chartObject.credits =  {enabled: false};
-    chartObject.colors = ['#A9BE3B', '#558CC0', '#D34957', '#FF9F3A', '#968F8F', '#B7409F', '#FFDA64', '#4FBDAE', '#B78040', '#676767', '#6A33CF', '#4A7833', '#434348', '#7CB5EC', '#F7A35C', '#F15C80'];
-    chartObject.title.style = {
-      fontSize: "16px"
-    }
     return chartObject;
   }
 
@@ -551,7 +547,7 @@ export class VisualizerService {
   }
 
   drawTable ( analyticsObject , tableConfiguration ) {
-    // console.log(tableConfiguration);
+    console.log(tableConfiguration);
     let table = {
       'headers': [],
       'columns': [],
@@ -725,29 +721,29 @@ export class VisualizerService {
           counter++;
         }
       }else{
-        let item = {
-          'items': [],
-          'headers': []
-        };
-        for (let colItem of table_columns_array) {
-          let dataItem = [];
-          for (let val of colItem) {
-            dataItem.push({'type': val.type, 'value': val.uid});
+          let item = {
+            'items': [],
+            'headers': []
+          };
+          for (let colItem of table_columns_array) {
+            let dataItem = [];
+            for (let val of colItem) {
+              dataItem.push({'type': val.type, 'value': val.uid});
+            }
+            item.items.push({
+              'name': '',
+              'val': this.getDataValue(analyticsObject, dataItem),
+              'row_span': '1',
+              'display': true
+            });
           }
-          item.items.push({
-            'name': '',
-            'val': this.getDataValue(analyticsObject, dataItem),
-            'row_span': '1',
-            'display': true
-          });
-        }
-        if (tableConfiguration.hasOwnProperty("hide_zeros") && tableConfiguration.hide_zeros) {
-          if (!this.checkZeros(tableConfiguration.rows.length, item.items)) {
+          if (tableConfiguration.hasOwnProperty("hide_zeros") && tableConfiguration.hide_zeros) {
+            if (!this.checkZeros(tableConfiguration.rows.length, item.items)) {
+              table.rows.push(item);
+            }
+          } else {
             table.rows.push(item);
           }
-        } else {
-          table.rows.push(item);
-        }
       }
     }
     return table;
@@ -821,8 +817,7 @@ export class VisualizerService {
             }
           }]
         },
-        plotOptions: {
-        },
+        plotOptions: {},
         series: []
       };
     }

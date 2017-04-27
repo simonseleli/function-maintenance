@@ -1,0 +1,9 @@
+.navbar-light {
+  height: 60px;
+  /*background-color:#87cefa;*/
+  /*//border-color: #87cefa;*/
+}
+
+.navbar-light .navbar-brand{
+  color:#87cefa;
+}

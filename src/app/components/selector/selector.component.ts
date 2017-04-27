@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter,Output } from '@angular/core';
 
 @Component({
   selector: 'app-selector',
@@ -9,7 +9,21 @@ export class SelectorComponent implements OnInit {
 
   constructor() { }
 
+  parameters:any = {
+    dx: "FwpCBGQvYdL.BktmzfgqCjX"
+  }
   ngOnInit() {
   }
 
+
+  onOrgUnitUpdate(event){
+    this.parameters.ou = event.value;
+  }
+  onPeriodUpdate(event){
+    this.parameters.pe = event.value;
+  }
+  @Output() onRun : EventEmitter<any> = new EventEmitter<any>();
+  run(){
+    this.onRun.emit(this.parameters);
+  }
 }

@@ -1,0 +1,14 @@
+<ul class="list-inline filter-list">
+  <li *ngIf="filterShown">
+    <app-org-unit-filter (onOrgUnitUpdate)="getFilterValues($event)"></app-org-unit-filter>
+  </li>
+  <li *ngIf="filterShown">
+    <app-period-filter (onPeriodUpdate)="getFilterValues($event)"></app-period-filter>
+  </li>
+  <li class="filter-btn">
+    <a (click)="filterShown = !filterShown" tooltip="Filter by period and orgunit" placement="right">
+      <i class="fa {{filterShown ? 'fa-times' : 'fa-filter'}}"></i>
+    </a>
+  </li>
+</ul>
+

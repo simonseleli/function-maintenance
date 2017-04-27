@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import 'rxjs/Rx';
 import {Observable} from 'rxjs';
-import {Constants} from "./constants";
+import {Constants} from "./../dashboard-card/providers/constants";
 
 @Injectable()
 export class FilterService {

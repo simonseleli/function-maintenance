@@ -1,0 +1,7 @@
+<div class="container-fluid">
+  <app-dimension-filters (onFilterUpdate)="updateFilters($event)"></app-dimension-filters>
+  <app-loader *ngIf="loading" [loadingMessage]="'Loading items...'"></app-loader>
+  <div class="row" *ngIf="!loading">
+    <app-dashboard-item *ngFor="let dashboardItem of dashboard.dashboardItems" [itemData]="dashboardItem" [dashboardId]="dashboard?.id" [customShape]="dashboardShape" [dimensionValues]="dimensionValues$"></app-dashboard-item>
+  </div>
+</div>
