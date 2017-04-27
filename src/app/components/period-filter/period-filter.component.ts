@@ -60,7 +60,7 @@ export class PeriodFilterComponent implements OnInit {
   }
 
   selectPeriod(period){
-    this.period = period;
+    //this.period = period;
     this.selected_periods.push(period);
     this.updatePeriodModel();
   }
@@ -139,8 +139,9 @@ export class PeriodFilterComponent implements OnInit {
   };
 
   updatePeriodModel() {
-    console.log(this.selected_periods)
-    this.displayPerTree();
+
+    //console.log(this.selected_periods)
+    //this.displayPerTree();
     this.onPeriodUpdate.emit({name: 'pe', value: this.getPeriodsForAnalytics(this.selected_periods)});
   }
 

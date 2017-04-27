@@ -18,9 +18,16 @@ export class SelectorComponent implements OnInit {
 
   onOrgUnitUpdate(event){
     this.parameters.ou = event.value;
+    this.updateSelection();
   }
   onPeriodUpdate(event){
     this.parameters.pe = event.value;
+    this.updateSelection();
+  }
+  updateSelection(){
+    if(this.parameters.ou && this.parameters.dx && this.parameters.pe){
+      this.run();
+    }
   }
   @Output() onRun : EventEmitter<any> = new EventEmitter<any>();
   run(){

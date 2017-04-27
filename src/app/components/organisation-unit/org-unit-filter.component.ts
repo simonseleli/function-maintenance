@@ -150,7 +150,6 @@ export class OrgUnitFilterComponent implements OnInit {
                 let orgunits = this.orgunitService.getuserOrganisationUnitsWithHighestlevel( level, userOrgunit );
                 let use_level = parseInt(all_levels) - (parseInt(level) - 1);
                 // this.orgunit_model.user_orgunits = orgunits;
-
                 //load inital orgiunits to speed up loading speed
                 this.orgunitService.getInitialOrgunitsForTree(orgunits).subscribe(
                   (initial_data) => {
@@ -166,6 +165,7 @@ export class OrgUnitFilterComponent implements OnInit {
                         }
                         this.prepareOrganisationUnitTree(this.organisationunits, 'parent');
                         this.orgunit_tree_config.loading = false;
+                        this.updateOrgUnitModel();
                       },
                       error => {
                         console.log('something went wrong while fetching Organisation units');
@@ -310,7 +310,7 @@ export class OrgUnitFilterComponent implements OnInit {
   }
 
   updateOrgUnitModel() {
-    this.displayOrgTree();
+    //this.displayOrgTree();
     this.onOrgUnitUpdate.emit({name: 'ou', value: this.getOrgUnitsForAnalytics(this.orgunit_model,false)});
   }
 
@@ -368,10 +368,12 @@ export class OrgUnitFilterComponent implements OnInit {
       }
       if(orgunit_model.user_orgunits.length == 1){
         let user_orgunit = this.orgtree.treeModel.getNodeById(orgunit_model.user_orgunits[0].id);
-        orgUnits.push(user_orgunit.id);
-        if(user_orgunit.hasOwnProperty('children') && with_children){
-          for( let orgunit of user_orgunit.children ){
-            orgUnits.push(orgunit.id);
+        if(user_orgunit){
+          orgUnits.push(user_orgunit.id);
+          if(user_orgunit.hasOwnProperty('children') && with_children){
+            for( let orgunit of user_orgunit.children ){
+              orgUnits.push(orgunit.id);
+            }
           }
         }
       }else{
