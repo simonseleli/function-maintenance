@@ -117,7 +117,7 @@ export class TableService {
           } else {
             observer.error('Favorite essential parameters are not supplied');
           }
-        } else if(tableData.details.hasOwnProperty('externalDimensions')) {
+        } else if(tableData.details.hasOwnProperty('externalDimensions') && tableData.layers.length  == 0) {
           let nullItems: any[] = [];
           for(let dimension of tableData.details.externalDimensions) {
             if(dimension.value == null) {
@@ -157,8 +157,22 @@ export class TableService {
               })
           }
         }
-        else if(tableData.details.hasOwnProperty('externalDimensions')) {
+        else if(tableData.layers.length > 0) {
+          tableData.layers.forEach(layer => {
+            /**
+             * Get table configuration
+             * @type {TableConfiguration}
+             */
+            let settings: any = {};
+            settings.tableConfiguration = this._getTableConfiguration({}, tableData.type, tableData.details.externalLayout);
+            layer.settings = settings
+          })
 
+          /**
+           * Return the sanitized data back to chart service
+           */
+          observer.next(tableData);
+          observer.complete();
         }
         else {
           observer.error('No favorite or external dimension supplied');
