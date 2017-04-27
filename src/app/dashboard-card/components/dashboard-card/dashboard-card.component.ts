@@ -31,6 +31,7 @@ export class DashboardCardComponent implements OnInit {
   @Input() cardData: any = {};
   @Input() externalDimensions: any[] = [];
   @Input() externalLayout: any = {};
+  @Input() externalAnalytics: any = null;
   cardChangeStatus$: Subject<string> = new Subject<string>();
   cardChangeStatus: Observable<string>;
   visualizationObject: Visualization;
@@ -79,6 +80,13 @@ export class DashboardCardComponent implements OnInit {
       layers: [],
       operatingLayers: []
     };
+
+    /**
+     * Include external analytics if provided
+     */
+    if(this.externalAnalytics != null) {
+      this.visualizationObject.layers.push({settings: {}, analytics: this.externalAnalytics});
+    }
 
     /**
      * Get favorite details if any

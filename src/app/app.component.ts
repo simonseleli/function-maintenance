@@ -82,19 +82,7 @@ export class AppComponent {
           })
           this.items = this.items.splice(0,this.items.length);
           this.loadItems = true;
-          /*this.selectedFunction.function = '//Example of function implementation\n' +
-            'parameters.progress(50);\n' +
-            '$.ajax({\n' +
-            '\turl: "api/analytics.json?dimension=dx:" + parameters.dx + "&dimension=pe:" + parameters.pe + "&filter=ou:" + parameters.ou,\n' +
-            '\ttype: "GET",\n' +
-            '\tsuccess: function(analyticsResults) {\n' +
-            '\t\t  parameters.success(analyticsResults);\n' +
 
-            '\t},\n' +
-            '\terror:function(error){\n' +
-            '\t\t  parameters.error(error);\n' +
-            '\t}\n' +
-            '});'*/
           //this.editor.oldText = this.selectedFunction.code;
         },(error)=>{
 
@@ -102,6 +90,19 @@ export class AppComponent {
       },(error)=>{
 
       })
+      this.selectedFunction.function = '//Example of function implementation\n' +
+        'parameters.progress(50);\n' +
+        '$.ajax({\n' +
+        '\turl: "api/analytics.json?dimension=dx:" + parameters.dx + "&dimension=pe:" + parameters.pe + "&filter=ou:" + parameters.ou,\n' +
+        '\ttype: "GET",\n' +
+        '\tsuccess: function(analyticsResults) {\n' +
+        '\t\t  parameters.success(analyticsResults);\n' +
+
+        '\t},\n' +
+        '\terror:function(error){\n' +
+        '\t\t  parameters.error(error);\n' +
+        '\t}\n' +
+        '});'
     })
   }
   selectedFunction:FunctionObject={
