@@ -24,6 +24,8 @@ import {PeriodFilterComponent} from "./components/period-filter/period-filter.co
 import {FilterService} from "./services/filter.service";
 import {Constants} from "./dashboard-card/providers/constants";
 import {DashboardCardModule} from "./dashboard-card/dashboard-card.module";
+import {LayoutComponent} from "./components/layout/layout.component";
+import {DndModule,DragDropService,DragDropConfig} from "ng2-dnd";
 
 @NgModule({
   declarations: [
@@ -35,7 +37,8 @@ import {DashboardCardModule} from "./dashboard-card/dashboard-card.module";
     OrgUnitFilterComponent,
     FilterLevelPipe,
     SelectorComponent,
-    PeriodFilterComponent
+    PeriodFilterComponent,
+    LayoutComponent
   ],
   imports: [
     BrowserModule,
@@ -48,9 +51,10 @@ import {DashboardCardModule} from "./dashboard-card/dashboard-card.module";
     Ng2HighchartsModule,
     TooltipModule.forRoot(),
     AccordionModule.forRoot(),
-    DashboardCardModule
+    DashboardCardModule,
+    DndModule
   ],
-  providers: [HttpClientService,FilterService,Constants],
+  providers: [HttpClientService,FilterService,Constants,DragDropService,DragDropConfig],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

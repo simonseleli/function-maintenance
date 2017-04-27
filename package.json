@@ -34,6 +34,7 @@
     "jquery": "^3.2.1",
     "leaflet": "^1.0.3",
     "ng2-ace-editor": "^0.1.9",
+    "ng2-dnd": "^4.0.2",
     "ng2-highcharts": "^1.0.0",
     "ng2-json-editor": "^0.7.0",
     "ng2-jsoneditor": "^0.1.0",

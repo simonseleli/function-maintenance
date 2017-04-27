@@ -14,26 +14,31 @@
                  placeholder="No Function Selected">
       </ng-select>
     </div>
-    <div class="col-sm-4"><button class="btn btn-primary" (click)="newFunction()">Create New Function</button></div>
+    <div class="col-sm-4">
+      <button class="btn btn-primary" (click)="newFunction()">Create New Function</button>
+    </div>
     <br/><br/>
   </div>
   <div class="row">
-    <app-rules  name="rules" [(ngModel)]="selectedFunction.rules"></app-rules>
+
     <br/><br/>
   </div>
   <div class="row">
     <div>
-      <app-selector  (onRun)="onRun($event)"></app-selector>
+      <app-selector (onRun)="onRun($event)"></app-selector>
     </div>
     <br/><br/>
-    <div class="col-sm-12">
-      {{prepareCardData() | json}}<br /><br />
-      {{getCurrentDimension() | json}}<br /><br />
-      {{currentLayout | json}}<br /><br />
-      <app-dashboard-card *ngIf="results" [cardData]="prepareCardData()" [externalDimensions]="getCurrentDimension()" [externalLayout]="currentLayout"></app-dashboard-card>
-      <app-visualizer [analyticsResults]="results"></app-visualizer>
+    <div *ngIf="results" class="col-sm-12">
+      <div class="row">
+        <div class="col-sm-12">
+          <app-layout [layout]="currentLayout" (onLayoutUpdate)="onLayoutUpdate($event)"></app-layout>
+          <app-dashboard-card [cardData]="prepareCardData()"
+                              [externalDimensions]="getCurrentDimension()"
+                              [externalLayout]="currentLayout"></app-dashboard-card>
+        </div>
+      </div>
     </div>
-    <accordion class="col-sm-12">
+    <accordion class="col-sm-12" [closeOthers]="true">
       <accordion-group heading="Parameters passed to function">
         <div class="col-sm-12">
           <div class="alert alert-success" role="alert">
@@ -44,8 +49,9 @@
           </div>
         </div>
       </accordion-group>
-      <accordion-group heading="Function">
+      <accordion-group heading="Function Definition">
         <div class="row">
+          <app-rules name="rules" [(ngModel)]="selectedFunction.rules"></app-rules>
           <div class="col-sm-12">
             <ace-editor
               [(text)]="selectedFunction.function"
@@ -56,14 +62,14 @@
               [durationBeforeCallback]="1000"
               style="min-height: 500px; width:100%; overflow: auto;" #editor></ace-editor>
           </div>
+          <div class="col-sm-12">
+            <button class="btn btn-primary pull-right" (click)="save()"><span
+              *ngIf="!selectedFunction.id">Save</span><span *ngIf="selectedFunction.id">Update</span></button>
+            <br/>
+          </div>
         </div>
       </accordion-group>
     </accordion>
-
-    <div class="col-sm-12">
-      <br/>
-      <button class="btn btn-primary pull-right" (click)="onRun()">Run</button>
-    </div>
     <div class="col-sm-12">
       <div *ngIf="successError" class="alert alert-danger" role="alert">
         <h4 class="alert-heading">Potential Error!</h4>
@@ -120,16 +126,12 @@
           <div class="col-sm-6">
             <label for="name">Name:</label>
             <input id="name" class="form-control" [(ngModel)]="selectedFunction.name">
-            <br />
+            <br/>
           </div>
           <div class="col-sm-12">
             <label for="name">Description:</label>
             <textarea class="form-control" [(ngModel)]="selectedFunction.description"></textarea>
-            <br />
-          </div>
-          <div class="col-sm-12">
-            <button class="btn btn-primary pull-right" (click)="save()"><span *ngIf="!selectedFunction.id">Save</span><span *ngIf="selectedFunction.id">Update</span></button>
-            <br />
+            <br/>
           </div>
           <br/><br/>
         </div>

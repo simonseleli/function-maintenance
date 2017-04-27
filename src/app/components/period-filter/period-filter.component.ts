@@ -35,7 +35,7 @@ export class PeriodFilterComponent implements OnInit {
   showPerTree:boolean = true;
   @Input() selected_periods:any[] = [];
   period_type: string = "Quarterly";
-  year: number = 2016;
+  year: number = (new Date()).getFullYear();
   default_period: string[] = [];
   @Output() onPeriodUpdate: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('pertree')
@@ -53,9 +53,17 @@ export class PeriodFilterComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.periods = this.filterService.getPeriodArray(this.period_type,this.year);
+    if(this.periods.length > 0){
+      this.selectPeriod(this.periods[0]);
+    }
   }
 
+  selectPeriod(period){
+    this.period = period;
+    this.selected_periods.push(period);
+    this.updatePeriodModel();
+  }
   activateNode(nodeId:any, nodes){
     setTimeout(() => {
       let node = nodes.treeModel.getNodeById(nodeId);
@@ -127,8 +135,7 @@ export class PeriodFilterComponent implements OnInit {
 
   // add item to array of selected items when item is selected
   activatePer($event) {
-    this.selected_periods.push($event.node.data);
-    this.period = $event.node.data;
+    this.selectPeriod($event.node.data);
   };
 
   updatePeriodModel() {
