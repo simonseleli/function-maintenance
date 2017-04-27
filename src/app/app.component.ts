@@ -167,10 +167,12 @@ export class AppComponent {
     }
     return this.successError || this.errorError;
   }
-  onRun(event) {
-    this.parameters.ou = event.ou;
-    this.parameters.dx = event.dx;
-    this.parameters.pe = event.pe;
+  onRun(event?) {
+    if(event){
+      this.parameters.ou = event.ou;
+      this.parameters.dx = event.dx;
+      this.parameters.pe = event.pe;
+    }
     if(this.editor.oldText && this.editor.oldText != ""){
       if(!this.isError()){
         this.loading = true;
@@ -189,8 +191,11 @@ export class AppComponent {
     }
   }
   save(){
+    console.log(this.editor.oldText);
+    console.log(this.selectedFunction.function);
     if(this.selectedFunction.name && this.selectedFunction.name != ""){
-      this.selectedFunction.displayName = this.selectedFunction.name
+      this.selectedFunction.displayName = this.selectedFunction.name;
+      this.selectedFunction.function = this.editor.oldText;
       if(this.selectedFunction.id){
         this.selectedFunction.lastUpdated = new Date();
         this.http.put("dataStore/functions/" + this.selectedFunction.id,this.selectedFunction).subscribe((results)=>{
