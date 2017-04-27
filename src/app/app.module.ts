@@ -26,6 +26,10 @@ import {Constants} from "./dashboard-card/providers/constants";
 import {DashboardCardModule} from "./dashboard-card/dashboard-card.module";
 import {LayoutComponent} from "./components/layout/layout.component";
 import {DndModule,DragDropService,DragDropConfig} from "ng2-dnd";
+import {DataFilterComponent} from "./components/data-filter/data-filter.component";
+import {FilterByNamePipe} from "./services/filter-by-name.pipe";
+import {DataFilterService} from "./services/data-filter.service";
+import {Store} from "./dashboard-card/providers/store";
 
 @NgModule({
   declarations: [
@@ -38,7 +42,9 @@ import {DndModule,DragDropService,DragDropConfig} from "ng2-dnd";
     FilterLevelPipe,
     SelectorComponent,
     PeriodFilterComponent,
-    LayoutComponent
+    LayoutComponent,
+    DataFilterComponent,
+    FilterByNamePipe
   ],
   imports: [
     BrowserModule,
@@ -54,7 +60,7 @@ import {DndModule,DragDropService,DragDropConfig} from "ng2-dnd";
     DashboardCardModule,
     DndModule
   ],
-  providers: [HttpClientService,FilterService,Constants,DragDropService,DragDropConfig],
+  providers: [HttpClientService,FilterService,Constants,DragDropService,DragDropConfig,DataFilterService,Store],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

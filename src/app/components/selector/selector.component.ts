@@ -7,6 +7,7 @@ import { Component, OnInit, EventEmitter,Output } from '@angular/core';
 })
 export class SelectorComponent implements OnInit {
 
+  showOrgTree:boolean = true;
   constructor() { }
 
   parameters:any = {
@@ -32,5 +33,10 @@ export class SelectorComponent implements OnInit {
   @Output() onRun : EventEmitter<any> = new EventEmitter<any>();
   run(){
     this.onRun.emit(this.parameters);
+  }
+  dataNames=[];
+  onDataUpdate(event){
+    this.parameters.dx = event.selectedData.value;
+    this.dataNames = event.selectedData.names
   }
 }

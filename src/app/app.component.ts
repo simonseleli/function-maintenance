@@ -230,6 +230,10 @@ export class AppComponent {
     return currentDimensions;
   }
   onLayoutUpdate(event){
-    this.currentLayout = event;
+    this.loading = true;
+    setTimeout(()=>{
+      this.currentLayout = event;
+      this.loading = false;
+    })
   }
 }

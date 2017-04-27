@@ -12,7 +12,7 @@
             <td dnd-droppable (onDropSuccess)="onDrop($event,'columns')">
               <div class="draggable" dnd-draggable [dragEnabled]="true" *ngFor="let dimension of layout.columns" [dragData]="{data: dimension, dimension: 'columns'}"><i [ngClass]="icons[dimension]" class="fa"></i> {{names[dimension]}}</div>
             </td>
-            <td dnd-droppable (onDropSuccess)="onDrop($event,'rows')">
+             <td dnd-droppable (onDropSuccess)="onDrop($event,'rows')">
               <div class="draggable" dnd-draggable [dragEnabled]="true" *ngFor="let dimension of layout.rows" [dragData]="{data: dimension, dimension: 'rows'}"><i [ngClass]="icons[dimension]" class="fa"></i> {{names[dimension]}}</div>
             </td>
             <td dnd-droppable (onDropSuccess)="onDrop($event,'filters')">

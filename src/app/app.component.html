@@ -28,13 +28,51 @@
       <app-selector (onRun)="onRun($event)"></app-selector>
     </div>
     <br/><br/>
-    <div *ngIf="results" class="col-sm-12">
-      <div class="row">
-        <div class="col-sm-12">
-          <app-layout [layout]="currentLayout" (onLayoutUpdate)="onLayoutUpdate($event)"></app-layout>
-          <app-dashboard-card [cardData]="prepareCardData()"
-                              [externalDimensions]="getCurrentDimension()"
-                              [externalLayout]="currentLayout"></app-dashboard-card>
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">Results <div class="pull-right"><app-layout [layout]="currentLayout" (onLayoutUpdate)="onLayoutUpdate($event)"></app-layout></div></div>
+        <div class="panel-body">
+          <div *ngIf="loading" style="text-align: center;">
+            <svg width='120px' height='120px' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
+                 preserveAspectRatio="xMidYMid" class="uil-balls">
+              <rect x="0" y="0" width="100" height="100" fill="none" class="bk"></rect>
+              <g transform="rotate(0 50 50)">
+                <circle r="5" cx="30" cy="50">
+                  <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                                    dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+                  <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                           values="#c5523f;#f2b736"/>
+                </circle>
+              </g>
+              <g transform="rotate(120 50 50)">
+                <circle r="5" cx="30" cy="50">
+                  <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                                    dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+                  <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                           values="#f2b736;#499255"/>
+                </circle>
+              </g>
+              <g transform="rotate(240 50 50)">
+                <circle r="5" cx="30" cy="50">
+                  <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                                    dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+                  <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                           values="#499255;#c5523f"/>
+                </circle>
+              </g>
+            </svg>
+
+            <div *ngIf="progressPercent" style="text-align: center;font-weight:bold">{{progressPercent}} %</div>
+          </div>
+          <div *ngIf="results && !loading" class="col-sm-12">
+            <div class="row">
+              <div class="col-sm-12">
+                <app-dashboard-card [cardData]="prepareCardData()"
+                                    [externalDimensions]="getCurrentDimension()"
+                                    [externalLayout]="currentLayout"></app-dashboard-card>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -84,38 +122,6 @@
         The progress callback helps to show the user when the function is excecuting. The range is from 0 to 100.
       </div>
       <br/>
-      <div *ngIf="loading" style="text-align: center;">
-        <svg width='120px' height='120px' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
-             preserveAspectRatio="xMidYMid" class="uil-balls">
-          <rect x="0" y="0" width="100" height="100" fill="none" class="bk"></rect>
-          <g transform="rotate(0 50 50)">
-            <circle r="5" cx="30" cy="50">
-              <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
-                                dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
-              <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
-                       values="#c5523f;#f2b736"/>
-            </circle>
-          </g>
-          <g transform="rotate(120 50 50)">
-            <circle r="5" cx="30" cy="50">
-              <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
-                                dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
-              <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
-                       values="#f2b736;#499255"/>
-            </circle>
-          </g>
-          <g transform="rotate(240 50 50)">
-            <circle r="5" cx="30" cy="50">
-              <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
-                                dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
-              <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
-                       values="#499255;#c5523f"/>
-            </circle>
-          </g>
-        </svg>
-
-        <div *ngIf="progressPercent" style="text-align: center;font-weight:bold">{{progressPercent}} %</div>
-      </div>
       <div *ngIf="!loading && loadingError" class="alert alert-danger" role="alert">
         <h4 class="alert-heading">Oh snap!</h4>
         {{loadingError |json}}
