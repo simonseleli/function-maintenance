@@ -1,6 +1,5 @@
 import {Component, OnInit, forwardRef, Output, Input, EventEmitter, ViewChild} from '@angular/core';
 import {NG_VALUE_ACCESSOR} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
 import {TreeComponent} from "angular2-tree-component/dist/components/tree.component";
 import {IActionMapping,TREE_ACTIONS} from "angular2-tree-component/dist/models/tree-options.model";
 import {FilterService} from "../../services/filter.service";

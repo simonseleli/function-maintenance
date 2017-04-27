@@ -12,12 +12,10 @@ import { RunnerComponent } from './components/runner/runner.component';
 import { VisualizerComponent } from './components/visualizer/visualizer.component';
 import {Ng2HighchartsModule} from "ng2-highcharts";
 import { RulesComponent } from './components/rules/rules.component';
-import { RouterModule,Routes }   from '@angular/router';
 import { MessageComponent } from './components/message/message.component';
 import { TooltipModule } from 'ng2-bootstrap/tooltip';
 import { AccordionModule } from 'ng2-bootstrap/accordion';
 import {OrgUnitFilterComponent} from "./components/organisation-unit/org-unit-filter.component";
-import TreeModule from "angular2-tree-component/dist/angular2-tree-component";
 import {FilterLevelPipe} from "./services/filter-level.pipe";
 import { SelectorComponent } from './components/selector/selector.component';
 import {PeriodFilterComponent} from "./components/period-filter/period-filter.component";
@@ -30,6 +28,7 @@ import {DataFilterComponent} from "./components/data-filter/data-filter.componen
 import {FilterByNamePipe} from "./services/filter-by-name.pipe";
 import {DataFilterService} from "./services/data-filter.service";
 import {Store} from "./dashboard-card/providers/store";
+import {TreeModule} from "angular2-tree-component";
 
 @NgModule({
   declarations: [

@@ -8,7 +8,6 @@ import { OrgUnitFilterComponent } from './components/org-unit-filter/org-unit-fi
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { LoaderComponent } from './components/loader/loader.component';
 import { DimensionFiltersComponent } from './components/dimension-filters/dimension-filters.component';
-import {RouterModule} from "@angular/router";
 import {TooltipModule} from "ng2-bootstrap";
 import {HttpClientService} from "./providers/http-client.service";
 import {Constants} from "./providers/constants";
@@ -19,14 +18,13 @@ import {DashboardItemComponent} from "./components/dashboard-item/dashboard-item
 import {DashboardService} from "./providers/dashboard.service";
 import {Utilities} from "./providers/utilities";
 import { DashboardItemContainerComponent } from './components/dashboard-item-container/dashboard-item-container.component';
-import TreeModule from "angular2-tree-component/dist/angular2-tree-component";
+import {TreeModule} from "angular2-tree-component";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    TreeModule,
-    RouterModule,
+    //TreeModule,
     TooltipModule.forRoot(),
     Ng2HighchartsModule
   ],
