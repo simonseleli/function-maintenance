@@ -24,12 +24,12 @@ import {TreeModule} from "angular2-tree-component";
   imports: [
     CommonModule,
     FormsModule,
-    //TreeModule,
+    TreeModule,
     TooltipModule.forRoot(),
     Ng2HighchartsModule
   ],
-  declarations: [Dhis2MenuComponent, BannerComponent, PeriodFilterComponent, OrgUnitFilterComponent, ClickOutsideDirective, LoaderComponent, DimensionFiltersComponent, ReadableNamePipe, DashboardItemComponent, DashboardItemContainerComponent],
+  declarations: [Dhis2MenuComponent, PeriodFilterComponent, OrgUnitFilterComponent, ClickOutsideDirective, LoaderComponent, DimensionFiltersComponent, ReadableNamePipe, DashboardItemComponent, DashboardItemContainerComponent],
   providers: [HttpClientService, Constants, VisualizerService, DashboardService, Utilities],
-  exports: [Dhis2MenuComponent, BannerComponent, PeriodFilterComponent, OrgUnitFilterComponent, DimensionFiltersComponent, LoaderComponent, Ng2HighchartsModule, ReadableNamePipe, DashboardItemContainerComponent, DashboardItemComponent]
+  exports: [Dhis2MenuComponent, PeriodFilterComponent, OrgUnitFilterComponent, DimensionFiltersComponent, LoaderComponent, Ng2HighchartsModule, ReadableNamePipe, DashboardItemContainerComponent, DashboardItemComponent]
 })
 export class SharedModule { }
