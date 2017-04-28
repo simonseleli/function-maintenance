@@ -7,18 +7,24 @@
       <div class="col-sm-12">
         <label>Table Layout</label>
         <table class="table table-bordered">
-          <thead><tr><th width="33%">Column</th><th width="33%">Row</th><th width="33%">Filter</th></tr></thead>
+          <thead><tr><th width="33%">Filter</th><th width="33%">Column</th></tr></thead>
           <tbody><tr>
-            <td dnd-droppable (onDropSuccess)="onDrop($event,'columns')">
-              <div class="draggable" dnd-draggable [dragEnabled]="true" *ngFor="let dimension of layout.columns" [dragData]="{data: dimension, dimension: 'columns'}"><i [ngClass]="icons[dimension]" class="fa"></i> {{names[dimension]}}</div>
-            </td>
-             <td dnd-droppable (onDropSuccess)="onDrop($event,'rows')">
-              <div class="draggable" dnd-draggable [dragEnabled]="true" *ngFor="let dimension of layout.rows" [dragData]="{data: dimension, dimension: 'rows'}"><i [ngClass]="icons[dimension]" class="fa"></i> {{names[dimension]}}</div>
-            </td>
             <td dnd-droppable (onDropSuccess)="onDrop($event,'filters')">
               <div class="draggable" dnd-draggable [dragEnabled]="true" *ngFor="let dimension of layout.filters" [dragData]="{data: dimension, dimension: 'filters'}"><i [ngClass]="icons[dimension]" class="fa"></i> {{names[dimension]}}</div>
             </td>
-          </tr></tbody>
+            <td dnd-droppable (onDropSuccess)="onDrop($event,'columns')">
+              <div class="draggable" dnd-draggable [dragEnabled]="true" *ngFor="let dimension of layout.columns" [dragData]="{data: dimension, dimension: 'columns'}"><i [ngClass]="icons[dimension]" class="fa"></i> {{names[dimension]}}</div>
+            </td>
+          </tr>
+          </tbody>
+          <thead><tr><th width="33%">Row</th></thead>
+          <tbody>
+          <tr>
+            <td dnd-droppable (onDropSuccess)="onDrop($event,'rows')">
+              <div class="draggable" dnd-draggable [dragEnabled]="true" *ngFor="let dimension of layout.rows" [dragData]="{data: dimension, dimension: 'rows'}"><i [ngClass]="icons[dimension]" class="fa"></i> {{names[dimension]}}</div>
+            </td>
+          </tr>
+          </tbody>
         </table>
       </div>
     </div>
