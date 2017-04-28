@@ -3,7 +3,7 @@ import {Http, Headers} from '@angular/http';
 
 @Injectable()
 export class HttpClientService {
-  public APIURL = "/api/";
+  public APIURL = "/api/25/";
   constructor(private http: Http) {
     this.http = http;
   }
