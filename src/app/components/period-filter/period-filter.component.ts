@@ -134,6 +134,7 @@ export class PeriodFilterComponent implements OnInit {
 
   // add item to array of selected items when item is selected
   activatePer($event) {
+    this.selected_periods.splice(this.selected_periods.indexOf($event.node.data),1)
     this.selectPeriod($event.node.data);
   };
 
