@@ -102,6 +102,10 @@ export class DataFilterComponent implements OnInit, AfterViewInit {
       }
       this.listItems = list;
     }
+    console.log("Length:",this.listItems.length);
+    if(this.listItems.length > 0){
+      this.addSelected(this.listItems[0]);
+    }
   }
 
   getDataGroupArray(dataOptions: any[]) {
