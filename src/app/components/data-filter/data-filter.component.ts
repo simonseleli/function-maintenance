@@ -1,10 +1,11 @@
-import {Component, OnInit, AfterViewInit, Output, EventEmitter} from '@angular/core';
-import {DataFilterService} from "../../services/data-filter.service";
+import {Component, OnInit, AfterViewInit, Output, EventEmitter, Input, ChangeDetectionStrategy} from '@angular/core';
+import {DataService} from "../../services/data.service";
+import * as _ from 'lodash'
 
 export const DATA_OPTIONS = [
   {
     name: 'All',
-    prefix: 'all',
+    prefix: 'ALL',
     selected: true},
   {
     name: 'Data Elements',
@@ -29,157 +30,366 @@ export const DATA_OPTIONS = [
 })
 export class DataFilterComponent implements OnInit, AfterViewInit {
 
-  dataOptions: any[] = DATA_OPTIONS;
-  dataGroups: any[] = [];
+
   listItems:any[] = [];
-  selectedItems:any[] = [];
+  dataGroups: any[] = [];
+  dataOptions: any[] = [
+    {
+      name: 'All Data',
+      prefix: 'ALL',
+      selected: false},
+    {
+      name: 'Data Elements',
+      prefix: 'de',
+      selected: true
+    },
+    {
+      name: 'Computed',
+      prefix: 'in',
+      selected: true
+    },
+    {
+      name: 'Submissions',
+      prefix: 'cv',
+      selected: false
+    },
+    {
+      name: 'Auto Growing',
+      prefix: 'at',
+      selected: false
+    }
+  ];
+  selectedGroup:any = {id:'ALL',name:'All Data'};
+
+  @Output() selected_data_option: EventEmitter<any> = new EventEmitter<any>();
+  @Output() selected_group: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onDataUpdate: EventEmitter<any> = new EventEmitter<any>();
+  @Input() selectedItems:any[] = [];
   querystring: string = null;
   listchanges: string = null;
   showGroups:boolean = false;
   showBody:boolean = false;
-  selectedGroup:any;
-  @Output() onDataUpdate: EventEmitter<any> = new EventEmitter<any>();
-  constructor(
-    private dataFilterService: DataFilterService
-  ) { }
+  metaData:any = {
+    dataElements: [],
+    indicators: [],
+    dataElementGroups: [],
+    indicatorGroups: [],
+    categoryOptions: [],
+    dataSets: [],
+    programs: [],
+    dataSetGroups: [
+      {id:'', name: "Reporting Rate"},
+      {id:'.REPORTING_RATE_ON_TIME', name: "Reporting Rate on time"},
+      {id:'.ACTUAL_REPORTS', name: "Actual Reports Submitted"},
+      {id:'.ACTUAL_REPORTS_ON_TIME', name: "Reports Submitted on time"},
+      {id:'.EXPECTED_REPORTS', name: "Expected Reports"}
+    ]
+  };
+  loading:boolean = true;
+  p:number = 1;
+  k:number = 1;
+  need_groups:boolean =true;
+  constructor( private dataService: DataService) { }
 
   ngOnInit() {
-   this.getDataGroups(this.getDataGroupArray(this.dataOptions));
-    this.getAllItems(null);
+    this.dataService.initiateData().subscribe(
+      (items ) => {
+        this.metaData = {
+          dataElements: items[0],
+          indicators: items[1],
+          dataElementGroups: items[3],
+          indicatorGroups: items[2],
+          categoryOptions: items[5],
+          dataSets: items[4],
+          programs: items[6],
+          dataSetGroups: [
+            {id:'', name: "Reporting Rate"},
+            {id:'.REPORTING_RATE_ON_TIME', name: "Reporting Rate on time"},
+            {id:'.ACTUAL_REPORTS', name: "Actual Reports Submitted"},
+            {id:'.ACTUAL_REPORTS_ON_TIME', name: "Reports Submitted on time"},
+            {id:'.EXPECTED_REPORTS', name: "Expected Reports"}
+          ]
+        };
+        this.loading = false;
+        this.dataGroups = this.groupList();
+        this.listItems = this.dataItemList();
+
+        if(this.metaData.dataElements.length > 0){
+          this.addSelected(this.metaData.dataElements[0]);
+        }
+      }
+    )
   }
 
   ngAfterViewInit() {
-   this.getAllItems(null);
-  }
+     //
+   }
 
   toggleDataOption(optionPrefix) {
-    for(let option of this.dataOptions) {
-      if(option.prefix == optionPrefix) {
-        option.selected = !option.selected;
-        break;
-      }
-    }
+    this.dataOptions.forEach((value) => {
+      if( value['prefix'] == optionPrefix ){
+        value['selected'] = !value['selected'];
+        // if(optionPrefix == 'cv' && value['selected']){
+        //   this.selectedGroup = {id:'', name: "Reporting Rate"}
+        // }
+      }else{
+        if(optionPrefix == 'de' && value['prefix'] == 'in'){
+        }else if(optionPrefix == 'in' && value['prefix'] == 'de'){
 
-    //update data group
-    this.getDataGroups(this.getDataGroupArray(this.dataOptions));
-  }
-
-  getList(){
-    let list  = [];
-    for( let item of this.dataGroups ){
-      if (item['dataElementGroups']){
-        for( let dataElement of item['dataElementGroups']){
-          list.push(dataElement);
+        }else{
+          value['selected'] = false
         }
-      }if(item['indicatorGroups']){
-        for( let dataElement of item['indicatorGroups']){
-          list.push(dataElement);
-        }
+
       }
-    }
-    return list;
+    });
+    this.selectedGroup = {id:'ALL', name:'All Data'};
+    this.dataGroups = this.groupList();
+    this.listItems = this.dataItemList();
+    this.p =1;
   }
 
-  getAllItems(default_list =null){
-    if(default_list != null){
-      this.listItems = default_list
-    }else{
-      let list  = [];
-      for( let item of this.dataGroups ){
-        if (item['dataElementGroups']){
-          for( let dataElement of item['dataElementGroups']){
-            for( let element of dataElement.dataElements){
-              list.push(element);
-            }
-          }
-        }if(item['indicatorGroups']){
-          for( let dataElement of item['indicatorGroups']){
-            for( let element of dataElement.indicators){
-              list.push(element);
-            }
-          }
-        }
-      }
-      this.listItems = list;
-    }
-    console.log("Length:",this.listItems.length);
-    if(this.listItems.length > 0){
-      this.addSelected(this.listItems[0]);
-    }
-  }
-
-  getDataGroupArray(dataOptions: any[]) {
-    let groupArray: any[] = [];
-
-    for(let option of dataOptions) {
-      if(option.selected) {
-        if(option.prefix == 'all') {
-          let allOptions: any[] = [];
-          for(let optionValue of dataOptions) {
-            if(optionValue.prefix != 'all') {
-              allOptions.push(optionValue.prefix);
-            }
-          }
-          groupArray = allOptions;
-          break;
-        } else {
-          groupArray.push(option.prefix);
-        }
-      }
-    }
-
-    return groupArray;
-  }
-
-  getDataGroups(groupArray) {
-    if(groupArray.length > 0) {
-      this.dataFilterService.getDataGroups(groupArray)
-        .subscribe(groups => {
-          this.dataGroups = groups;
-          console.log(groups);
-          this.getAllItems();
-        }, error => console.log(error))
-    }
-  }
-
-  showItems(item){
-    this.selectedGroup = item;
-    if(item.hasOwnProperty("dataElements")){
-      this.listItems = item.dataElements;
-    }if(item.hasOwnProperty("indicators")){
-      this.listItems = item.indicators;
-    }
+  setSelectedGroup(group) {
+    this.selectedGroup = group;
+    this.listItems = this.dataItemList();
     this.showGroups = false;
+    this.p = 1;
   }
 
-  selectedNames=[];
+  getSelectedOption(): any[] {
+    let someArr = [];
+    this.dataOptions.forEach((val) => {
+      if (val.selected) {
+        someArr.push(val);
+      }
+    });
+    return _.map(someArr, 'prefix')
+  }
+
+  // get data Items data_element, indicators, dataSets
+  getDataItems( ){
+    let dataElements = [];
+    this.metaData.dataElements.forEach((dataelement) => {
+      dataElements.push(...this.getDetailedDataElements( dataelement ))
+    });
+    return {
+      dx: dataElements,
+      ind: this.metaData.indicators,
+      dt: this.metaData.dataSets,
+      at: this.metaData.programs
+    }
+  }
+
+  // track by function to improve the list selection performance
+  trackByFn(index, item) {
+    return item.id; // or item.id
+  }
+
+  // this function helps you to get the detailed metadata
+  getDetailedDataElements(dataElement ){
+    let dataElements = [];
+    let categoryCombo = this.getCategoryCombo( dataElement.categoryCombo.id);
+    dataElements.push({
+      id:dataElement.id,
+      name:dataElement.name + "",
+      dataSetElements:dataElement.dataSetElements
+    });
+    categoryCombo.categoryOptionCombos.forEach((option) => {
+      if(option.name != 'default'){
+        dataElements.push({
+          id:dataElement.id+"."+option.id,
+          name:dataElement.name + " "+option.name,
+          dataSetElements:dataElement.dataSetElements
+        })
+      }
+
+    });
+    return dataElements;
+  }
+
+  // Helper to get the data elements option
+  getCategoryCombo( uid ) : any{
+    let category = null;
+    this.metaData.categoryOptions.forEach((val) => {
+      if( val.id == uid ){
+        category = val;
+      }
+    });
+    return category;
+
+  }
+
+  // Helper function to get data groups
+  getData( ){
+    return {
+      dx: this.metaData.dataElementGroups,
+      ind: this.metaData.indicatorGroups,
+      dt: this.metaData.dataSetGroups
+    }
+  }
+
+  // get the data list do display
+  dataItemList() {
+    let currentList = [];
+    const group = this.selectedGroup;
+    const selectedOptions = this.getSelectedOption();
+    const data = this.getDataItems();
+    // check if data element is in a selected group
+    if(_.includes(selectedOptions, 'ALL') || _.includes(selectedOptions,'de')){
+      if( group.id == 'ALL' ){
+        currentList.push(...data.dx)
+      }else{
+        if( group.hasOwnProperty('dataElements')){
+          let newArray = _.filter(data.dx, (dataElement) => {
+            return _.includes(_.map(group.dataElements,'id'), dataElement['id']);
+          });
+          currentList.push(...newArray)
+        }
+
+      }
+      // check if data indicators are in a selected group
+    }
+    if(_.includes(selectedOptions, 'ALL') || _.includes(selectedOptions,'in')){
+      if( group.id == 'ALL' ){
+        currentList.push(...data.ind)
+      }else{
+        if( group.hasOwnProperty('indicators')){
+          let newArray = _.filter(data.ind, (indicator) => {
+            return _.includes(_.map(group.indicators,'id'),indicator['id']);
+          });
+          currentList.push(...newArray)
+        }
+      }
+      // check if data data sets are in a selected group
+    }
+    if(_.includes(selectedOptions, 'ALL') || _.includes(selectedOptions,'cv')){
+      if( group.id == 'ALL' ){
+        this.metaData.dataSetGroups.forEach((group) => {
+          currentList.push(...data.dt.map(data => {
+            return {id:data.id + group.id, name:group.name+' '+data.name}
+          }))
+        });
+      }else{
+        currentList.push(...data.dt.map(data => {
+          return {id:data.id + group.id, name:group.name+' '+data.name}
+        }));
+      }
+    }
+    if(_.includes(selectedOptions, 'ALL') || _.includes(selectedOptions,'at')){
+      currentList.push(...data.at);
+    }
+    return currentList;
+
+  }
+
+  // Get group list to display
+  groupList(){
+
+    let currentGroupList = [];
+    const options = this.getSelectedOption();
+    const data = this.getData();
+
+    currentGroupList.push(...[{id:'ALL',name:'ALL'}]);
+    if(_.includes(options, 'ALL') || _.includes(options,'de')){
+
+      currentGroupList.push(...data.dx)
+    }if(_.includes(options, 'ALL') || _.includes(options,'in')){
+      currentGroupList.push(...data.ind)
+    }if(_.includes(options, 'ALL') || _.includes(options,'cv')){
+      currentGroupList.push(...data.dt)
+    }if(_.includes(options,'at')){
+      this.need_groups = false;
+    }
+    return currentGroupList;
+  }
+
+  // this will add a selected item in a list function
   addSelected(item){
-    console.log("Selected:",this.selectedItems);
+    console.log("Item:",item);
     this.selectedItems.push(item);
-    this.selectedNames.push(item.name);
     this.getSelectedPeriods();
     this.onDataUpdate.emit({
-        selectedData: {name: 'dx', names:this.selectedNames,value: this.getDataForAnalytics(this.selectedItems)},
-        hideQuarter:this.hideQuarter,
-        hideMonth:this.hideMonth
-      });
-  }
-
-  removeSelected(item){
-    this.selectedItems.splice(this.selectedItems.indexOf(item),1);
-    this.selectedNames.splice(this.selectedNames.indexOf(item),1);
-    this.getSelectedPeriods();
-    this.onDataUpdate.emit({
-      selectedData: {name: 'dx', names:this.selectedNames, value: this.getDataForAnalytics(this.selectedItems)},
+      itemList: this.selectedItems,
+      auto_growing: this.getAutogrowingTables(this.selectedItems),
+      selectedData: {name: 'dx', value: this.getDataForAnalytics(this.selectedItems)},
       hideQuarter:this.hideQuarter,
       hideMonth:this.hideMonth
     });
   }
 
-  inSelected(item){
-    return this.selectedItems.indexOf(item) != -1;
+  getAutogrowingTables(selections){
+    let autogrowings = [];
+    selections.forEach((value) => {
+      if(value.hasOwnProperty('programType')){
+        autogrowings.push(value);
+      }
+    });
+    return autogrowings;
   }
 
+  gettables(selections){
+    let autogrowings = [];
+    selections.forEach((value) => {
+      if(value.hasOwnProperty('programType')){
+      }else{
+        autogrowings.push(value);
+      }
+    })
+    return autogrowings;
+  }
+
+  // Remove selected Item
+  removeSelected(item){
+    this.selectedItems.splice(this.selectedItems.indexOf(item),1);
+    this.getSelectedPeriods();
+    this.onDataUpdate.emit({
+      itemList: this.selectedItems,
+      auto_growing: this.getAutogrowingTables(this.selectedItems),
+      selectedData: {name: 'dx', value: this.getDataForAnalytics(this.selectedItems)},
+      hideQuarter:this.hideQuarter,
+      hideMonth:this.hideMonth
+    });
+  }
+
+  //selecting all items
+  selectAllItems(){
+    this.listItems.forEach((item) => {
+      if(!this.checkDataAvailabilty(item, this.selectedItems )){
+        this.selectedItems.push(item);
+      }
+    });
+    this.onDataUpdate.emit({
+      itemList: this.selectedItems,
+      auto_growing: this.getAutogrowingTables(this.selectedItems),
+      selectedData: {name: 'dx', value: this.getDataForAnalytics(this.selectedItems)},
+      hideQuarter:this.hideQuarter,
+      hideMonth:this.hideMonth
+    });
+  }
+
+  //selecting all items
+  deselectAllItems(){
+    this.selectedItems = [];
+    this.onDataUpdate.emit({
+      itemList: this.selectedItems,
+      auto_growing: this.getAutogrowingTables(this.selectedItems),
+      selectedData: {name: 'dx', value: this.getDataForAnalytics(this.selectedItems)},
+      hideQuarter:this.hideQuarter,
+      hideMonth:this.hideMonth
+    });
+  }
+
+  // Check if item is in selected list
+  inSelected(item,list){
+    let checker = false;
+    for( let per of list ){
+      if( per.id == item.id){
+        checker =true;
+      }
+    }
+    return checker;
+  }
+
+  // action that will fire when the sorting of selected data is done
   transferDataSuccess(data,current){
     if(data.dragData.id == current.id){
       console.log("Droping in the same area")
@@ -187,6 +397,13 @@ export class DataFilterComponent implements OnInit, AfterViewInit {
       let number = (this.getDataPosition(data.dragData.id) > this.getDataPosition(current.id))?0:1;
       this.deleteData( data.dragData );
       this.insertData( data.dragData, current, number);
+      this.onDataUpdate.emit({
+        itemList: this.selectedItems,
+        auto_growing: this.getAutogrowingTables(this.selectedItems),
+        selectedData: {name: 'dx', value: this.getDataForAnalytics(this.selectedItems)},
+        hideQuarter:this.hideQuarter,
+        hideMonth:this.hideMonth
+      });
     }
   }
 
@@ -237,7 +454,6 @@ export class DataFilterComponent implements OnInit, AfterViewInit {
     for (let data_item of this.selectedItems ){
       if(data_item.hasOwnProperty("dataSets")){
         for( let dataset of data_item.dataSets ){
-          console.log(dataset)
           if(periods.indexOf(dataset.periodType) == -1){
             periods.push(dataset.periodType)
           }
@@ -274,6 +490,10 @@ export class DataFilterComponent implements OnInit, AfterViewInit {
   getDataForAnalytics(selectedData) {
     let dataForAnalytics = "";
     selectedData.forEach((dataValue, dataIndex) => {
+      /*if(dataValue.hasOwnProperty('programType')){
+      }else{
+        dataForAnalytics += dataIndex == 0 ? dataValue.id : ';' + dataValue.id;
+      }*/
       dataForAnalytics += dataIndex == 0 ? dataValue.id : ';' + dataValue.id;
     });
     return dataForAnalytics;

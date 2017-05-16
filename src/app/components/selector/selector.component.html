@@ -9,9 +9,11 @@
     <div class="tree-input">
       <div>
         <div class="show_items {{disabled ? 'disabled-orgunit' : ''}}" (click)="showOrgTree = !showOrgTree">
-          <span *ngIf="dataNames.length == 0">Select Data</span>
+          <span *ngIf="dataNames">
+            <span *ngIf="dataNames.length == 0">Select Data</span>
           <span *ngIf="dataNames.length == 1">{{dataNames[0]}}</span>
           <span *ngIf="dataNames.length > 1">{{dataNames.length}} Selected</span>
+          </span>
         </div>
         <div class="tree-view" [ngClass]="{'hiddenTree':showOrgTree}" id="tree_view">
           <div>

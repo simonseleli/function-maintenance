@@ -177,7 +177,6 @@ export class AppComponent {
   success(results) {
     this.results = results;
     this.loading = false;
-    console.log("Results:", results,this.results);
   }
   errorFunction() {
     return this.error;

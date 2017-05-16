@@ -12,7 +12,7 @@ export class SelectorComponent implements OnInit {
   constructor() { }
 
   parameters:any = {
-    dx: "FwpCBGQvYdL.BktmzfgqCjX"
+    //dx: "FwpCBGQvYdL.BktmzfgqCjX"
   }
   ngOnInit() {
   }
@@ -37,8 +37,10 @@ export class SelectorComponent implements OnInit {
   }
   dataNames=[];
   onDataUpdate(event){
+    console.log("Hksjdgg",JSON.stringify(event),event.selectedData.value);
     this.parameters.dx = event.selectedData.value;
-    this.dataNames = event.selectedData.names
+    this.dataNames = event.selectedData.itemList;
+    this.updateSelection();
   }
   currentLayout = {
   rows: ['pe'],

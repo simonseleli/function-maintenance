@@ -30,6 +30,9 @@ import {DataFilterService} from "./services/data-filter.service";
 import {Store} from "./dashboard-card/providers/store";
 import {TreeModule} from "angular2-tree-component";
 import {FunctionService} from "./services/function.service";
+import {NgxPaginationModule} from "ngx-pagination";
+import {DataService} from "./services/data.service";
+import {LocalStorageService} from "./services/local-storage.service";
 
 @NgModule({
   declarations: [
@@ -58,9 +61,10 @@ import {FunctionService} from "./services/function.service";
     TooltipModule.forRoot(),
     AccordionModule.forRoot(),
     DashboardCardModule,
-    DndModule
+    DndModule,
+    NgxPaginationModule
   ],
-  providers: [HttpClientService,FilterService,Constants,DragDropService,DragDropConfig,DataFilterService,Store,FunctionService],
+  providers: [HttpClientService,FilterService,Constants,DragDropService,DragDropConfig,DataFilterService,Store,FunctionService,DataService,LocalStorageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
