@@ -33,6 +33,8 @@ import {FunctionService} from "./services/function.service";
 import {NgxPaginationModule} from "ngx-pagination";
 import {DataService} from "./services/data.service";
 import {LocalStorageService} from "./services/local-storage.service";
+import { AppRoutingModule } from './app-routing.module';
+import { MainComponent } from './components/main/main.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +49,8 @@ import {LocalStorageService} from "./services/local-storage.service";
     PeriodFilterComponent,
     LayoutComponent,
     DataFilterComponent,
-    FilterByNamePipe
+    FilterByNamePipe,
+    MainComponent
   ],
   imports: [
     BrowserModule,
@@ -62,7 +65,8 @@ import {LocalStorageService} from "./services/local-storage.service";
     AccordionModule.forRoot(),
     DashboardCardModule,
     DndModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    AppRoutingModule
   ],
   providers: [HttpClientService,FilterService,Constants,DragDropService,DragDropConfig,DataFilterService,Store,FunctionService,DataService,LocalStorageService],
   bootstrap: [AppComponent]

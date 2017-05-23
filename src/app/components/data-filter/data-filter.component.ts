@@ -304,7 +304,6 @@ export class DataFilterComponent implements OnInit, AfterViewInit {
 
   // this will add a selected item in a list function
   addSelected(item){
-    console.log("Item:",item);
     this.selectedItems.push(item);
     this.getSelectedPeriods();
     this.onDataUpdate.emit({

@@ -3,6 +3,7 @@ import {HttpClientService} from "./http-client.service";
 import {Observable} from 'rxjs/Rx';
 import {FunctionObject} from "../models/function-object";
 import {User} from "../models/user";
+import {FunctionParameters} from "../models/function-parameters";
 
 @Injectable()
 export class FunctionService {
@@ -84,6 +85,60 @@ export class FunctionService {
       })
     })
 
+  }
+  get(id){
+    return new Observable((observ)=>{
+      this.http.get("dataStore/functions/" + id).subscribe((func)=>{
+        observ.next(func);
+        observ.complete();
+      },(error)=>{
+
+      })
+    })
+
+  }
+  run(functionParameters:FunctionParameters,functionObject:FunctionObject){
+    return new Observable((observ)=>{
+      if(!this.isError(functionObject.function)){
+        try{
+          functionParameters.error =(error)=>{
+            observ.error(error);
+            observ.complete();
+          }
+          functionParameters.success =(results)=>{
+            observ.next(results);
+            observ.complete();
+          }
+          functionParameters.progress =(results)=>{
+
+          }
+          let execute = Function('parameters', functionObject.function);
+          execute(functionParameters);
+        }catch(e){
+          observ.error(e.stack);
+          observ.complete();
+        }
+      }else{
+        observ.error({message:"Errors in the code."});
+        observ.complete();
+      }
+    });
+  }
+  isError(code){
+    var successError = false;
+    var errorError = false;
+    var progressError = false;
+    let value = code.split(" ").join("").split("\n").join("").split("\t").join("");
+    if(value.indexOf("parameters.success(") == -1){
+      successError = true;
+    }
+    if(value.indexOf("parameters.error(") == -1){
+      errorError = true;
+    }
+    if(value.indexOf("parameters.progress(") == -1){
+      progressError = true;
+    }
+    return successError || errorError;
   }
 
 }
