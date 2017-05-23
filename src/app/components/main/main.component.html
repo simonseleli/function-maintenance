@@ -83,14 +83,11 @@
     </div>
 
     <accordion *ngIf="func" class="col-sm-6" [closeOthers]="true">
-      <accordion-group heading="Function Definition">
+      <accordion-group>
+        <div accordion-heading>
+          Function Definition <button class="btn btn-primary pull-right btn-sm pull-right" (click)="run()">Run</button>
+        </div>
         <div class="row">
-          <div class="col-sm-12">
-            <button class="btn btn-primary pull-right" (click)="run()">Run</button>
-            <button class="btn btn-success pull-right" (click)="save()"><span
-              *ngIf="!func.id">Save</span><span *ngIf="func.id">Update</span></button>
-            <br/><br/><br/>
-          </div>
           <div class="col-sm-12">
             <ace-editor
               [(text)]="func.function"
@@ -99,7 +96,13 @@
               [readOnly]="false"
               [autoUpdateContent]="true"
               [durationBeforeCallback]="1000"
-              style="min-height: 500px; width:100%; overflow: auto;" #editor></ace-editor>
+              style="min-height: 430px;max-height: 430px; width:100%; overflow: auto;" #editor></ace-editor>
+          </div>
+          <div class="col-sm-12">
+            <br /><br />
+            <button class="btn btn-success pull-right" (click)="save()"><span
+              *ngIf="!func.id">Save</span><span *ngIf="func.id">Update</span></button>
+            <br /><br />
           </div>
           <div class="col-sm-12">
             <div *ngIf="!loading && results" class="alert alert-success" role="alert">

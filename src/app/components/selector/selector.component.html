@@ -5,10 +5,12 @@
   <app-period-filter (onPeriodUpdate)="onPeriodUpdate($event)"></app-period-filter>
 </div>
 <div class="form-group col-sm-4">
+  {{dataNames}}
   <div class="tree-input">
     <div class="tree-input">
       <div>
         <div class="show_items {{disabled ? 'disabled-orgunit' : ''}}" (click)="showOrgTree = !showOrgTree">
+
           <span *ngIf="dataNames">
             <span *ngIf="dataNames.length == 0">Select Data</span>
           <span *ngIf="dataNames.length == 1">{{dataNames[0]}}</span>

@@ -38,6 +38,7 @@ export class SelectorComponent implements OnInit {
   dataNames=[];
   onDataUpdate(event){
     this.parameters.dx = event.selectedData.value;
+    console.log("event.selectedData",event.selectedData);
     this.dataNames = event.selectedData.itemList;
     this.updateSelection();
   }
