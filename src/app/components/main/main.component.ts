@@ -2,6 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import {FunctionService} from "../../services/function.service";
 import { ActivatedRoute,Params,Router,NavigationStart } from '@angular/router';
 import {FunctionParameters} from "../../models/function-parameters";
+import {FunctionObject} from "../../models/function-object";
+
+import 'brace/theme/github';
+import 'brace/mode/json';
 
 @Component({
   selector: 'app-main',
@@ -26,7 +30,7 @@ export class MainComponent implements OnInit {
     })
   }
 
-  func
+  func:FunctionObject;
 
   ngOnInit() {
 
@@ -41,19 +45,48 @@ export class MainComponent implements OnInit {
   loading;
   init() {
     this.loading = true;
-    this.functionService.get(this.id).subscribe((func:any)=> {
-      this.func = func;
+    if(this.id == "new"){
+      this.func={
+        function:'//Example of function implementation\n' +
+        'parameters.progress(50);\n' +
+        '$.ajax({\n' +
+        '\turl: "../../../api/25/analytics.json?dimension=dx:" + parameters.dx + "&dimension=pe:" + parameters.pe + "&dimension=ou:" + parameters.ou,\n' +
+        '\ttype: "GET",\n' +
+        '\tsuccess: function(analyticsResults) {\n' +
+        '\t\t  parameters.success(analyticsResults);\n' +
+
+        '\t},\n' +
+        '\terror:function(error){\n' +
+        '\t\t  parameters.error(error);\n' +
+        '\t}\n' +
+        '});',
+        rules:[]
+      };
       this.loading = false;
       this.run();
-    })
+    }else{
+      this.functionService.get(this.id).subscribe((func:any)=> {
+        this.func = func;
+        this.loading = false;
+        this.run();
+      })
+    }
   }
 
   results
 
+  onRun(event?){
+    if(event){
+      event.stopPropagation();
+    }
+    this.run();
+  }
   run() {
     this.results = false;
     this.functionService.run(this.parameters, this.func).subscribe((results:any)=> {
       this.results = results;
+    },(error)=>{
+      this.results = error;
     })
   }
 
@@ -72,16 +105,19 @@ export class MainComponent implements OnInit {
     currentDimensions.push({name: 'ou', value: this.parameters.ou});
     return currentDimensions;
   }
+  loadingSave;
+  loadingSaveError;
   save(){
-    this.loading = true;
+    this.loadingSave = true;
+    this.loadingSaveError = false;
     if(this.func.name && this.func.name != ""){
       this.func.function = this.editor.oldText;
       this.functionService.save(this.func).subscribe((results)=>{
         this.func = results;
-        this.loading = false;
+        this.loadingSave = false;
       },(error)=>{
-        this.loading = false;
-        //this.loadingError = error;
+        this.loadingSave = false;
+        this.loadingSaveError = error;
       })
     }else{
       alert("Please write name for function.");
@@ -93,5 +129,9 @@ export class MainComponent implements OnInit {
       this.currentLayout = event;
       this.loading = false;
     })
+  }
+
+  onChange(event){
+    this.func.function = event;
   }
 }

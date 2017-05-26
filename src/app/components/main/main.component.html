@@ -1,40 +1,40 @@
 <div class="row">
-  <div class="col-sm-12" *ngIf="loading">
-    <div style="text-align: center;">
-      <svg width='120px' height='120px' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
-           preserveAspectRatio="xMidYMid" class="uil-balls">
-        <rect x="0" y="0" width="100" height="100" fill="none" class="bk"></rect>
-        <g transform="rotate(0 50 50)">
-          <circle r="5" cx="30" cy="50">
-            <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
-                              dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
-            <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
-                     values="#c5523f;#f2b736"/>
-          </circle>
-        </g>
-        <g transform="rotate(120 50 50)">
-          <circle r="5" cx="30" cy="50">
-            <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
-                              dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
-            <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
-                     values="#f2b736;#499255"/>
-          </circle>
-        </g>
-        <g transform="rotate(240 50 50)">
-          <circle r="5" cx="30" cy="50">
-            <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
-                              dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
-            <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
-                     values="#499255;#c5523f"/>
-          </circle>
-        </g>
-      </svg>
+  <div>
+    <div class="col-sm-6" *ngIf="loading">
+      <div style="text-align: center;">
+        <svg width='120px' height='120px' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
+             preserveAspectRatio="xMidYMid" class="uil-balls">
+          <rect x="0" y="0" width="100" height="100" fill="none" class="bk"></rect>
+          <g transform="rotate(0 50 50)">
+            <circle r="5" cx="30" cy="50">
+              <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                                dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+              <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                       values="#c5523f;#f2b736"/>
+            </circle>
+          </g>
+          <g transform="rotate(120 50 50)">
+            <circle r="5" cx="30" cy="50">
+              <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                                dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+              <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                       values="#f2b736;#499255"/>
+            </circle>
+          </g>
+          <g transform="rotate(240 50 50)">
+            <circle r="5" cx="30" cy="50">
+              <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                                dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+              <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                       values="#499255;#c5523f"/>
+            </circle>
+          </g>
+        </svg>
+      </div>
     </div>
-  </div>
-  <div *ngIf="!loading">
-    <div class="col-sm-6">
+    <div *ngIf="!loading" class="col-sm-6">
       <div class="panel panel-default">
-        <div class="panel-heading">Results <!--<div class="pull-right"><app-layout [layout]="currentLayout"></app-layout></div>--></div>
+        <div class="panel-heading">Results <div class="pull-right"><app-layout [layout]="currentLayout" (onLayoutUpdate)="onLayoutUpdate($event)"></app-layout></div></div>
         <div class="panel-body">
           <div *ngIf="!results" style="text-align: center;">
             <svg width='120px' height='120px' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
@@ -69,12 +69,19 @@
             <div *ngIf="progressPercent" style="text-align: center;font-weight:bold">{{progressPercent}} %</div>
           </div>
           <div *ngIf="results" class="col-sm-12">
-            <div class="row">
+            <div *ngIf="results.headers" class="row">
               <div class="col-sm-12">
                 <app-dashboard-card [externalAnalytics]="results"
                                     [cardData]="prepareCardData()"
                                     [externalDimensions]="getCurrentDimension()"
                                     [externalLayout]="currentLayout" [externalAnalytics]="results"></app-dashboard-card>
+              </div>
+            </div>
+            <div *ngIf="!results.headers" class="row">
+              <div>
+                <div class="alert alert-danger">
+                  <strong>Result Error!</strong> Please check the code.
+                </div>
               </div>
             </div>
           </div>
@@ -85,7 +92,7 @@
     <accordion *ngIf="func" class="col-sm-6" [closeOthers]="true">
       <accordion-group>
         <div accordion-heading>
-          Function Definition <button class="btn btn-primary pull-right btn-sm pull-right" (click)="run()">Run</button>
+          Function Definition <button class="btn btn-primary pull-right btn-sm pull-right" (click)="onRun($event)">Run</button>
         </div>
         <div class="row">
           <div class="col-sm-12">
@@ -94,14 +101,50 @@
               [mode]="'javascript'"
               [options]="options"
               [readOnly]="false"
+              [theme]="'github'"
               [autoUpdateContent]="true"
               [durationBeforeCallback]="1000"
+              (textChanged)="onChange($event)"
               style="min-height: 430px;max-height: 430px; width:100%; overflow: auto;" #editor></ace-editor>
           </div>
           <div class="col-sm-12">
             <br /><br />
-            <button class="btn btn-success pull-right" (click)="save()"><span
-              *ngIf="!func.id">Save</span><span *ngIf="func.id">Update</span></button>
+            <div *ngIf="loadingSaveError" class="alert alert-danger">
+              <strong>Saving Error!</strong> Error saving directive. Please try again.
+            </div>
+            <button class="btn btn-success pull-right" (click)="save()">
+              <span *ngIf="!loadingSave"><span *ngIf="!func.id">Save</span><span *ngIf="func.id">Update</span></span>
+              <span *ngIf="loadingSave">
+                <svg width='20px' height='20px' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
+                     preserveAspectRatio="xMidYMid" class="uil-balls">
+                  <rect x="0" y="0" width="100" height="100" fill="none" class="bk"></rect>
+                  <g transform="rotate(0 50 50)">
+                    <circle r="5" cx="30" cy="50">
+                      <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                                        dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+                      <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                               values="#c5523f;#f2b736"/>
+                    </circle>
+                  </g>
+                  <g transform="rotate(120 50 50)">
+                    <circle r="5" cx="30" cy="50">
+                      <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                                        dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+                      <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                               values="#f2b736;#499255"/>
+                    </circle>
+                  </g>
+                  <g transform="rotate(240 50 50)">
+                    <circle r="5" cx="30" cy="50">
+                      <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                                        dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+                      <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                               values="#499255;#c5523f"/>
+                    </circle>
+                  </g>
+                </svg>
+              </span>
+            </button>
             <br /><br />
           </div>
           <div class="col-sm-12">

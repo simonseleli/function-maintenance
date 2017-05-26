@@ -37,25 +37,13 @@ export class AppComponent {
         this.functions[sFunction.id] = sFunction;
         this.items.push({id: this.functions[sFunction.id].id, text: this.functions[sFunction.id].name});
         if (sFunction.name == "Basic") {
-          this.selectedFunction = sFunction;
+          this.functionId = sFunction.id;
         }
       })
       this.items = this.items.splice(0, this.items.length);
       this.loadItems = true;
+      this.load();
     })
-    this.selectedFunction.function = '//Example of function implementation\n' +
-      'parameters.progress(50);\n' +
-      '$.ajax({\n' +
-      '\turl: "../../../api/25/analytics.json?dimension=dx:" + parameters.dx + "&dimension=pe:" + parameters.pe + "&dimension=ou:" + parameters.ou,\n' +
-      '\ttype: "GET",\n' +
-      '\tsuccess: function(analyticsResults) {\n' +
-      '\t\t  parameters.success(analyticsResults);\n' +
-
-      '\t},\n' +
-      '\terror:function(error){\n' +
-      '\t\t  parameters.error(error);\n' +
-      '\t}\n' +
-      '});'
   }
   selectedFunction:FunctionObject={
     function:"",
@@ -68,7 +56,8 @@ export class AppComponent {
     this.load();
   }
   newFunction() {
-
+    this.functionId = "new";
+    this.load();
   }
 
   public removed(value:any):void {
@@ -83,6 +72,7 @@ export class AppComponent {
 
   }
   onRun(event?) {
+    console.log("Called",event);
     if(event){
       this.parameters.ou = event.ou;
       this.parameters.dx = event.dx;
@@ -91,9 +81,7 @@ export class AppComponent {
     this.load();
   }
   load(){
-    console.log(this.functionId, this.parameters.dx, this.parameters.pe, this.parameters.ou,this.functionId && this.parameters.dx && this.parameters.pe && this.parameters.ou);
     if(this.functionId && this.parameters.dx && this.parameters.pe && this.parameters.ou){
-      alert("Here1");
       this.router.navigate(['function',this.functionId,"dx",this.parameters.dx,"pe",this.parameters.pe,"ou",this.parameters.ou]);
     }
   }
