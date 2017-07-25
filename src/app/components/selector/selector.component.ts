@@ -35,11 +35,12 @@ export class SelectorComponent implements OnInit {
   run(){
     this.onRun.emit(this.parameters);
   }
-  dataNames=[];
+  dataSelector;
   onDataUpdate(event){
+    console.log("Event:",event);
+    this.dataSelector = event;
     this.parameters.dx = event.selectedData.value;
     console.log("event.selectedData",event.selectedData);
-    this.dataNames = event.selectedData.itemList;
     this.updateSelection();
   }
   currentLayout = {

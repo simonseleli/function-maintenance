@@ -5,16 +5,17 @@
   <app-period-filter (onPeriodUpdate)="onPeriodUpdate($event)"></app-period-filter>
 </div>
 <div class="form-group col-sm-5">
-  {{dataNames}}
   <div class="tree-input">
     <div class="tree-input">
       <div>
         <div class="show_items {{disabled ? 'disabled-orgunit' : ''}}" (click)="showOrgTree = !showOrgTree">
-
-          <span *ngIf="dataNames">
-            <span *ngIf="dataNames.length == 0">Select Data</span>
-          <span *ngIf="dataNames.length == 1">{{dataNames[0]}}</span>
-          <span *ngIf="dataNames.length > 1">{{dataNames.length}} Selected</span>
+          <span *ngIf="!dataSelector">
+            <span>Loading...</span>
+          </span>
+          <span *ngIf="dataSelector">
+            <span *ngIf="dataSelector.itemList.length == 0">Select Data</span>
+          <span *ngIf="dataSelector.itemList.length == 1">{{dataSelector.itemList[0].name}}</span>
+          <span *ngIf="dataSelector.itemList.length > 1">{{dataSelector.itemList.length}} Selected</span>
           </span>
         </div>
         <div class="tree-view" [ngClass]="{'hiddenTree':showOrgTree}" id="tree_view">

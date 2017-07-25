@@ -44,7 +44,7 @@ export class DataFilterComponent implements OnInit, AfterViewInit {
       selected: true
     },
     {
-      name: 'Computed',
+      name: 'Indicators',
       prefix: 'in',
       selected: true
     },
@@ -54,7 +54,7 @@ export class DataFilterComponent implements OnInit, AfterViewInit {
       selected: false
     },
     {
-      name: 'Auto Growing',
+      name: 'Program',
       prefix: 'at',
       selected: false
     }
