@@ -35,6 +35,11 @@ import {DataService} from "./services/data.service";
 import {LocalStorageService} from "./services/local-storage.service";
 import { AppRoutingModule } from './app-routing.module';
 import { MainComponent } from './components/main/main.component';
+import { ListComponent } from './components/list/list.component';
+import { FunctionComponent } from './components/function/function.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { MenuComponent } from './components/menu/menu.component';
+import {FilterPipe} from "./components/menu/filter.pipe";
 
 @NgModule({
   declarations: [
@@ -50,7 +55,12 @@ import { MainComponent } from './components/main/main.component';
     LayoutComponent,
     DataFilterComponent,
     FilterByNamePipe,
-    MainComponent
+    MainComponent,
+    ListComponent,
+    FunctionComponent,
+    DashboardComponent,
+    MenuComponent,
+    FilterPipe
   ],
   imports: [
     BrowserModule,

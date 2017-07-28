@@ -1,0 +1,116 @@
+<div *ngIf="loading">
+  <svg width='120px' height='120px' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
+       preserveAspectRatio="xMidYMid" class="uil-balls">
+    <rect x="0" y="0" width="100" height="100" fill="none" class="bk"></rect>
+    <g transform="rotate(0 50 50)">
+      <circle r="5" cx="30" cy="50">
+        <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                          dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+        <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                 values="#c5523f;#f2b736"/>
+      </circle>
+    </g>
+    <g transform="rotate(120 50 50)">
+      <circle r="5" cx="30" cy="50">
+        <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                          dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+        <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                 values="#f2b736;#499255"/>
+      </circle>
+    </g>
+    <g transform="rotate(240 50 50)">
+      <circle r="5" cx="30" cy="50">
+        <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                          dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+        <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                 values="#499255;#c5523f"/>
+      </circle>
+    </g>
+  </svg>
+</div>
+<div *ngIf="!loading">
+  <div>
+    <app-selector (onRun)="onRun($event)" (onLayoutUpdate)="onLayoutUpdate($event)"></app-selector>
+    <app-dashboard *ngIf="show" [parameters]="parameters" [func]="testFunc"></app-dashboard>
+  </div>
+  <div class="col-sm-6">
+    <div class="alert alert-success" role="alert">
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="name">Name:</label>
+          <input id="name" class="form-control" [(ngModel)]="func.name">
+          <br/>
+        </div>
+        <div class="col-sm-12">
+          <label for="name">Description:</label>
+          <textarea class="form-control" [(ngModel)]="func.description"></textarea>
+          <br/>
+        </div>
+        <br/><br/>
+      </div>
+    </div>
+    <app-rules name="rules" [(ngModel)]="func.rules"></app-rules>
+  </div>
+  <div class="col-sm-6">
+    <ace-editor
+      [(text)]="func.function"
+      [mode]="'javascript'"
+      [options]="options"
+      [readOnly]="false"
+      [theme]="'github'"
+      [autoUpdateContent]="true"
+      [durationBeforeCallback]="1000"
+      (textChanged)="onChange($event)"
+      style="min-height: 430px;max-height: 430px; width:100%; overflow: auto;" #editor></ace-editor>
+  </div>
+  <div class="col-sm-12">
+    <br /><br />
+    <div *ngIf="loadingSaveError" class="alert alert-danger">
+      <strong>Saving Error!</strong> Error saving directive. Please try again.
+    </div>
+    <button class="btn btn-success pull-right" (click)="save()">
+      <span *ngIf="!loadingSave"><span *ngIf="!func.id">Save</span><span *ngIf="func.id">Update</span></span>
+              <span *ngIf="loadingSave">
+                <svg width='20px' height='20px' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
+                     preserveAspectRatio="xMidYMid" class="uil-balls">
+                  <rect x="0" y="0" width="100" height="100" fill="none" class="bk"></rect>
+                  <g transform="rotate(0 50 50)">
+                    <circle r="5" cx="30" cy="50">
+                      <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                                        dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+                      <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                               values="#c5523f;#f2b736"/>
+                    </circle>
+                  </g>
+                  <g transform="rotate(120 50 50)">
+                    <circle r="5" cx="30" cy="50">
+                      <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                                        dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+                      <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                               values="#f2b736;#499255"/>
+                    </circle>
+                  </g>
+                  <g transform="rotate(240 50 50)">
+                    <circle r="5" cx="30" cy="50">
+                      <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                                        dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+                      <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                               values="#499255;#c5523f"/>
+                    </circle>
+                  </g>
+                </svg>
+              </span>
+    </button>
+    <br /><br />
+  </div>
+  <div class="col-sm-12">
+    <div class="alert alert-success" role="alert">
+      <h4 class="alert-heading">Parameters passed to function</h4>
+      <div class="">
+        <pre [innerHtml]="parameters | prettyjson:3"></pre>
+      </div>
+    </div>
+  </div>
+
+  <br /><br /><br />
+</div>

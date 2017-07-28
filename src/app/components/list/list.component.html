@@ -1,0 +1,43 @@
+<div class="col-sm-12">
+  <h4>List of Functions</h4>
+  <table class="table table-bordered table-hover">
+    <thead>
+    <tr><th>#</th><th>Name</th><th>Action</th></tr>
+    </thead>
+    <tbody *ngIf="!loading && functions">
+    <tr *ngFor="let function of functions;let i = index" [routerLink]="[function.id]"><td>{{i + 1}}</td><td>{{function.name}}</td><td><i class="fa fa-ellipsis-v" aria-hidden="true"></i></td></tr>
+    </tbody>
+    <tbody *ngIf="loading">
+    <tr><td colspan="100%" align="center">
+      <svg width='120px' height='120px' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
+           preserveAspectRatio="xMidYMid" class="uil-balls">
+        <rect x="0" y="0" width="100" height="100" fill="none" class="bk"></rect>
+        <g transform="rotate(0 50 50)">
+          <circle r="5" cx="30" cy="50">
+            <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                              dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+            <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                     values="#c5523f;#f2b736"/>
+          </circle>
+        </g>
+        <g transform="rotate(120 50 50)">
+          <circle r="5" cx="30" cy="50">
+            <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                              dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+            <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                     values="#f2b736;#499255"/>
+          </circle>
+        </g>
+        <g transform="rotate(240 50 50)">
+          <circle r="5" cx="30" cy="50">
+            <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite"
+                              dur="0.5s" values="0 0;29.999999999999996 -17.320508075688775" keyTimes="0;1"/>
+            <animate attributeName="fill" dur="0.5s" begin="0s" repeatCount="indefinite" keyTimes="0;1"
+                     values="#499255;#c5523f"/>
+          </circle>
+        </g>
+      </svg>
+    </td></tr>
+    </tbody>
+  </table>
+</div>

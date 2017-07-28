@@ -20,11 +20,11 @@ export class SelectorComponent implements OnInit {
 
   onOrgUnitUpdate(event){
     this.parameters.ou = event.value;
-    this.updateSelection();
+    //this.updateSelection();
   }
   onPeriodUpdate(event){
     this.parameters.pe = event.value;
-    this.updateSelection();
+    //this.updateSelection();
   }
   updateSelection(){
     if(this.parameters.ou && this.parameters.dx && this.parameters.pe){
@@ -41,7 +41,7 @@ export class SelectorComponent implements OnInit {
     this.dataSelector = event;
     this.parameters.dx = event.selectedData.value;
     console.log("event.selectedData",event.selectedData);
-    this.updateSelection();
+    //this.updateSelection();
   }
   currentLayout = {
   rows: ['pe'],
@@ -49,6 +49,5 @@ export class SelectorComponent implements OnInit {
   filters: ['ou']
 }
   onLayUpdate(event) {
-    this.onLayoutUpdate.emit(event);
   }
 }

@@ -33,7 +33,7 @@
         </div>
       </div>
     </div>
-    <div [ngClass]="['panel-body', 'dashboard-item-body', hideOptions(visualizationObject.type, visualizationWithNoOptions) ? 'no-footer' : '']">
+    <div [ngClass]="[hideOptions(visualizationObject.type, visualizationWithNoOptions) ? 'no-footer' : '']">
       <!--Error block-->
       <div class="row" *ngIf="currentVisualization == null">
         <div class="col-md-12">

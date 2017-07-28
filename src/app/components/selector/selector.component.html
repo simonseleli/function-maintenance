@@ -42,5 +42,5 @@
 
 </div>
 <div class="col-sm-1">
-  <button class="btn btn-primary btn-sm pull-right col-sm-12" (click)="run()">Update</button>
+  <button class="btn btn-primary btn-sm pull-right col-sm-12" (click)="run()" [disabled]="!parameters.dx || !parameters.pe || !parameters.ou">Test</button>
 </div>

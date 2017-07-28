@@ -5,8 +5,8 @@
 <!--error block-->
 <app-error-notifier *ngIf="hasError" [errorMessage]="errorMessage"></app-error-notifier>
 <!--end of error block-->
-<div class="row" *ngIf="!loading && !hasError">
-  <div class="col-md-12" *ngFor="let tableObject of tableObjects">
+<div *ngIf="!loading && !hasError">
+  <div *ngFor="let tableObject of tableObjects">
     <!--<app-error-notifier *ngIf="tableHasError" [errorMessage]="'Something is wrong'"></app-error-notifier>-->
     <h4 class="text-center item-title">{{tableObject.displayName}}</h4>
     <h5 style="margin-top: 80px" class="text-center" *ngIf="tableObject.rows.length == 0"> No

@@ -1,54 +1,25 @@
-<div class="container-fluid">
-  <h1>
+<app-menu></app-menu>
+<div class="container-fluid space">
+  <h3>
     {{title}}
-  </h1>
-  <div class="row">
-    <div class="col-sm-4">
-      <ng-select [allowClear]="true"
-                 [items]="items"
-                 [disabled]="disabled"
-                 (data)="refreshValue($event)"
-                 (selected)="selected($event)"
-                 (removed)="removed($event)"
-                 (typed)="typed($event)"
-                 placeholder="No Function Selected">
-      </ng-select>
-    </div>
-    <div class="col-sm-4">
-      <button class="btn btn-primary" (click)="newFunction()">Create New Function</button>
-    </div>
-    <br/><br/>
-  </div>
-  <div class="row">
-
-    <br/><br/>
-  </div>
-  <div class="row">
-    <div>
-      <app-selector (onRun)="onRun($event)" (onLayoutUpdate)="onLayoutUpdate($event)"></app-selector>
-    </div>
-    <br/><br/>
-    <div class="col-sm-12">
-      <div *ngIf="successError" class="alert alert-danger" role="alert">
-        <h4 class="alert-heading">Potential Error!</h4>
-        No success callback defined. Please make sure you call the callback on success.
-      </div>
-      <div *ngIf="errorError" class="alert alert-danger" role="alert">
-        <h4 class="alert-heading">Potential Error!</h4>
-        No error callback defined. Please make sure you call the callback on error.
-      </div>
-      <div *ngIf="progressError" class="alert alert-warning" role="alert">
-        <h4 class="alert-heading">Warning!</h4>
-        The progress callback helps to show the user when the function is excecuting. The range is from 0 to 100.
-      </div>
-      <br/>
-      <div *ngIf="!loading && loadingError" class="alert alert-danger" role="alert">
-        <h4 class="alert-heading">Oh snap!</h4>
-        {{loadingError |json}}
-      </div>
-    </div>
-  </div>
+  </h3>
 </div>
 <div class="container-fluid">
-  <router-outlet></router-outlet>
+
+  <div class="row">
+    <div class="col-sm-2">
+      <div class="panel panel-default">
+        <div class="panel-heading">Menu</div>
+        <div class="panel-body">
+          <ul class="list-group">
+            <li class="list-group-item"><a [routerLink]="['functions','new']">Create New Function</a></li>
+            <li class="list-group-item"><a [routerLink]="['functions']">List Function</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-10">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>

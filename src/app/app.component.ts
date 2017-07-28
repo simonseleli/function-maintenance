@@ -82,7 +82,7 @@ export class AppComponent {
   }
   load(){
     if(this.functionId && this.parameters.dx && this.parameters.pe && this.parameters.ou){
-      this.router.navigate(['function',this.functionId,"dx",this.parameters.dx,"pe",this.parameters.pe,"ou",this.parameters.ou]);
+      //this.router.navigate(['function',this.functionId,"dx",this.parameters.dx,"pe",this.parameters.pe,"ou",this.parameters.ou]);
     }
   }
 }
