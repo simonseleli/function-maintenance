@@ -1,5 +1,6 @@
 import { Component, OnInit,Input, forwardRef,Provider } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import {HttpClientService} from "../../services/http-client.service";
 
 const noop = () => {
 };
@@ -22,7 +23,7 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
 
   //@Input() rules:Array<any>=[];
 
-  constructor() {
+  constructor(private http:HttpClientService) {
   }
 
   noRules = {message:'There is a no rule registered.'};
@@ -32,25 +33,39 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
   newRule;
   addNewRule(){
     this.newRule = {
+      id:"",
       name:"",
       description:"",
       json:""
     }
   }
-  errors:any = {}
+  errors:any = {};
+  savingRule;
   saveNewRule(){
-    this.errors = {}
-    let canSave = true;
-    if(this.newRule.name == ""){
-      canSave = false;
-      this.errors.name = {
-        type:'danger',
-        object:{message:"Please enter a valid name."}
+    if(!this.newRule.id){
+      this.savingRule = true;
+      this.errors = {}
+      let canSave = true;
+      if(this.newRule.name == ""){
+        canSave = false;
+        this.errors.name = {
+          type:'danger',
+          object:{message:"Please enter a valid name."}
+        }
       }
-    }
-    if(canSave){
-      this.rules.push(this.newRule);
+      if(canSave){
+        this.http.get("system/id").subscribe((results:any)=>{
+          this.newRule.id = results.codes[0];
+          this.rules.push(this.newRule);
+          this.newRule = undefined;
+          this.savingRule = false;
+        })
+      }else{
+        this.savingRule = false;
+      }
+    }else{
       this.newRule = undefined;
+      this.savingRule = false;
     }
   }
   deleteRule(index){
@@ -62,6 +77,10 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
     this.newRule = JSON.parse(event);
   }
 
+  editRule(rule){
+    console.log(rule);
+    this.newRule = rule;
+  }
   private rules:Array<any>=[];
 
   //Placeholders for the callbacks which are later provided

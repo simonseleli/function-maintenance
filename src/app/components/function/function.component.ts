@@ -40,6 +40,8 @@ export class FunctionComponent implements OnInit {
         '});',
         rules:[]
       };
+      this.testFunc = this.func;
+      this.latestCode = this.func.function;
       this.loading = false;
     }else{
       this.functionService.get(this.id).subscribe((func:any)=> {
@@ -55,7 +57,6 @@ export class FunctionComponent implements OnInit {
   latestCode
   onChange(event){
     this.latestCode = event;
-    console.log("Event Change:",event);
   }
   parameters;
   show;
@@ -68,7 +69,6 @@ export class FunctionComponent implements OnInit {
         rules:this.func.rules
       };
       this.show = true;
-      console.log("onLayoutUpdate Event:",event);
     })
   }
   loadingSave

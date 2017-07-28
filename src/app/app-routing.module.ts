@@ -6,6 +6,7 @@ import {FunctionComponent} from "./components/function/function.component";
 //import {DataEntryComponent} from "./data-entry.component";
 
 const routes: Routes = [
+  { path: '', redirectTo: '/functions', pathMatch: 'full' },
   {
     path: 'function/:id/dx/:dx/pe/:pe/ou/:ou', component: MainComponent,
   },

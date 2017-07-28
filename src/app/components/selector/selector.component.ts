@@ -37,11 +37,8 @@ export class SelectorComponent implements OnInit {
   }
   dataSelector;
   onDataUpdate(event){
-    console.log("Event:",event);
     this.dataSelector = event;
     this.parameters.dx = event.selectedData.value;
-    console.log("event.selectedData",event.selectedData);
-    //this.updateSelection();
   }
   currentLayout = {
   rows: ['pe'],

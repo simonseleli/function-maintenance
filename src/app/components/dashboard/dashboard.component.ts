@@ -41,6 +41,7 @@ export class DashboardComponent implements OnInit {
     console.log("Loading:",this.parameters, this.func);
     this.results = false;
     this.functionService.run(this.parameters, this.func).subscribe((results:any)=> {
+      this.parameters.rules = this.func.rules;
       this.results = results;
     },(error)=>{
       this.results = error;
