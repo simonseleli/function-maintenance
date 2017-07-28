@@ -1,12 +1,12 @@
 {
     "version": "0.1",
-    "name": "Function Manager",
-    "description": "Function Manager",
+    "name": "Directive Manager",
+    "description": "Directive Manager",
     "launch_path": "index.html",
     "icons": {
-        "16": "assets/logo.png",
-        "48": "assets/logo.png",
-        "128": "assets/logo.png"
+        "16": "assets/img/function.png",
+        "48": "assets/img/function.png",
+        "128": "assets/img/function.png"
     },
     "developer": {
         "name": "HISPTZ",

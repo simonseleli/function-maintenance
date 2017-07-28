@@ -193,16 +193,18 @@ export class DataFilterComponent implements OnInit, AfterViewInit {
       name:dataElement.name + "",
       dataSetElements:dataElement.dataSetElements
     });
-    categoryCombo.categoryOptionCombos.forEach((option) => {
-      if(option.name != 'default'){
-        dataElements.push({
-          id:dataElement.id+"."+option.id,
-          name:dataElement.name + " "+option.name,
-          dataSetElements:dataElement.dataSetElements
-        })
-      }
+    if(categoryCombo){
+      categoryCombo.categoryOptionCombos.forEach((option) => {
+        if(option.name != 'default'){
+          dataElements.push({
+            id:dataElement.id+"."+option.id,
+            name:dataElement.name + " "+option.name,
+            dataSetElements:dataElement.dataSetElements
+          })
+        }
 
-    });
+      });
+    }
     return dataElements;
   }
 
