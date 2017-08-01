@@ -40,6 +40,9 @@ import { FunctionComponent } from './components/function/function.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MenuComponent } from './components/menu/menu.component';
 import {FilterPipe} from "./components/menu/filter.pipe";
+import { } from "ngx-contextmenu/ngx-contextmenu"
+import ContextMenuModule from "ngx-contextmenu/lib/ngx-contextmenu";
+import { MomentModule } from 'angular2-moment';
 
 @NgModule({
   declarations: [
@@ -76,7 +79,11 @@ import {FilterPipe} from "./components/menu/filter.pipe";
     DashboardCardModule,
     DndModule,
     NgxPaginationModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ContextMenuModule.forRoot({
+      autoFocus: true,
+    }),
+    MomentModule
   ],
   providers: [HttpClientService,FilterService,Constants,DragDropService,DragDropConfig,DataFilterService,Store,FunctionService,DataService,LocalStorageService],
   bootstrap: [AppComponent]

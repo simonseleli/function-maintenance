@@ -1,5 +1,6 @@
-<div *ngIf="loading" stye="text-align:center">
-  <img src="assets/img/balls-3.svg" alt="">
+<div *ngIf="loading" style="text-align:center">
+  <img src="assets/img/balls-3.svg" alt=""><br />
+  Loading Directive Into Position
 </div>
 <div *ngIf="!loading">
   <div>
@@ -7,7 +8,7 @@
     <app-dashboard *ngIf="show" [parameters]="parameters" [func]="testFunc"></app-dashboard>
   </div>
   <div class="col-sm-6">
-    <div class="alert alert-success" role="alert">
+    <div>
       <div class="row">
         <div class="col-sm-6">
           <label for="name">Name:</label>
@@ -22,20 +23,25 @@
         <br/><br/>
       </div>
     </div>
+    <label>Rules:</label>
     <app-rules name="rules" [(ngModel)]="func.rules"></app-rules>
   </div>
   <div class="col-sm-6">
-    Function Definition:
-    <ace-editor
-      [(text)]="func.function"
-      [mode]="'javascript'"
-      [options]="options"
-      [readOnly]="false"
-      [theme]="'github'"
-      [autoUpdateContent]="true"
-      [durationBeforeCallback]="1000"
-      (textChanged)="onChange($event)"
-      style="min-height: 430px;max-height: 430px; width:100%; overflow: auto;" #editor></ace-editor>
+    <accordion>
+      <accordion-group heading="Function Definition">
+        <ace-editor
+          [(text)]="func.function"
+          [mode]="'javascript'"
+          [options]="options"
+          [readOnly]="false"
+          [theme]="'github'"
+          [autoUpdateContent]="true"
+          [durationBeforeCallback]="1000"
+          (textChanged)="onChange($event)"
+          style="min-height: 430px;max-height: 430px; width:100%; overflow: auto;" #editor></ace-editor>
+      </accordion-group>
+    </accordion>
+
   </div>
   <div class="col-sm-12">
     <br /><br />
@@ -48,7 +54,7 @@
                 <img width='20px' height='20px' src="assets/img/balls-3.svg" alt="">
               </span>
     </button>
-    <button class="btn btn-default" [routerLink]="['functions']">Cancel</button>
+    <button class="btn btn-default" [routerLink]="['/functions']">Cancel</button>
     <br /><br />
   </div>
 
