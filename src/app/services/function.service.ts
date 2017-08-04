@@ -88,6 +88,7 @@ export class FunctionService {
   }
   get(id){
     return new Observable((observ)=>{
+      console.log("Function:",id)
       this.http.get("dataStore/functions/" + id).subscribe((func)=>{
         observ.next(func);
         observ.complete();

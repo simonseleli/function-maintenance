@@ -1,6 +1,6 @@
 <div *ngIf="loading" style="text-align:center">
   <img src="assets/img/balls-3.svg" alt=""><br />
-  Loading Directive Into Position
+  Loading Function Into Position
 </div>
 <div *ngIf="!loading">
   <div>
@@ -46,7 +46,7 @@
   <div class="col-sm-12">
     <br /><br />
     <div *ngIf="loadingSaveError" class="alert alert-danger">
-      <strong>Saving Error!</strong> Error saving directive. Please try again.
+      <strong>Saving Error!</strong> Error saving function. Please try again.
     </div>
     <button class="btn btn-success" (click)="save()">
       <span *ngIf="!loadingSave"><span *ngIf="!func.id">Save</span><span *ngIf="func.id">Update</span></span>

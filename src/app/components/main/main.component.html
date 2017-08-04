@@ -56,7 +56,7 @@
           <div class="col-sm-12">
             <br /><br />
             <div *ngIf="loadingSaveError" class="alert alert-danger">
-              <strong>Saving Error!</strong> Error saving directive. Please try again.
+              <strong>Saving Error!</strong> Error saving function. Please try again.
             </div>
             <button class="btn btn-success pull-right" (click)="save()">
               <span *ngIf="!loadingSave"><span *ngIf="!func.id">Save</span><span *ngIf="func.id">Update</span></span>

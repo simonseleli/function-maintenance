@@ -46,8 +46,8 @@ export class ListComponent implements OnInit {
   navigate(functionId){
     this.router.navigate([functionId], {relativeTo: this.route});
   }
-  delete(directive){
-    if(confirm("Are you sure you want to delete the function " + directive.name + "?")){
+  delete(func){
+    if(confirm("Are you sure you want to delete the function " + func.name + "?")){
 
     }
   }
