@@ -24,7 +24,7 @@
       </div>
     </div>
     <label>Rules:</label>
-    <app-rules name="rules" [(ngModel)]="func.rules"></app-rules>
+    <app-rules name="rules" [(ngModel)]="func.rules" (onSelectRule)="onSelectRule($event)"></app-rules>
   </div>
   <div class="col-sm-6">
     <accordion>

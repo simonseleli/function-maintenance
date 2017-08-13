@@ -67,9 +67,12 @@ export class FunctionComponent implements OnInit {
     this.show = false;
     setTimeout(()=>{
       this.parameters = event;
+      if(this.selectedRule){
+        this.parameters.rule = this.selectedRule;
+      }
+      console.log(this.parameters);
       this.testFunc = {
-        "function":this.latestCode,
-        rules:this.func.rules
+        "function":this.latestCode
       };
       this.show = true;
     })
@@ -93,5 +96,15 @@ export class FunctionComponent implements OnInit {
     }else{
       this.toasterService.pop('error', 'Saving Error', "Please write name of function");
     }
+  }
+  selectedRule
+  onSelectRule(event){
+    this.selectedRule = {
+      id:event.id,
+      name:event.name,
+      description:event.description,
+      json: JSON.parse(event.json)
+    };
+    console.log("Selected:",event);
   }
 }

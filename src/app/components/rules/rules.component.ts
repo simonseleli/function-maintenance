@@ -1,4 +1,4 @@
-import { Component, OnInit,Input, forwardRef,Provider } from '@angular/core';
+import { Component, OnInit,Input, forwardRef,Provider,Output,EventEmitter } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import {HttpClientService} from "../../services/http-client.service";
 
@@ -28,6 +28,10 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
 
   noRules = {message:'There is a no rule registered.'};
   ngOnInit() {
+    console.log(this.rules);
+    if(this.rules.length > 0){
+      this.selectRule(this.rules[0])
+    }
   }
 
   newRule;
@@ -56,6 +60,7 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
       if(canSave){
         this.http.get("system/id").subscribe((results:any)=>{
           this.newRule.id = results.codes[0];
+          this.selectRule(this.newRule);
           this.rules.push(this.newRule);
           this.newRule = undefined;
           this.savingRule = false;
@@ -64,12 +69,19 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
         this.savingRule = false;
       }
     }else{
+      this.selectRule(this.newRule);
       this.newRule = undefined;
       this.savingRule = false;
     }
   }
   deleteRule(index){
     this.rules.splice(index,1);
+  }
+  @Output() onSelectRule : EventEmitter<any> = new EventEmitter<any>();
+  selectedRule;
+  selectRule(rule){
+    this.selectedRule = rule.id;
+    this.onSelectRule.emit(rule);
   }
   options:any = {fontSize:"20px",maxLines: 20};
   onNewRecord(event){
@@ -79,6 +91,7 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
 
   editRule(rule){
     console.log(rule);
+    //rule.json = JSON.stringify(rule.json);
     this.newRule = rule;
   }
   private rules:Array<any>=[];

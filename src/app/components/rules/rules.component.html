@@ -7,11 +7,13 @@
     </tr>
     </thead>
     <tbody *ngFor="let rule of rules;let index = i">
-    <tr>
-      <td>{{rule.name}}</td>
+    <tr [ngClass]="{'selected-rule':rule.id == selectedRule}">
+      <td>{{rule.name}} <span *ngIf="rule.id == selectedRule">- (Selected Rule for testing)</span></td>
       <td>
         <!--<button tooltip="View Rule" (click)="viewRule(index)" class="btn btn-primary btn-sm">
           <i class="fa fa-eye" aria-hidden="true"> </i></button>-->
+        <button tooltip="Select Rule For Testing" (click)="selectRule(rule)" class="btn btn-primary btn-sm">
+          <i class="fa fa-check" aria-hidden="true"> </i></button>
         <button tooltip="Edit Rule" (click)="editRule(rule)" class="btn btn-default btn-sm">
           <i class="fa fa-pencil" aria-hidden="true"> </i></button>
         <button tooltip="Delete Rule" (click)="deleteRule(index)" class="btn btn-danger btn-sm">

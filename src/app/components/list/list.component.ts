@@ -51,7 +51,7 @@ export class ListComponent implements OnInit {
       this.functionService.delete(func).subscribe((results)=>{
         this.functions.splice(this.functions.indexOf(func),1);
         this.deletingMap[func.id] = undefined;
-        this.toasterService.pop('error', 'Success', 'Function deleted successfully.');
+        this.toasterService.pop('success', 'Success', 'Function deleted successfully.');
       },(error)=>{
         this.toasterService.pop('error', 'Delete Error', error.message);
         this.deletingMap[func.id] = undefined;
