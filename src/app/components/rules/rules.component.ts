@@ -28,10 +28,7 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
 
   noRules = {message:'There is a no rule registered.'};
   ngOnInit() {
-    console.log(this.rules);
-    if(this.rules.length > 0){
-      this.selectRule(this.rules[0])
-    }
+
   }
 
   newRule;
@@ -110,6 +107,10 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
   set value(v: any) {
     if (v !== this.rules) {
       this.rules = v;
+      console.log("Rules:",this.value);
+      if(this.rules.length > 0){
+        this.selectRule(this.rules[0])
+      }
       this.onChangeCallback(v);
     }
   }
