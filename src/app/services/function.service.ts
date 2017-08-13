@@ -21,6 +21,9 @@ export class FunctionService {
           this.currentUser = results;
           observable.next(this.currentUser);
           observable.complete();
+        },(error)=>{
+          observable.error(error.json());
+          observable.complete();
         })
       }
     })
@@ -32,6 +35,9 @@ export class FunctionService {
         sFunction.displayName = sFunction.name;
         this.http.put("dataStore/functions/" + sFunction.id,sFunction).subscribe((results)=>{
           observable.next(sFunction);
+          observable.complete();
+        },(error)=>{
+          observable.error(error.json());
           observable.complete();
         })
       }else{
@@ -55,11 +61,30 @@ export class FunctionService {
               this.http.post("dataStore/functions/" + sFunction.id,sFunction).subscribe((results)=>{
                 observable.next(sFunction);
                 observable.complete();
+              },(error)=>{
+                observable.error(error.json());
+                observable.complete();
               })
+            },(error)=>{
+              observable.error(error.json());
+              observable.complete();
             })
           })
         })
       }
+    })
+
+  }
+  delete(sFunction:FunctionObject){
+    return new Observable((observable)=>{
+
+      this.http.delete("dataStore/functions/" + sFunction.id).subscribe((results)=>{
+        observable.next(results);
+        observable.complete();
+      },(error)=>{
+       observable.error(error.json());
+       observable.complete();
+      })
     })
 
   }
@@ -87,13 +112,13 @@ export class FunctionService {
 
   }
   get(id){
-    return new Observable((observ)=>{
-      console.log("Function:",id)
+    return new Observable((observable)=>{
       this.http.get("dataStore/functions/" + id).subscribe((func)=>{
-        observ.next(func);
-        observ.complete();
+        observable.next(func);
+        observable.complete();
       },(error)=>{
-
+        observable.error(error.json());
+        observable.complete();
       })
     })
 

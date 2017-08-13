@@ -43,6 +43,8 @@ import {FilterPipe} from "./components/menu/filter.pipe";
 import { } from "ngx-contextmenu/ngx-contextmenu"
 import ContextMenuModule from "ngx-contextmenu/lib/ngx-contextmenu";
 import { MomentModule } from 'angular2-moment';
+import {ToasterModule} from 'angular2-toaster';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -80,6 +82,8 @@ import { MomentModule } from 'angular2-moment';
     DndModule,
     NgxPaginationModule,
     AppRoutingModule,
+    ToasterModule,
+    BrowserAnimationsModule,
     ContextMenuModule.forRoot({
       autoFocus: true,
     }),

@@ -14,13 +14,16 @@
     </tr>
     </thead>
     <tbody *ngIf="!loading && functions">
-    <tr [ngClass]="{pill:details?function.id==details.id:false}" *ngFor="let function of functions;let i = index" (click)="onContextMenu($event, function)" style="cursor:pointer" [contextMenu]="contextMenu" (contextmenu)="onContextMenu($event, function)">
-
-      <td>{{i + 1}}</td>
-      <td>{{function.name}}</td>
-      <td>{{function.rules.length}}</td>
-      <td>Public view/edit</td>
-      <td>{{function.lastUpdated | amTimeAgo}}</td>
+    <tr [ngClass]="{pill:details?function.id==details.id:false,deleteFailed:failedDeletingMap[function.id]}" *ngFor="let function of functions;let i = index" (click)="onContextMenu($event, function)" style="cursor:pointer" [contextMenu]="contextMenu" (contextmenu)="onContextMenu($event, function)">
+      <td colspan="100%" *ngIf="deletingMap[function.id]" align="center">
+        <img src="assets/img/balls-3.svg" height="60px" alt="">
+        Deleting {{function.name}}...
+      </td>
+      <td *ngIf="!deletingMap[function.id]">{{i + 1}}</td>
+      <td *ngIf="!deletingMap[function.id]">{{function.name}}</td>
+      <td *ngIf="!deletingMap[function.id]">{{function.rules.length}}</td>
+      <td *ngIf="!deletingMap[function.id]">Public view/edit</td>
+      <td *ngIf="!deletingMap[function.id]">{{function.lastUpdated | amTimeAgo}}</td>
     </tr>
     </tbody>
     <tbody *ngIf="loading">

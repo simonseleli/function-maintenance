@@ -3,6 +3,7 @@ import {FunctionService} from "../../services/function.service";
 import {ContextMenuService} from "ngx-contextmenu/lib/contextMenu.service";
 import {ContextMenuComponent} from "ngx-contextmenu/lib/contextMenu.component";
 import { ActivatedRoute,Params,Router,NavigationStart } from '@angular/router';
+import {ToasterService} from 'angular2-toaster';
 
 @Component({
   selector: 'app-list',
@@ -11,7 +12,7 @@ import { ActivatedRoute,Params,Router,NavigationStart } from '@angular/router';
 })
 export class ListComponent implements OnInit {
 
-  constructor(private functionService:FunctionService,private contextMenuService: ContextMenuService, private router:Router, private route:ActivatedRoute) { }
+  constructor(private functionService:FunctionService,private contextMenuService: ContextMenuService, private router:Router, private route:ActivatedRoute,private toasterService: ToasterService) { }
 
   loading;
   functions;
@@ -23,11 +24,6 @@ export class ListComponent implements OnInit {
       this.loading = false;
     })
   }
-
-  public items = [
-    { name: 'John', otherProperty: 'Foo' },
-    { name: 'Joe', otherProperty: 'Bar' }
-  ];
 
   // Optional
   @ViewChild(ContextMenuComponent) public contextMenu: ContextMenuComponent;
@@ -46,9 +42,21 @@ export class ListComponent implements OnInit {
   navigate(functionId){
     this.router.navigate([functionId], {relativeTo: this.route});
   }
+  deletingMap = {}
+  failedDeletingMap = {}
   delete(func){
+    this.failedDeletingMap[func.id] = undefined;
     if(confirm("Are you sure you want to delete the function " + func.name + "?")){
-
+      this.deletingMap[func.id] = true;
+      this.functionService.delete(func).subscribe((results)=>{
+        this.functions.splice(this.functions.indexOf(func),1);
+        this.deletingMap[func.id] = undefined;
+        this.toasterService.pop('error', 'Success', 'Function deleted successfully.');
+      },(error)=>{
+        this.toasterService.pop('error', 'Delete Error', error.message);
+        this.deletingMap[func.id] = undefined;
+        this.failedDeletingMap[func.id] = true;
+      })
     }
   }
 }

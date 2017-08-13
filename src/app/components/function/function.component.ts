@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FunctionService} from "../../services/function.service";
 import { ActivatedRoute,Params,Router,NavigationStart } from '@angular/router';
+import {ToasterService} from 'angular2-toaster';
 
 @Component({
   selector: 'app-function',
@@ -10,7 +11,7 @@ import { ActivatedRoute,Params,Router,NavigationStart } from '@angular/router';
 export class FunctionComponent implements OnInit {
 
   id
-  constructor(private functionService:FunctionService, private route:ActivatedRoute) {
+  constructor(private functionService:FunctionService, private route:ActivatedRoute,private toasterService: ToasterService) {
     this.route.params.subscribe((params:any)=> {
       this.id = params.id;
       this.init()
@@ -49,6 +50,8 @@ export class FunctionComponent implements OnInit {
         this.testFunc = func;
         this.latestCode = func.function;
         this.loading = false;
+      },(error)=>{
+        this.toasterService.pop('error', 'Error', error.message);
       })
     }
   }
@@ -81,12 +84,14 @@ export class FunctionComponent implements OnInit {
       this.functionService.save(this.func).subscribe((results)=>{
         this.func = results;
         this.loadingSave = false;
+        this.toasterService.pop('success', 'Success', 'Function saved successfully.');
       },(error)=>{
         this.loadingSave = false;
         this.loadingSaveError = error;
+        this.toasterService.pop('error', 'Saving Error', error.message);
       })
     }else{
-      alert("Please write name for function.");
+      this.toasterService.pop('error', 'Saving Error', "Please write name of function");
     }
   }
 }
