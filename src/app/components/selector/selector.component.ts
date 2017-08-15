@@ -37,7 +37,6 @@ export class SelectorComponent implements OnInit {
   }
   dataSelector;
   onDataUpdate(event){
-    console.log("Ondata Update:",event);
     this.dataSelector = event;
     this.parameters.dx = event.selectedData.value;
   }

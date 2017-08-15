@@ -70,7 +70,6 @@ export class OrgUnitFilterComponent implements OnInit {
   updateModelOnSelect(data){
     if(!this.orgunit_model.show_update_button){
       setTimeout((data) => {
-        console.log("kefsafsa",this.getOrgUnitsForAnalytics(this.orgunit_model,false));
         this.onOrgUnitUpdate.emit({name: 'ou', value: this.getOrgUnitsForAnalytics(this.orgunit_model,false)});
         this.displayOrgTree()
       },0);
@@ -168,13 +167,11 @@ export class OrgUnitFilterComponent implements OnInit {
                         this.updateOrgUnitModel();
                       },
                       error => {
-                        console.log('something went wrong while fetching Organisation units');
                         this.orgunit_tree_config.loading = false;
                       }
                     )
                   },
                   error => {
-                    console.log('something went wrong while fetching Organisation units');
                     this.orgunit_tree_config.loading = false;
                   }
                 )
@@ -310,8 +307,6 @@ export class OrgUnitFilterComponent implements OnInit {
   }
 
   updateOrgUnitModel() {
-    //this.displayOrgTree();
-    console.log("Organisation Unit:",this.orgunit_model.selected_orgunits[0].id,this.getOrgUnitsForAnalytics(this.orgunit_model,false));
     let value = this.getOrgUnitsForAnalytics(this.orgunit_model,false);
     if(value.indexOf("LEVEL") > -1){
       value = this.orgunit_model.selected_orgunits[0].id;

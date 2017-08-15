@@ -70,7 +70,6 @@ export class FunctionComponent implements OnInit {
       if(this.selectedRule){
         this.parameters.rule = this.selectedRule;
       }
-      console.log(this.parameters);
       this.testFunc = {
         "function":this.latestCode
       };
@@ -105,6 +104,5 @@ export class FunctionComponent implements OnInit {
       description:event.description,
       json: JSON.parse(event.json)
     };
-    console.log("Selected:",event);
   }
 }
