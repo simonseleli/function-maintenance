@@ -1,0 +1,5 @@
+.blur{
+  opacity:0.5;
+  content: "Click to Edit";
+  cursor: pointer;
+}
