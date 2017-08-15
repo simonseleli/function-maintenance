@@ -1,7 +1,7 @@
 {
     "version": "0.1",
-    "name": "Directive Manager",
-    "description": "Directive Maintenance",
+    "name": "Function Maintenance",
+    "description": "Function Maintenance",
     "launch_path": "index.html",
     "icons": {
         "16": "assets/img/function.png",

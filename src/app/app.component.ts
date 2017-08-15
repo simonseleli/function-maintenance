@@ -12,7 +12,7 @@ import { ActivatedRoute,Params,Router,NavigationStart } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'Directive Maintenance';
+  title = 'Function Maintenance';
 
   parameters:FunctionParameters = {
     dx: "FwpCBGQvYdL.BktmzfgqCjX",

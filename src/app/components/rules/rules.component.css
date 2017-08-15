@@ -1,5 +1,5 @@
 .selected-rule {
   color: #31708f;
-  background-color: #d9edf7;
+  background-color: #d9edf7 !important;
   border-color: #bce8f1;
 }
