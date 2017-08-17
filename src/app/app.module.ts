@@ -13,8 +13,8 @@ import { VisualizerComponent } from './components/visualizer/visualizer.componen
 import {Ng2HighchartsModule} from "ng2-highcharts";
 import { RulesComponent } from './components/rules/rules.component';
 import { MessageComponent } from './components/message/message.component';
-import { TooltipModule } from 'ng2-bootstrap/tooltip';
-import { AccordionModule } from 'ng2-bootstrap/accordion';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 import {OrgUnitFilterComponent} from "./components/organisation-unit/org-unit-filter.component";
 import {FilterLevelPipe} from "./services/filter-level.pipe";
 import { SelectorComponent } from './components/selector/selector.component';
@@ -48,6 +48,7 @@ import {UserService} from "./services/user.service";
 import { HasAccessPipe } from './pipes/has-access.pipe';
 import { SearchPipe } from './pipes/search.pipe';
 import { HasFunctionAccessPipe } from './pipes/has-function-access.pipe';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 
 @NgModule({
   declarations: [
@@ -82,14 +83,16 @@ import { HasFunctionAccessPipe } from './pipes/has-function-access.pipe';
     SelectModule,
     Ng2HighchartsModule,
     TooltipModule.forRoot(),
-    AccordionModule.forRoot(),
+    //AccordionModule.forRoot(),
     DashboardCardModule,
     DndModule,
     NgxPaginationModule,
     AppRoutingModule,
     ToasterModule,
     BrowserAnimationsModule,
+    CollapseModule.forRoot(),
     ContextMenuModule.forRoot({
+      useBootstrap4: true,
       autoFocus: true,
     }),
     MomentModule

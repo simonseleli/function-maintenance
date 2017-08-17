@@ -1,37 +1,39 @@
-<div class="form-group col-sm-3">
-  <app-org-unit-filter (onOrgUnitUpdate)="onOrgUnitUpdate($event)"></app-org-unit-filter>
-</div>
-<div class="form-group col-sm-3">
-  <app-period-filter (onPeriodUpdate)="onPeriodUpdate($event)"></app-period-filter>
-</div>
-<div class="form-group col-sm-5">
-  <div class="tree-input">
-    <div class="tree-input">
-      <div>
-        <div class="show_items {{disabled ? 'disabled-orgunit' : ''}}" (click)="showOrgTree = !showOrgTree">
-          <span *ngIf="!dataSelector">
+<div class="row">
+  <div class="col-sm-3">
+    <app-org-unit-filter (onOrgUnitUpdate)="onOrgUnitUpdate($event)"></app-org-unit-filter>
+  </div>
+  <div class="col-sm-3">
+    <app-period-filter (onPeriodUpdate)="onPeriodUpdate($event)"></app-period-filter>
+  </div>
+  <div class="col-sm-5">
+    <div class="tree-input" style="opacity:0.5">
+      <div class="tree-input">
+        <div>
+          <div class="show_items {{disabled ? 'disabled-orgunit' : ''}}">
+            <span>Disabled</span>
+          <!--<span *ngIf="!dataSelector">
             <span>Loading...</span>
           </span>
           <span *ngIf="dataSelector">
             <span *ngIf="dataSelector.itemList.length == 0">Select Data</span>
           <span *ngIf="dataSelector.itemList.length == 1">{{dataSelector.itemList[0].name}}</span>
           <span *ngIf="dataSelector.itemList.length > 1">{{dataSelector.itemList.length}} Selected</span>
-          </span>
-        </div>
-        <div class="tree-view" [ngClass]="{'hiddenTree':showOrgTree}" id="tree_view">
-          <div>
-            <app-data-filter (onDataUpdate)="onDataUpdate($event)"></app-data-filter>
+          </span>-->
           </div>
-          <div>
-            <div class="close-area">
-              <button class="btn btn-default pull-right" style="height: 30px"  (click)="showOrgTree = !showOrgTree">
-                <span class="glyphicon glyphicon-remove"></span> Close
-              </button>
-              <!--<button [disabled]="orgunit_tree_config.loading" *ngIf="orgunit_model.show_update_button" type="button" class="btn btn-default pull-right"  style="height: 30px" (click)="updateOrgUnitModel()">
-                <span class="glyphicon glyphicon-refresh"></span>  Update
-              </button>-->
+          <!--<div class="tree-view" [ngClass]="{'hiddenTree':showOrgTree}" id="tree_view">
+            <div>
+              <app-data-filter (onDataUpdate)="onDataUpdate($event)"></app-data-filter>
             </div>
-          </div>
+              <div class="close-area">
+                <button class="btn btn-default pull-right" style="height: 30px" (click)="showOrgTree = !showOrgTree">
+                  <span class="glyphicon glyphicon-remove"></span> Close
+                </button>
+                &lt;!&ndash;<button [disabled]="orgunit_tree_config.loading" *ngIf="orgunit_model.show_update_button" type="button" class="btn btn-default pull-right"  style="height: 30px" (click)="updateOrgUnitModel()">
+                  <span class="glyphicon glyphicon-refresh"></span>  Update
+                </button>&ndash;&gt;
+              </div>
+          </div>-->
+
         </div>
 
       </div>
@@ -39,8 +41,10 @@
     </div>
 
   </div>
+  <div class="col-sm-1">
+    <button class="btn btn-primary btn-sm pull-right col-md-12" (click)="run()"
+            [disabled]="!parameters.rule || !parameters.pe || !parameters.ou">Test
+    </button>
+  </div>
+</div>
 
-</div>
-<div class="col-sm-1">
-  <button class="btn btn-primary btn-sm pull-right col-sm-12" (click)="run()" [disabled]="!parameters.dx || !parameters.pe || !parameters.ou">Test</button>
-</div>

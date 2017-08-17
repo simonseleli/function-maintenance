@@ -61,7 +61,7 @@ export class FunctionComponent implements OnInit {
   onChange(event){
     this.latestCode = event;
   }
-  parameters;
+  parameters:any = {};
   show;
   onRun(event){
     this.show = false;
@@ -98,7 +98,8 @@ export class FunctionComponent implements OnInit {
   }
   selectedRule
   onSelectRule(event){
-    this.selectedRule = {
+    console.log(this.parameters.rule);
+    this.parameters.rule = {
       id:event.id,
       name:event.name,
       description:event.description,

@@ -36,16 +36,26 @@ export class DashboardComponent implements OnInit {
 
   }
   loading;
-  results
+  results;
+  loadingError;
   ngOnInit() {
-    console.log("Loading:",this.parameters, this.func);
     this.results = false;
-    this.functionService.run(this.parameters, this.func).subscribe((results:any)=> {
-      this.parameters.rules = this.func.rules;
-      this.results = results;
-    },(error)=>{
-      this.results = error;
-    })
+    this.loading = false;
+    try{
+      this.functionService.run(this.parameters, this.func).subscribe((results:any)=> {
+        this.parameters.rules = this.func.rules;
+        this.results = results;
+        this.loading = true;
+      },(error)=>{
+        console.log(error);
+        this.loadingError = JSON.parse(error.responseText);
+        this.loading = false;
+      })
+    }catch(e){
+      this.loadingError = {message:"Please check your code"};
+      this.loading = false;
+    }
+
   }
 
 }

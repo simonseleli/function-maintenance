@@ -3,46 +3,52 @@
   Loading Function Into Position
 </div>
 <div *ngIf="!loading">
-  <div>
-    <app-selector (onRun)="onRun($event)" (onLayoutUpdate)="onLayoutUpdate($event)"></app-selector>
-    <app-dashboard *ngIf="show" [parameters]="parameters" [func]="testFunc"></app-dashboard>
-  </div>
-  <div [ngClass]="{'col-sm-6':!functionLarge,'col-sm-3':functionLarge,'blur':functionLarge}" (click)="functionLarge = false">
-    <div class="panel panel-default">
-      <div class="panel-body">
-        <div class="row">
-          <div class="col-sm-6">
-            <label for="name">Name:</label>
-            <input id="name" class="form-control" [(ngModel)]="func.name">
-            <br/>
-          </div>
-          <div class="col-sm-12">
-            <label for="name">Description:</label>
-            <textarea class="form-control" [(ngModel)]="func.description"></textarea>
-            <br/>
-          </div>
-          <br/><br/>
+  <app-selector [parameters]="parameters" (onRun)="onRun($event)" (onLayoutUpdate)="onLayoutUpdate($event)"></app-selector>
+  <app-dashboard *ngIf="show" [parameters]="parameters" [func]="testFunc"></app-dashboard>
+  <div class="row">
+    <div [ngClass]="{'col-sm-6':!functionLarge,'col-sm-3':functionLarge,'blur':functionLarge}" (click)="functionLarge = false">
+      <div class="card panel-default">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <label for="name">Name:</label>
+              <input id="name" class="form-control" [(ngModel)]="func.name">
+              <br/>
+            </div>
+            <div class="col-sm-12">
+              <label for="name">Description:</label>
+              <textarea class="form-control" [(ngModel)]="func.description"></textarea>
+              <br/>
+            </div>
+            <br/><br/>
 
+          </div>
+          <label>Rules:</label>
+          <app-rules name="rules" [(ngModel)]="func.rules" (onSelectRule)="onSelectRule($event)"></app-rules>
         </div>
-        <label>Rules:</label>
-        <app-rules name="rules" [(ngModel)]="func.rules" (onSelectRule)="onSelectRule($event)"></app-rules>
       </div>
     </div>
-  </div>
-  <div [ngClass]="{'col-sm-6':!functionLarge,'col-sm-9':functionLarge,'blur':!functionLarge}" (click)="functionLarge = true">
-    <div class="panel panel-default">
-      <div class="panel-heading">Function Definition</div>
-      <div class="panel-body">
-        <ace-editor
-          [(text)]="func.function"
-          [mode]="'javascript'"
-          [options]="options"
-          [readOnly]="false"
-          [theme]="'github'"
-          [autoUpdateContent]="true"
-          [durationBeforeCallback]="1000"
-          (textChanged)="onChange($event)"
-          style="min-height: 430px;max-height: 430px; width:100%; overflow: auto;" #editor></ace-editor>
+    <div [ngClass]="{'col-sm-6':!functionLarge,'col-sm-9':functionLarge,'blur':!functionLarge}" (click)="functionLarge = true">
+      <div class="card panel-default">
+        <div class="card-body">
+          <div>
+            <h5 class="card-title">Function Definition</h5>
+          </div>
+          <div *ngIf="parameters"
+               class="card card-block card-header">
+            <div class="well well-lg">{{parameters | json}}</div>
+          </div>
+          <ace-editor
+            [(text)]="func.function"
+            [mode]="'javascript'"
+            [options]="options"
+            [readOnly]="false"
+            [theme]="'github'"
+            [autoUpdateContent]="true"
+            [durationBeforeCallback]="1000"
+            (textChanged)="onChange($event)"
+            style="min-height: 430px;max-height: 430px; width:100%; overflow: auto;" #editor></ace-editor>
+        </div>
       </div>
     </div>
   </div>

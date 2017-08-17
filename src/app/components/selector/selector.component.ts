@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter,Output } from '@angular/core';
+import { Component, OnInit, EventEmitter,Output,Input } from '@angular/core';
 
 @Component({
   selector: 'app-selector',
@@ -11,7 +11,7 @@ export class SelectorComponent implements OnInit {
   @Output() onLayoutUpdate = new EventEmitter();
   constructor() { }
 
-  parameters:any = {
+  @Input() parameters:any = {
     //dx: "FwpCBGQvYdL.BktmzfgqCjX"
   }
   ngOnInit() {
@@ -20,11 +20,11 @@ export class SelectorComponent implements OnInit {
 
   onOrgUnitUpdate(event){
     this.parameters.ou = event.value;
-    //this.updateSelection();
+    this.updateSelection();
   }
   onPeriodUpdate(event){
     this.parameters.pe = event.value;
-    //this.updateSelection();
+    this.updateSelection();
   }
   updateSelection(){
     if(this.parameters.ou && this.parameters.dx && this.parameters.pe){

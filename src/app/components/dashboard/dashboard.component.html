@@ -1,15 +1,14 @@
-<div class="col-sm-12">
-  <accordion>
-    <accordion-group heading="Parameters passed to function">
-      <pre [innerHtml]="parameters | prettyjson:3"></pre>
-    </accordion-group>
-  </accordion>
-</div>
-<div *ngIf="!results" style="text-align: center" >
+<div *ngIf="!results && !loadingError" style="text-align: center" >
   <img src="assets/img/balls-3.svg" alt="">
 </div>
-
-<app-dashboard-card *ngIf="results" [externalAnalytics]="results"
-                    [cardData]="prepareCardData()"
-                    [externalDimensions]="getCurrentDimension()"
-                    [externalLayout]="currentLayout" [externalAnalytics]="results"></app-dashboard-card>
+<div *ngIf="results" class="card panel-default">
+  <div class="card-body">
+    <app-dashboard-card [externalAnalytics]="results"
+                        [cardData]="prepareCardData()"
+                        [externalDimensions]="getCurrentDimension()"
+                        [externalLayout]="currentLayout" [externalAnalytics]="results"></app-dashboard-card>
+    </div>
+  </div>
+<div *ngIf="loadingError" class="alert alert-danger" role="alert">
+  {{loadingError.message}}
+</div>

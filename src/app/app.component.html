@@ -1,12 +1,16 @@
-<app-menu></app-menu>
 <toaster-container></toaster-container>
 <div class="container-fluid space">
   <div class="row">
     <div class="col-sm-12">
-      <div class="col-sm-12">
-        <h3>
-          {{title}} <button *ngIf="router.url != '/functions'" [routerLink]="['/']" class="btn btn-default pull-right"><i class="fa fa-home"></i> Home</button>
-        </h3>
+      <div class="row">
+        <div class="col-sm-10">
+          <h3>
+            {{title}}
+          </h3>
+        </div>
+        <div class="col-sm-2">
+          <button *ngIf="router.url != '/functions'" [routerLink]="['/']" class="btn btn-default pull-right"><i class="fa fa-home"></i> Home</button>
+        </div>
       </div>
     </div>
   </div>
