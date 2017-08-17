@@ -4,6 +4,8 @@ import {ContextMenuService} from "ngx-contextmenu/lib/contextMenu.service";
 import {ContextMenuComponent} from "ngx-contextmenu/lib/contextMenu.component";
 import { ActivatedRoute,Params,Router,NavigationStart } from '@angular/router';
 import {ToasterService} from 'angular2-toaster';
+import {UserService} from "../../services/user.service";
+declare var $:any;
 
 @Component({
   selector: 'app-list',
@@ -12,16 +14,26 @@ import {ToasterService} from 'angular2-toaster';
 })
 export class ListComponent implements OnInit {
 
-  constructor(private functionService:FunctionService,private contextMenuService: ContextMenuService, private router:Router, private route:ActivatedRoute,private toasterService: ToasterService) { }
+  constructor(private functionService:FunctionService,
+              private userService:UserService,
+              private contextMenuService: ContextMenuService,
+              private router:Router, private route:ActivatedRoute,private toasterService: ToasterService) { }
 
   loading;
   functions;
+  userGroups;
+  user;
   ngOnInit() {
     this.loading = true;
     this.functionService.getAll().subscribe((functions:any)=> {
-      console.log(functions);
       this.functions = functions;
-      this.loading = false;
+      this.userService.getUserGroups().subscribe((userGroups:any)=> {
+        this.userGroups = userGroups;
+        this.userService.getCurrentUser().subscribe((user:any)=> {
+          this.user = user;
+          this.loading = false;
+        })
+      })
     })
   }
 
@@ -58,5 +70,30 @@ export class ListComponent implements OnInit {
         this.failedDeletingMap[func.id] = true;
       })
     }
+  }
+  setUserGroup(func,userGroup,access){
+    var found = false;
+    var removeIndex = -1;
+    func.userGroupAccesses.forEach((userGroupAccess:any,index)=>{
+      if(userGroupAccess.id == userGroup.id){
+        found = true;
+        if(userGroupAccess.access == access){
+          removeIndex = index;
+        }else{
+          userGroupAccess.access = access
+        }
+
+      }
+    })
+    if(removeIndex > -1){
+      func.userGroupAccesses.splice(removeIndex,1);
+    }
+    if(!found){
+      func.userGroupAccesses.push({id:userGroup.id,access:access})
+    }
+    this.functionService.save(func).subscribe((results)=>{
+      console.log("Results:",results);
+    })
+    //console.log()
   }
 }

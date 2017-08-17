@@ -34,7 +34,6 @@ import {NgxPaginationModule} from "ngx-pagination";
 import {DataService} from "./services/data.service";
 import {LocalStorageService} from "./services/local-storage.service";
 import { AppRoutingModule } from './app-routing.module';
-import { MainComponent } from './components/main/main.component';
 import { ListComponent } from './components/list/list.component';
 import { FunctionComponent } from './components/function/function.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -45,6 +44,10 @@ import ContextMenuModule from "ngx-contextmenu/lib/ngx-contextmenu";
 import { MomentModule } from 'angular2-moment';
 import {ToasterModule} from 'angular2-toaster';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {UserService} from "./services/user.service";
+import { HasAccessPipe } from './pipes/has-access.pipe';
+import { SearchPipe } from './pipes/search.pipe';
+import { HasFunctionAccessPipe } from './pipes/has-function-access.pipe';
 
 @NgModule({
   declarations: [
@@ -60,12 +63,14 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     LayoutComponent,
     DataFilterComponent,
     FilterByNamePipe,
-    MainComponent,
     ListComponent,
     FunctionComponent,
     DashboardComponent,
     MenuComponent,
-    FilterPipe
+    FilterPipe,
+    HasAccessPipe,
+    SearchPipe,
+    HasFunctionAccessPipe
   ],
   imports: [
     BrowserModule,
@@ -89,7 +94,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     }),
     MomentModule
   ],
-  providers: [HttpClientService,FilterService,Constants,DragDropService,DragDropConfig,DataFilterService,Store,FunctionService,DataService,LocalStorageService],
+  providers: [HttpClientService,FilterService,Constants,UserService,DragDropService,DragDropConfig,DataFilterService,Store,FunctionService,DataService,LocalStorageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
