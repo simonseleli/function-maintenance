@@ -48,7 +48,17 @@
           <br/>
         </div>
         <div class="col-sm-12">
-          <label for="name">JSON:</label>
+          <template #popTemplate>
+            <div class="card text-white bg-primary mb-3" style="min-width: 20rem;">
+              <div class="card-body">
+                <h5 class="card-title">Java Script Object Notation (JSON)</h5>
+                <p  ng-non-bindable class="card-text">This is the json which will be used in the code as a data input.<br />
+                  Example:<br />{{ {"data":"OxYgdYZaBwS"} | json}}
+                </p>
+              </div>
+            </div>
+          </template>
+          <label for="name">JSON <i class="fa fa-info-circle" containerClass="tooltip-class" placement="right" [popover]="popTemplate"></i></label>
           <ace-editor
             [(text)]="newRule.json"
             [mode]="'javascript'"

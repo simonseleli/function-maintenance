@@ -49,6 +49,7 @@ import { HasAccessPipe } from './pipes/has-access.pipe';
 import { SearchPipe } from './pipes/search.pipe';
 import { HasFunctionAccessPipe } from './pipes/has-function-access.pipe';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { PopoverModule } from 'ngx-bootstrap/popover';
 
 @NgModule({
   declarations: [
@@ -83,6 +84,7 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
     SelectModule,
     Ng2HighchartsModule,
     TooltipModule.forRoot(),
+    PopoverModule.forRoot(),
     //AccordionModule.forRoot(),
     DashboardCardModule,
     DndModule,

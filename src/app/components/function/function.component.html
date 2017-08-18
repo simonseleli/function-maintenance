@@ -4,7 +4,7 @@
 </div>
 <div *ngIf="!loading">
   <app-selector [parameters]="parameters" (onRun)="onRun($event)" (onLayoutUpdate)="onLayoutUpdate($event)"></app-selector>
-  <app-dashboard *ngIf="show" [parameters]="parameters" [func]="testFunc"></app-dashboard>
+  <app-dashboard *ngIf="show" [parameters]="parameters" [func]="testFunc"></app-dashboard><br/>
   <div class="row">
     <div [ngClass]="{'col-sm-6':!functionLarge,'col-sm-3':functionLarge,'blur':functionLarge}" (click)="functionLarge = false">
       <div class="card panel-default">

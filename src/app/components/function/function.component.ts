@@ -76,8 +76,8 @@ export class FunctionComponent implements OnInit {
       this.show = true;
     })
   }
-  loadingSave
-  loadingSaveError
+  loadingSave;
+  loadingSaveError;
   save(){
     this.loadingSave = true;
     this.loadingSaveError = false;

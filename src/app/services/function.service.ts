@@ -103,10 +103,12 @@ export class FunctionService {
           observ.next(functions);
           observ.complete();
         },(error)=>{
-
+          observ.error(error.json());
+          observ.complete();
         })
       },(error)=>{
-
+        observ.error(error.json());
+        observ.complete();
       })
     })
 

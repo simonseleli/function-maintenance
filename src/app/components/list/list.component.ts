@@ -32,8 +32,13 @@ export class ListComponent implements OnInit {
         this.userService.getCurrentUser().subscribe((user:any)=> {
           this.user = user;
           this.loading = false;
+        },(error)=>{
+          this.loading = false;
         })
       })
+    },(error)=>{
+      this.functions = [];
+      this.loading = false;
     })
   }
 
