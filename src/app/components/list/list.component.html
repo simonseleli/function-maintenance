@@ -50,10 +50,10 @@
           <ng-template contextMenuItem (execute)="delete($event.item)">
             <i class="fa fa-trash-o" aria-hidden="true"></i> Delete
           </ng-template>
-          <ng-template contextMenuItem (execute)="sharing = $event.item">
+          <ng-template contextMenuItem (execute)="sharing = $event.item;details = undefined">
             <i class="fa fa-share-alt" aria-hidden="true"></i> Sharing
           </ng-template>
-          <ng-template contextMenuItem (execute)="details = $event.item">
+          <ng-template contextMenuItem (execute)="details = $event.item;sharing = undefined">
             <i class="fa fa-info" style="margin-left:4px" aria-hidden="true"></i> Show Details
           </ng-template>
         </context-menu>
