@@ -48,7 +48,7 @@
           <br/>
         </div>
         <div class="col-sm-12">
-          <template #popTemplate>
+          <ng-template #popTemplate>
             <div class="card text-white bg-primary mb-3" style="min-width: 20rem;">
               <div class="card-body">
                 <h5 class="card-title">Java Script Object Notation (JSON)</h5>
@@ -57,7 +57,7 @@
                 </p>
               </div>
             </div>
-          </template>
+          </ng-template>
           <label for="name">JSON <i class="fa fa-info-circle" containerClass="tooltip-class" placement="right" [popover]="popTemplate"></i></label>
           <ace-editor
             [(text)]="newRule.json"
