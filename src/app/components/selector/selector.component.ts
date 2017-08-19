@@ -8,6 +8,7 @@ import { Component, OnInit, EventEmitter,Output,Input } from '@angular/core';
 export class SelectorComponent implements OnInit {
 
   showOrgTree:boolean = true;
+  disabled;
   @Output() onLayoutUpdate = new EventEmitter();
   constructor() { }
 

@@ -6,7 +6,6 @@ export interface FunctionObject{
   displayName?:string;
   function?:string;
   rules?:Array<any>;
-  user?:Object;
   description?:string;
   lastUpdated?:Date;
   created?:Date;

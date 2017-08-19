@@ -19,7 +19,7 @@ export class AppComponent {
     ou: "v5UR6nUPljk",
     pe: "2016Q4"
   }
-  constructor(private functionService:FunctionService, private router:Router){
+  constructor(private functionService: FunctionService, public router: Router){
 
   }
   text:string;
@@ -45,7 +45,7 @@ export class AppComponent {
       this.load();
     })
   }
-  selectedFunction:FunctionObject={
+  selectedFunction:any={
     function:"",
     rules:[]
   };
