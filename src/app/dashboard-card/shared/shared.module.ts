@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Dhis2MenuComponent } from './components/dhis2-menu/dhis2-menu.component';
-import { BannerComponent } from './components/banner/banner.component';
 import { PeriodFilterComponent } from './components/period-filter/period-filter.component';
 import {FormsModule} from "@angular/forms";
 import { OrgUnitFilterComponent } from './components/org-unit-filter/org-unit-filter.component';
