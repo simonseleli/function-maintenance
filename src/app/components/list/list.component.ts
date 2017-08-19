@@ -13,7 +13,8 @@ declare var $:any;
   styleUrls: ['./list.component.css']
 })
 export class ListComponent implements OnInit {
-
+  sharing;
+  details;
   constructor(private functionService:FunctionService,
               private userService:UserService,
               private contextMenuService: ContextMenuService,

@@ -1,7 +1,7 @@
 import {Component, OnInit, Input, OnChanges} from '@angular/core';
-import {Visualization} from "../../models/visualization";
-import {PaginationInstance} from "ng2-pagination";
-import {ChartService} from "../../providers/chart.service";
+import {Visualization} from '../../models/visualization';
+import {PaginationInstance} from 'ngx-pagination';
+import {ChartService} from '../../providers/chart.service';
 
 export const CHART_TYPES = [
   {
@@ -65,7 +65,7 @@ export class ChartComponent implements OnInit, OnChanges {
   erroMessage: string;
   chartConfiguration: any = {
     optionsVisibility: 'hidden',
-    blockWidth: "100%"
+    blockWidth: '100%'
   };
   chartTypes: any[] = CHART_TYPES;
 
@@ -104,12 +104,12 @@ export class ChartComponent implements OnInit, OnChanges {
 
   showChartOptions() {
     this.chartConfiguration.optionsVisibility = 'visible';
-    this.chartConfiguration.blockWidth = "100% - 40px";
+    this.chartConfiguration.blockWidth = '100% - 40px';
   }
 
   hideChartOptions() {
     this.chartConfiguration.optionsVisibility = 'hidden';
-    this.chartConfiguration.blockWidth = "100%";
+    this.chartConfiguration.blockWidth = '100%';
   }
 
   updateChartType(type, chartObject){

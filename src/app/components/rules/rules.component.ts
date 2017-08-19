@@ -88,12 +88,12 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
   editRule(rule){
     this.newRule = rule;
   }
-  private rules:Array<any>=[];
+  rules:Array<any>=[];
 
   //Placeholders for the callbacks which are later provided
   //by the Control Value Accessor
-  private onTouchedCallback: () => void = noop;
-  private onChangeCallback: (_: any) => void;
+  onTouchedCallback: () => void = noop;
+  onChangeCallback: (_: any) => void;
 
   //get accessor
   get value(): any {
