@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import {VisualizationStore} from "./visualization-store";
-import {AnalyticsService} from "./analytics.service";
-import {VisualizerService} from "../../shared/providers/visualizer.service";
 import {Http, Response} from "@angular/http";
-import {Constants} from "../../shared/providers/constants";
 import {Visualization} from "../models/visualization";
 import {Observable} from "rxjs";
-import {TableConfiguration} from "../models/table-configuration";
+import {VisualizationStore} from "../dashboard-card/providers/visualization-store";
+import {AnalyticsService} from "../dashboard-card/providers/analytics.service";
+import {VisualizerService} from "../dashboard-card/shared/providers/visualizer.service";
+import {Constants} from "../dashboard-card/shared/providers/constants";
+import {TableConfiguration} from "../dashboard-card/models/table-configuration";
 
 @Injectable()
 export class TableService {

@@ -257,7 +257,7 @@ export class AngularIndexedDB {
     }
 }
 
-class Utils {
+export class Utils {
     dbMode: DbMode;
     indexedDB: IDBFactory;
 
@@ -275,12 +275,12 @@ export interface IndexDetails {
     order: string;
 }
 
-interface DbMode {
+export interface DbMode {
     readOnly: string;
     readWrite: string;
 }
 
-class DbWrapper {
+export class DbWrapper {
     dbName: string;
     dbVersion: number;
     db: IDBDatabase;

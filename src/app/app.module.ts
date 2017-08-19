@@ -39,8 +39,6 @@ import { FunctionComponent } from './components/function/function.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MenuComponent } from './components/menu/menu.component';
 import {FilterPipe} from "./components/menu/filter.pipe";
-import { } from "ngx-contextmenu/ngx-contextmenu"
-import ContextMenuModule from "ngx-contextmenu/lib/ngx-contextmenu";
 import { MomentModule } from 'angular2-moment';
 import {ToasterModule} from 'angular2-toaster';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -50,6 +48,7 @@ import { SearchPipe } from './pipes/search.pipe';
 import { HasFunctionAccessPipe } from './pipes/has-function-access.pipe';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { PopoverModule } from 'ngx-bootstrap/popover';
+import {ContextMenuModule} from "ngx-contextmenu/lib/ngx-contextmenu";
 
 @NgModule({
   declarations: [

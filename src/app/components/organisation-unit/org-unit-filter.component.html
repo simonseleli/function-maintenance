@@ -80,9 +80,9 @@
             (onActivate)="activateOrg($event)"
             (onDeactivate)="deactivateOrg($event)"
           >
-            <template #treeNodeTemplate let-node>
+            <ng-template #treeNodeTemplate let-node>
               <span (click)="updateModelOnSelect(node.data)">{{ node.data.name }}</span>
-            </template>
+            </ng-template>
           </Tree>
         </div>
         <div class="close-area">

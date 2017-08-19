@@ -59,9 +59,9 @@
           (onActivate)="activatePer($event)"
           (onDeactivate)="deactivatePer($event)"
         >
-          <template #treeNodeTemplate let-node>
+          <ng-template #treeNodeTemplate let-node>
             <span>{{ node.data.name }}</span>
-          </template>
+          </ng-template>
         </Tree>
       </div>
       <div class="close-area">
