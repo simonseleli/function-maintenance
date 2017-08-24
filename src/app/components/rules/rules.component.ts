@@ -77,8 +77,12 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
   @Output() onSelectRule : EventEmitter<any> = new EventEmitter<any>();
   selectedRule;
   selectRule(rule){
+    console.log("Rules",rule);
     this.selectedRule = rule.id;
     this.onSelectRule.emit(rule);
+  }
+  onChange(event){
+    console.log("Event:",event);
   }
   options:any = {fontSize:"20px",maxLines: 20};
   onNewRecord(event){
