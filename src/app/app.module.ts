@@ -49,6 +49,8 @@ import { HasFunctionAccessPipe } from './pipes/has-function-access.pipe';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import {ContextMenuModule} from "ngx-contextmenu/lib/ngx-contextmenu";
+import {DataTableModule} from "angular2-datatable";
+import { DataFilterPipe } from './pipes/data-filter.pipe';
 
 @NgModule({
   declarations: [
@@ -71,10 +73,12 @@ import {ContextMenuModule} from "ngx-contextmenu/lib/ngx-contextmenu";
     FilterPipe,
     HasAccessPipe,
     SearchPipe,
-    HasFunctionAccessPipe
+    HasFunctionAccessPipe,
+    DataFilterPipe
   ],
   imports: [
     BrowserModule,
+    DataTableModule,
     FormsModule,
     HttpModule,
     AceEditorModule,

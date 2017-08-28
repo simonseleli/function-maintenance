@@ -98,6 +98,7 @@ export class FunctionComponent implements OnInit {
   }
   selectedRule
   onSelectRule(event){
+    console.log(event);
     console.log("JSON:",JSON.parse(event.json));
     this.parameters.rule = {
       id:event.id,
