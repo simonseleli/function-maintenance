@@ -51,6 +51,7 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import {ContextMenuModule} from "ngx-contextmenu/lib/ngx-contextmenu";
 import {DataTableModule} from "angular2-datatable";
 import { DataFilterPipe } from './pipes/data-filter.pipe';
+import { TourNgBootstrapModule,TourService } from 'ngx-tour-ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -88,7 +89,7 @@ import { DataFilterPipe } from './pipes/data-filter.pipe';
     Ng2HighchartsModule,
     TooltipModule.forRoot(),
     PopoverModule.forRoot(),
-    //AccordionModule.forRoot(),
+    TourNgBootstrapModule.forRoot(),
     DashboardCardModule,
     DndModule,
     NgxPaginationModule,

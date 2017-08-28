@@ -7,7 +7,7 @@
       </th>
       <th style="width: 150px;">Action</th>
     </tr>
-    <tr>
+    <tr *ngIf="rules.length != 0">
       <th colspan="5">
         Filter by name:
         <input class="form-control" [(ngModel)]="filterQuery"/>
@@ -26,47 +26,22 @@
           <i class="fa fa-close" aria-hidden="true"> </i></button>
       </td>
     </tr>
-    </tbody>
-    <tfoot>
-    <tr>
-      <td colspan="4">
-        <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
-      </td>
-    </tr>
-    </tfoot>
-  </table>
-  <table *ngIf="rules" class="table table-bordered table-hover table-striped">
-    <thead>
-    <tr>
-      <th>Name</th>
-      <th style="width: 150px;">Action</th>
-    </tr>
-    </thead>
-    <tbody *ngFor="let rule of rules;let index = i">
-    <tr [ngClass]="{'selected-rule':rule.id == selectedRule}">
-      <td>{{rule.name}} <span *ngIf="rule.id == selectedRule">- (Selected Rule for testing)</span></td>
-      <td>
-        <!--<button tooltip="View Rule" (click)="viewRule(index)" class="btn btn-primary btn-sm">
-          <i class="fa fa-eye" aria-hidden="true"> </i></button>-->
-        <button tooltip="Select Rule For Testing" (click)="selectRule(rule)" class="btn btn-primary btn-sm">
-          <i class="fa fa-check" aria-hidden="true"> </i></button>
-        <button tooltip="Edit Rule" (click)="editRule(rule)" class="btn btn-default btn-sm">
-          <i class="fa fa-pencil" aria-hidden="true"> </i></button>
-        <button tooltip="Delete Rule" (click)="deleteRule(index)" class="btn btn-danger btn-sm">
-          <i class="fa fa-close" aria-hidden="true"> </i></button>
-      </td>
-    </tr>
-    </tbody>
-    <tbody>
     <tr *ngIf="rules.length == 0">
       <td colspan="100%">
         <app-message [type]="'info'" [messageObject]="noRules">
         </app-message>
       </td>
     </tr>
+    </tbody>
+    <tfoot>
+    <tr *ngIf="rules.length != 0">
+      <td colspan="4">
+        <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+      </td>
+    </tr>
     <tr *ngIf="!newRule">
       <td colspan="100%">
-        <button tooltip="Create New Rule" (click)="addNewRule()" class="btn btn-primary btn-sm pull-right">
+        <button tourAnchor="addrule" tooltip="Create New Rule" (click)="addNewRule()" class="btn btn-primary btn-sm pull-right">
           <i class="fa fa-plus" aria-hidden="true"> </i></button>
       </td>
     </tr>
@@ -116,6 +91,6 @@
         </div>
       </td>
     </tr>
-    </tbody>
+    </tfoot>
   </table>
 </div>

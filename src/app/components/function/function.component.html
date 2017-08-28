@@ -10,7 +10,7 @@
       <div class="card panel-default">
         <div class="card-body">
           <div class="row">
-            <div class="col-sm-6">
+            <div tourAnchor="functionname" class="col-sm-6">
               <label for="name">Name:</label>
               <input id="name" class="form-control" [(ngModel)]="func.name">
               <br/>
@@ -24,7 +24,7 @@
 
           </div>
           <label>Rules:</label>
-          <app-rules name="rules" [(ngModel)]="func.rules" (onSelectRule)="onSelectRule($event)"></app-rules>
+          <app-rules tourAnchor="rules" name="rules" [(ngModel)]="func.rules" (onSelectRule)="onSelectRule($event)"></app-rules>
         </div>
       </div>
     </div>

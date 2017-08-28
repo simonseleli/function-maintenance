@@ -1,8 +1,8 @@
 <div class="row">
   <div class="col-sm-8">
-    <div class="card">
+    <div class="card" >
       <div class="card-header">
-        List of Functions<button [routerLink]="['/functions','new']" class="btn btn-primary btn-sm pull-right">Create New Function</button>
+        List of Functions<button [routerLink]="['/functions','new']" tourAnchor="createid" class="btn btn-primary btn-sm pull-right">Create New Function</button>
       </div>
       <div class="card-body">
         <table class="table table-bordered table-hover">
@@ -34,7 +34,7 @@
           </td>
           </tbody>
           <tbody *ngIf="!loading">
-          <tr *ngIf="functions.length == 0">
+          <tr *ngIf="(functions |hasFunctionAccess:user).length == 0">
             <td colspan="100%">
               <div class="alert alert-primary" role="alert">
                 There is no function registered! <button [routerLink]="['/functions','new']" class="btn btn-default btn-sm pull-right">Create New Function</button>
