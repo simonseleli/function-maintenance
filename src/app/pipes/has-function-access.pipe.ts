@@ -10,6 +10,11 @@ export class HasFunctionAccessPipe implements PipeTransform {
     functions.forEach((func)=> {
       var hasAccess = func.user.id == user.id;
       if (!hasAccess) {
+        if (user.authorities.indexOf("ALL") > -1) {
+          hasAccess = true;
+        }
+      }
+      if (!hasAccess) {
         func.userGroupAccesses.forEach((userGroupAccess)=> {
           console.log(user);
           user.userGroups.forEach((userGroup)=> {

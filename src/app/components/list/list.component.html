@@ -1,76 +1,148 @@
 <div class="row">
   <div class="col-sm-8">
-    <div class="card" >
-      <div class="card-header">
-        List of Functions<button [routerLink]="['/functions','new']" tourAnchor="createid" class="btn btn-primary btn-sm pull-right">Create New Function</button>
-      </div>
-      <div class="card-body">
-        <table class="table table-bordered table-hover">
-          <thead>
-          <tr>
-            <th width="30px">#</th>
-            <th>Name</th>
-            <th>Rules</th>
-            <th>Last Updated</th>
-          </tr>
-          </thead>
-          <tbody *ngIf="!loading && functions">
-          <tr [ngClass]="{pill:details?function.id==details.id:false,deleteFailed:failedDeletingMap[function.id]}"
-              *ngFor="let function of functions |hasFunctionAccess:user;let i = index" (click)="onContextMenu($event, function)" style="cursor:pointer" [contextMenu]="contextMenu" (contextmenu)="onContextMenu($event, function)">
-            <td colspan="100%" *ngIf="deletingMap[function.id]" align="center">
-              <img src="assets/img/balls-3.svg" height="60px" alt="">
-              Deleting {{function.name}}...
-            </td>
-            <td *ngIf="!deletingMap[function.id]">{{i + 1}}</td>
-            <td *ngIf="!deletingMap[function.id]">{{function.name}}</td>
-            <td *ngIf="!deletingMap[function.id]">{{function.rules.length}}</td>
-            <td *ngIf="!deletingMap[function.id]">{{function.lastUpdated | amTimeAgo}}</td>
-          </tr>
-          </tbody>
-          <tbody *ngIf="loading">
-          <tr><td colspan="100%" align="center">
-            <img src="assets/img/balls-3.svg" alt=""><br />
-            Loading Functions..
-          </td>
-          </tbody>
-          <tbody *ngIf="!loading">
-          <tr *ngIf="(functions |hasFunctionAccess:user).length == 0">
-            <td colspan="100%">
-              <div class="alert alert-primary" role="alert">
-                There is no function registered! <button [routerLink]="['/functions','new']" class="btn btn-default btn-sm pull-right">Create New Function</button>
-              </div>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-        <context-menu>
-          <ng-template contextMenuItem (execute)="navigate($event.item.id)">
-            <i class="fa fa-pencil" aria-hidden="true"></i> Edit
-          </ng-template>
-          <ng-template contextMenuItem (execute)="delete($event.item)">
-            <i class="fa fa-trash-o" aria-hidden="true"></i> Delete
-          </ng-template>
-          <ng-template contextMenuItem (execute)="sharing = $event.item;details = undefined">
-            <i class="fa fa-share-alt" aria-hidden="true"></i> Sharing
-          </ng-template>
-          <ng-template contextMenuItem (execute)="details = $event.item;sharing = undefined">
-            <i class="fa fa-info" style="margin-left:4px" aria-hidden="true"></i> Show Details
-          </ng-template>
-        </context-menu>
-      </div>
-    </div>
+    <input class="form-control" [(ngModel)]="filterQuery" placeholder="Search"/>
+  </div>
+  <div class="col-sm-4">
+    <button [routerLink]="['/functions','new']" tourAnchor="createid" class="btn btn-primary btn-sm pull-right">Add
+      New
+    </button>
+  </div>
+</div>
+<div class="row">
+  <div [ngClass]="{'col-sm-12':!(details || sharing),'col-sm-8':details || sharing}">
+    <table *ngIf="functions && user" class="table table-hover table-sm"
+           [mfData]="functions | hasFunctionAccess:user | dataFilter : filterQuery:'name'" #mf="mfDataTable"
+           [mfRowsOnPage]="5">
+      <thead>
+      <tr>
+        <th>
+          #
+        </th>
+        <th>
+          <mfDefaultSorter by="name">Name</mfDefaultSorter>
+        </th>
+        <th>
+          Rules
+        </th>
+        <th>
+
+          <mfDefaultSorter by="function.length">Length</mfDefaultSorter>
+        </th>
+        <th>
+          <mfDefaultSorter by="created">Created</mfDefaultSorter>
+        </th>
+        <th>
+          <mfDefaultSorter by="lastUpdated">Last Updated</mfDefaultSorter>
+        </th>
+        <th>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let function of mf.data;let i = index" (click)="details = function;sharing = undefined" style="cursor:pointer"
+          [contextMenu]="contextMenu"
+          (contextmenu)="onContextMenu($event, function)"
+          [ngClass]="{'selected':details == function || sharing == function}"
+      >
+        <td colspan="100%" *ngIf="deletingMap[function.id]" align="center">
+          <img src="assets/img/balls-3.svg" height="60px" alt="">
+          Deleting {{function.name}}...
+        </td>
+        <td *ngIf="!deletingMap[function.id]">{{((mf.activePage - 1) * mf.rowsOnPage)+ i + 1}}</td>
+        <td *ngIf="!deletingMap[function.id]">{{function.name}}</td>
+        <td *ngIf="!deletingMap[function.id]">{{function.rules.length}}</td>
+        <td *ngIf="!deletingMap[function.id]">{{function.function.length}}</td>
+        <td *ngIf="!deletingMap[function.id]">{{function.created | amTimeAgo}}</td>
+        <td *ngIf="!deletingMap[function.id]">{{function.lastUpdated | amTimeAgo}}</td>
+        <td *ngIf="!deletingMap[function.id]" (click)="onContextMenu($event, function)"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></td>
+      </tr>
+      <tr *ngIf="mf.data.length == 0">
+        <td colspan="100%">
+          <app-message [type]="'info'"
+                       [messageObject]="{'heading':'No function','message':'There is no function registered.'}">
+          </app-message>
+        </td>
+      </tr>
+      </tbody>
+      <tfoot>
+      <tr>
+        <td colspan="100%">
+          <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+        </td>
+      </tr>
+      </tfoot>
+    </table>
+    <!--<table class="table table-hover">
+      <thead>
+      <tr>
+        <th width="30px">#</th>
+        <th>Name</th>
+        <th>Rules</th>
+        <th>Last Updated</th>
+      </tr>
+      </thead>
+      <tbody *ngIf="!loading && functions">
+      <tr [ngClass]="{pill:details?function.id==details.id:false,deleteFailed:failedDeletingMap[function.id]}"
+          *ngFor="let function of functions |hasFunctionAccess:user;let i = index"
+          (click)="onContextMenu($event, function)" style="cursor:pointer" [contextMenu]="contextMenu"
+          (contextmenu)="onContextMenu($event, function)">
+        <td colspan="100%" *ngIf="deletingMap[function.id]" align="center">
+          <img src="assets/img/balls-3.svg" height="60px" alt="">
+          Deleting {{function.name}}...
+        </td>
+        <td *ngIf="!deletingMap[function.id]">{{i + 1}}</td>
+        <td *ngIf="!deletingMap[function.id]">{{function.name}}</td>
+        <td *ngIf="!deletingMap[function.id]">{{function.rules.length}}</td>
+        <td *ngIf="!deletingMap[function.id]">{{function.lastUpdated | amTimeAgo}}</td>
+      </tr>
+      </tbody>
+      <tbody *ngIf="loading">
+      <tr>
+        <td colspan="100%" align="center">
+          <img src="assets/img/balls-3.svg" alt=""><br/>
+          Loading Functions..
+        </td>
+      </tbody>
+      <tbody *ngIf="!loading">
+      <tr *ngIf="(functions |hasFunctionAccess:user).length == 0">
+        <td colspan="100%">
+          <div class="alert alert-primary" role="alert">
+            There is no function registered!
+            <button [routerLink]="['/functions','new']" class="btn btn-default btn-sm pull-right">Create New Function
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>-->
+    <context-menu>
+      <ng-template contextMenuItem (execute)="navigate($event.item.id)">
+        <i class="fa fa-pencil" aria-hidden="true"></i> Edit
+      </ng-template>
+      <ng-template contextMenuItem (execute)="delete($event.item)">
+        <i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+      </ng-template>
+      <ng-template contextMenuItem (execute)="sharing = $event.item;details = undefined">
+        <i class="fa fa-share-alt" aria-hidden="true"></i> Sharing
+      </ng-template>
+      <ng-template contextMenuItem (execute)="details = $event.item;sharing = undefined">
+        <i class="fa fa-info" style="margin-left:4px" aria-hidden="true"></i> Show Details
+      </ng-template>
+    </context-menu>
   </div>
 
   <div class="col-sm-4" *ngIf="details">
     <div class="card">
-      <div class="card-header">
+      <!--<div class="card-header">
         Details for {{details.name}}
-      </div>
+      </div>-->
       <div class="card-body">
+        <h5 class="card-title">{{details.name}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">These  are the details</h6>
         <table class="table table-hover table-striped">
           <tr>
             <td>
-              Uid
+              Id
             </td>
             <td>
               {{details.id}}
@@ -82,6 +154,22 @@
             </td>
             <td>
               {{details.description}}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Created
+            </td>
+            <td>
+              {{details.created}}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Last Updated
+            </td>
+            <td>
+              {{details.lastUpdated}}
             </td>
           </tr>
         </table>
@@ -98,14 +186,16 @@
         <table class="table table-hover table-bordered">
           <tr>
             <th>
-              <input class="form-control" placeholder="Search" [(ngModel)]="searchText" />
+              <input class="form-control" placeholder="Search" [(ngModel)]="searchText"/>
             </th>
           </tr>
           <tr *ngFor="let userGroup of userGroups|search:searchText">
             <td>
-              <button [ngClass]="{'btn-primary':sharing | hasAccess:userGroup:['rw------','r-------']}" (click)="setUserGroup(sharing,userGroup,'r-------')" class="btn btn-md">
+              <button [ngClass]="{'btn-primary':sharing | hasAccess:userGroup:['rw------','r-------']}"
+                      (click)="setUserGroup(sharing,userGroup,'r-------')" class="btn btn-md">
                 <span class="fa fa-eye fa-lg"></span></button>
-              <button [ngClass]="{'btn-primary':sharing | hasAccess:userGroup:['rw------']}" (click)="setUserGroup(sharing,userGroup,'rw------')" class="btn btn-md">
+              <button [ngClass]="{'btn-primary':sharing | hasAccess:userGroup:['rw------']}"
+                      (click)="setUserGroup(sharing,userGroup,'rw------')" class="btn btn-md">
                 <i class="fa fa-pencil fa-lg"></i></button>
               {{userGroup.displayName}}
             </td>
@@ -118,7 +208,8 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
           <h4 class="modal-title">Modal title</h4>
         </div>
         <div class="modal-body">

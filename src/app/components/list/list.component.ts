@@ -31,6 +31,7 @@ export class ListComponent implements OnInit {
       this.userService.getUserGroups().subscribe((userGroups:any)=> {
         this.userGroups = userGroups;
         this.userService.getCurrentUser().subscribe((user:any)=> {
+          console.log("User:",user);
           this.user = user;
           this.loading = false;
         },(error)=>{

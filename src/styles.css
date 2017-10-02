@@ -8,3 +8,13 @@
 button{
   cursor: pointer;
 }
+ul.pagination{
+  float:left;
+}
+
+ul.pagination.pull-right{
+  float:right;
+}
+tr.selected,tr.selected:hover{
+  background-color: #00b3ee !important;
+}

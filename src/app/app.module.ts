@@ -37,7 +37,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { ListComponent } from './components/list/list.component';
 import { FunctionComponent } from './components/function/function.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { MenuComponent } from './components/menu/menu.component';
+//import { MenuComponent } from './components/menu/menu.component';
 import {FilterPipe} from "./components/menu/filter.pipe";
 import { MomentModule } from 'angular2-moment';
 import {ToasterModule} from 'angular2-toaster';
@@ -52,6 +52,7 @@ import {ContextMenuModule} from "ngx-contextmenu/lib/ngx-contextmenu";
 import {DataTableModule} from "angular2-datatable";
 import { DataFilterPipe } from './pipes/data-filter.pipe';
 import { TourNgBootstrapModule,TourService } from 'ngx-tour-ng-bootstrap';
+import {MenuModule} from "./modules/menu/menu.module";
 
 @NgModule({
   declarations: [
@@ -70,7 +71,7 @@ import { TourNgBootstrapModule,TourService } from 'ngx-tour-ng-bootstrap';
     ListComponent,
     FunctionComponent,
     DashboardComponent,
-    MenuComponent,
+    //MenuComponent,
     FilterPipe,
     HasAccessPipe,
     SearchPipe,
@@ -80,6 +81,7 @@ import { TourNgBootstrapModule,TourService } from 'ngx-tour-ng-bootstrap';
   imports: [
     BrowserModule,
     DataTableModule,
+    MenuModule,
     FormsModule,
     HttpModule,
     AceEditorModule,
