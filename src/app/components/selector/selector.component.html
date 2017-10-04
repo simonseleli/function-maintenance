@@ -14,7 +14,7 @@
     </app-period-filter>
   </div>
   <div class="col-sm-3">
-    <app-rule-selector [rules]="rules"></app-rule-selector>
+    <app-rule-selector (onRuleUpdate)="onRuleUpdate($event)" [rules]="rules"></app-rule-selector>
   </div>
   <div class="col-sm-1">
     <button class="btn btn-primary btn-sm pull-right col-md-12" (click)="run()"

@@ -10,12 +10,15 @@ export class SelectorComponent implements OnInit {
   showOrgTree:boolean = true;
   disabled;
   @Output() onLayoutUpdate = new EventEmitter();
-  constructor() { }
+
+  constructor() {
+  }
 
   @Input() rules:any
   @Input() parameters:any = {
     //dx: "FwpCBGQvYdL.BktmzfgqCjX"
   }
+
   ngOnInit() {
   }
 
@@ -32,33 +35,45 @@ export class SelectorComponent implements OnInit {
     'type': 'report',
     'selected_user_orgunit': []
   }
-  onOrgUnitUpdate(event){
+
+  onOrgUnitUpdate(event) {
     this.parameters.ou = event.value;
     this.updateSelection();
   }
-  onPeriodUpdate(event){
+
+  onPeriodUpdate(event) {
     this.parameters.pe = event.value;
     this.updateSelection();
   }
-  updateSelection(){
-    if(this.parameters.ou && this.parameters.dx && this.parameters.pe){
+
+  updateSelection() {
+    if (this.parameters.ou && this.parameters.dx && this.parameters.pe) {
       this.run();
     }
   }
-  @Output() onRun : EventEmitter<any> = new EventEmitter<any>();
-  run(){
+
+  @Output() onRun:EventEmitter<any> = new EventEmitter<any>();
+
+  run() {
     this.onRun.emit(this.parameters);
   }
+
   dataSelector;
-  onDataUpdate(event){
+
+  onDataUpdate(event) {
     this.dataSelector = event;
     this.parameters.dx = event.selectedData.value;
   }
+
   currentLayout = {
-  rows: ['pe'],
-  columns: ['dx'],
-  filters: ['ou']
-}
+    rows: ['pe'],
+    columns: ['dx'],
+    filters: ['ou']
+  }
+
   onLayUpdate(event) {
+  }
+  onRuleUpdate(event){
+    this.parameters.rule = event;
   }
 }

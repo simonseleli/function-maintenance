@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input,Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-rule-selector',
@@ -7,13 +7,27 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class RuleSelectorComponent implements OnInit {
 
-  @Input() rules:any;
-  selectedRule
+  @Input() rules:any=[];
+  selectedRule;
+  @Output() onRuleUpdate: EventEmitter<any> = new EventEmitter<any>();
   constructor() { }
 
   ngOnInit() {
+    if(this.rules.length > 0){
+      this.select(this.rules[0]);
+      this.update();
+    }
   }
   select(rule){
-    this.selectedRule = rule
+    if(this.selectedRule != rule){
+      this.selectedRule = rule
+    }else{
+      this.selectedRule = undefined;
+    }
+  }
+  showRules;
+  update(){
+    this.onRuleUpdate.emit(this.selectedRule);
+    this.showRules = false;
   }
 }
