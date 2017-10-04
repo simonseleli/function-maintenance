@@ -1,0 +1,19 @@
+<div>
+  <div class="show_items" (click)="showRules = !showRules">
+    <span></span>
+    <span class="no-selection">Select Rule</span>
+    <i class="fa fa-caret-down pull-right"></i>
+  </div>
+  <div class="tree-view" [ngClass]="{'show-rule':showRules,'hide-rule':!showRules}">
+    <ul class="list-group">
+      <li *ngFor="let rule of rules"
+          [ngClass]="{'active':rule == selectedRule}"
+          (click)="select(rule)"
+          class="list-group-item active">{{rule.name}}</li>
+      <li class="list-group-item">Dapibus ac facilisis in</li>
+      <li class="list-group-item">Morbi leo risus</li>
+      <li class="list-group-item">Porta ac consectetur ac</li>
+      <li class="list-group-item">Vestibulum at eros</li>
+    </ul>
+  </div>
+</div>

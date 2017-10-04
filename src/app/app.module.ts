@@ -15,7 +15,7 @@ import { RulesComponent } from './components/rules/rules.component';
 import { MessageComponent } from './components/message/message.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
-import {OrgUnitFilterComponent} from "./components/organisation-unit/org-unit-filter.component";
+import {OrgUnitFilterComponent} from "./components/org-unit-filter/org-unit-filter.component";
 import {FilterLevelPipe} from "./services/filter-level.pipe";
 import { SelectorComponent } from './components/selector/selector.component';
 import {PeriodFilterComponent} from "./components/period-filter/period-filter.component";
@@ -28,7 +28,7 @@ import {DataFilterComponent} from "./components/data-filter/data-filter.componen
 import {FilterByNamePipe} from "./services/filter-by-name.pipe";
 import {DataFilterService} from "./services/data-filter.service";
 import {Store} from "./dashboard-card/providers/store";
-import {TreeModule} from "angular2-tree-component";
+import {TreeModule} from "angular-tree-component";
 import {FunctionService} from "./services/function.service";
 import {NgxPaginationModule} from "ngx-pagination";
 import {DataService} from "./services/data.service";
@@ -53,6 +53,9 @@ import {DataTableModule} from "angular2-datatable";
 import { DataFilterPipe } from './pipes/data-filter.pipe';
 import { TourNgBootstrapModule,TourService } from 'ngx-tour-ng-bootstrap';
 import {MenuModule} from "./modules/menu/menu.module";
+import {MultiselectComponent} from "./components/org-unit-filter/multiselect/multiselect.component";
+import {OrgUnitService} from "./services/org-unit.service";
+import { RuleSelectorComponent } from './components/rule-selector/rule-selector.component';
 
 @NgModule({
   declarations: [
@@ -71,12 +74,13 @@ import {MenuModule} from "./modules/menu/menu.module";
     ListComponent,
     FunctionComponent,
     DashboardComponent,
-    //MenuComponent,
+    MultiselectComponent,
     FilterPipe,
     HasAccessPipe,
     SearchPipe,
     HasFunctionAccessPipe,
-    DataFilterPipe
+    DataFilterPipe,
+    RuleSelectorComponent
   ],
   imports: [
     BrowserModule,
@@ -105,7 +109,7 @@ import {MenuModule} from "./modules/menu/menu.module";
     }),
     MomentModule
   ],
-  providers: [HttpClientService,FilterService,Constants,UserService,DragDropService,DragDropConfig,DataFilterService,Store,FunctionService,DataService,LocalStorageService],
+  providers: [HttpClientService,FilterService,Constants,OrgUnitService,UserService,DragDropService,DragDropConfig,DataFilterService,Store,FunctionService,DataService,LocalStorageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
