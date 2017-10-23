@@ -133,7 +133,11 @@
               Default Rule
             </td>
             <td>
-              {{details | defaultRule}}
+              <table>
+                <tr><td>id</td><td>{{(details | defaultRule).id}}</td></tr>
+                <tr><td>Name</td><td>{{(details | defaultRule).name}}</td></tr>
+                <tr><td>Description</td><td>{{(details | defaultRule).description}}</td></tr>
+              </table>
             </td>
           </tr>
         </table>
