@@ -75,6 +75,9 @@ export class FunctionService {
     })
 
   }
+  getId(number?){
+    return this.http.get("system/id");
+  }
   delete(sFunction:FunctionObject){
     return new Observable((observable)=>{
 

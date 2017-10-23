@@ -56,6 +56,8 @@ import {MenuModule} from "./modules/menu/menu.module";
 import {MultiselectComponent} from "./components/org-unit-filter/multiselect/multiselect.component";
 import {OrgUnitService} from "./services/org-unit.service";
 import { RuleSelectorComponent } from './components/rule-selector/rule-selector.component';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { DefaultRulePipe } from './pipes/default-rule.pipe';
 
 @NgModule({
   declarations: [
@@ -80,10 +82,12 @@ import { RuleSelectorComponent } from './components/rule-selector/rule-selector.
     SearchPipe,
     HasFunctionAccessPipe,
     DataFilterPipe,
-    RuleSelectorComponent
+    RuleSelectorComponent,
+    DefaultRulePipe
   ],
   imports: [
     BrowserModule,
+    BsDropdownModule.forRoot(),
     DataTableModule,
     MenuModule,
     FormsModule,

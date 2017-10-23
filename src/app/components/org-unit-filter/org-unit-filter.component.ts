@@ -180,6 +180,11 @@ export class OrgUnitFilterComponent implements OnInit {
                           }
                         }
                         this.prepareOrganisationUnitTree(this.organisationunits, 'parent');
+                        setTimeout(()=>{
+                          //this.activateOrgData(this.organisationunits[0]);
+                          this.showOrgTree = false;
+                          this.updateOrgunits();
+                        })
                       },
                       error => {
                         console.log('something went wrong while fetching Organisation units');
@@ -234,7 +239,8 @@ export class OrgUnitFilterComponent implements OnInit {
   }
 
   activateNode(nodeId: any, nodes, first) {
-    setTimeout(() => {
+    if(nodes)
+    {
       const node = nodes.treeModel.getNodeById(nodeId);
       if (node) {
         node.setIsActive(true, true);
@@ -242,17 +248,18 @@ export class OrgUnitFilterComponent implements OnInit {
       if (first) {
         node.toggleExpanded();
       }
-    }, 0);
+    }
   }
 
   // a method to activate the model
   deActivateNode(nodeId: any, nodes, event) {
-    setTimeout(() => {
+    if(nodes)
+    {
       const node = nodes.treeModel.getNodeById(nodeId);
       if (node) {
         node.setIsActive(false, true);
       }
-    }, 0);
+    }
     if ( event !== null) {
       event.stopPropagation();
     }
@@ -289,19 +296,22 @@ export class OrgUnitFilterComponent implements OnInit {
 
   // add item to array of selected items when item is selected
   activateOrg = ($event) => {
+    console.log("Event:",$event);
     this.period_selector.reset();
+    this.activateOrgData($event.node.data)
+  }
+  activateOrgData(data){
     if (this.orgunit_model.selection_mode === 'Usr_orgUnit') {
       this.orgunit_model.selection_mode = 'orgUnit';
       this.period_selector.reset();
     }
-    this.selected_orgunits = [$event.node.data];
-    if (!this.checkOrgunitAvailabilty($event.node.data, this.orgunit_model.selected_orgunits)) {
-      this.orgunit_model.selected_orgunits.push($event.node.data);
+    this.selected_orgunits = [data];
+    if (!this.checkOrgunitAvailabilty(data, this.orgunit_model.selected_orgunits)) {
+      this.orgunit_model.selected_orgunits.push(data);
     }
-    this.orgUnit = $event.node.data;
+    this.orgUnit = data;
     this.emit(false);
   }
-
   emit(showUpdate: boolean) {
     const mapper = {};
     this.orgunit_model.selected_orgunits.forEach(function(orgUnit) {

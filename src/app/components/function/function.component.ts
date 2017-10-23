@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FunctionService} from "../../services/function.service";
 import { ActivatedRoute,Params,Router,NavigationStart } from '@angular/router';
 import {ToasterService} from 'angular2-toaster';
+import {HttpClientService} from "../../services/http-client.service";
 
 @Component({
   selector: 'app-function',
@@ -11,7 +12,10 @@ import {ToasterService} from 'angular2-toaster';
 export class FunctionComponent implements OnInit {
 
   id
-  constructor(private functionService:FunctionService, private route:ActivatedRoute,private toasterService: ToasterService) {
+  constructor(private functionService:FunctionService,
+              private route:ActivatedRoute,
+              private toasterService: ToasterService,
+              private http:HttpClientService) {
     this.route.params.subscribe((params:any)=> {
       this.id = params.id;
       this.init()
@@ -25,28 +29,47 @@ export class FunctionComponent implements OnInit {
   init() {
     this.loading = true;
     if(this.id == "new"){
-      this.func={
-        function:'//Example of function implementation\n' +
-        'parameters.progress(50);\n' +
-        '$.ajax({\n' +
-        '\turl: "../../../api/25/analytics.json?dimension=dx:" + parameters.dx + "&dimension=pe:" + parameters.pe + "&dimension=ou:" + parameters.ou,\n' +
-        '\ttype: "GET",\n' +
-        '\tsuccess: function(analyticsResults) {\n' +
-        '\t\t  parameters.success(analyticsResults);\n' +
+      this.functionService.getId().subscribe((results:any)=> {
+        this.http.get("dataElements.json?pageSize=1").subscribe((dataElementResults)=>{
+          console.log(JSON.stringify({"data": dataElementResults.dataElements[0].id}));
+          this.func={
+            function:'//Example of function implementation\n' +
+            'parameters.progress(50);\n' +
+            '$.ajax({\n' +
+            '\turl: "../../../api/25/analytics.json?dimension=dx:" + parameters.rule.json.data + "&dimension=pe:" + parameters.pe + "&dimension=ou:" + parameters.ou,\n' +
+            '\ttype: "GET",\n' +
+            '\tsuccess: function(analyticsResults) {\n' +
+            '\t\t  parameters.success(analyticsResults);\n' +
 
-        '\t},\n' +
-        '\terror:function(error){\n' +
-        '\t\t  parameters.error(error);\n' +
-        '\t}\n' +
-        '});',
-        rules:[]
-      };
-      this.testFunc = this.func;
-      this.latestCode = this.func.function;
-      this.loading = false;
+            '\t},\n' +
+            '\terror:function(error){\n' +
+            '\t\t  parameters.error(error);\n' +
+            '\t}\n' +
+            '});',
+            rules:[
+              {
+                id: results.codes[0],
+                name: "Default",
+                isDefault:true,
+                description: "This is the default rule. Using the data element '" + dataElementResults.dataElements[0].displayName+ "'.",
+                json: JSON.stringify({"data": dataElementResults.dataElements[0].id})
+              }
+            ]
+          };
+          console.log("FUNC:",this.func)
+          this.testFunc = this.func;
+          this.latestCode = this.func.function;
+          this.loading = false;
+        },(error)=>{
+          this.toasterService.pop('error', 'Error', error.message);
+        })
+      },(error)=>{
+        this.toasterService.pop('error', 'Error', error.message);
+      })
     }else{
       this.functionService.get(this.id).subscribe((func:any)=> {
         this.func = func;
+        console.log("FUNC:",func)
         this.testFunc = func;
         this.latestCode = func.function;
         this.loading = false;
@@ -67,6 +90,7 @@ export class FunctionComponent implements OnInit {
     this.show = false;
     setTimeout(()=>{
       this.parameters = event;
+      this.parameters.rule.json = JSON.parse(event.rule.json);
       if(this.selectedRule){
         this.parameters.rule = this.selectedRule;
       }

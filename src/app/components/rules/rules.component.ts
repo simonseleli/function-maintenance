@@ -90,7 +90,9 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
   }
 
   editRule(rule){
+    console.log("Rule:",rule.json);
     this.newRule = rule;
+    this.newRule.json = JSON.stringify(this.newRule.json);
   }
   rules:Array<any>=[];
 

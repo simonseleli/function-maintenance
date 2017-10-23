@@ -8,6 +8,7 @@ export class SearchPipe implements PipeTransform {
   transform(values: any, searchText: any): any {
     if(searchText){
       var returnValue = [];
+      console.log(values);
       values.forEach((value)=>{
         var field = "name";
         if(value.displayName){

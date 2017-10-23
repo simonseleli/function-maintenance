@@ -67,54 +67,13 @@
       <tfoot>
       <tr>
         <td colspan="100%">
-          <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+          <div class="row">
+            <div class="col-sm-6">Showing {{mf.data.length}} of {{functions.length}}</div><div class="col-sm-6"><mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator></div>
+          </div>
         </td>
       </tr>
       </tfoot>
     </table>
-    <!--<table class="table table-hover">
-      <thead>
-      <tr>
-        <th width="30px">#</th>
-        <th>Name</th>
-        <th>Rules</th>
-        <th>Last Updated</th>
-      </tr>
-      </thead>
-      <tbody *ngIf="!loading && functions">
-      <tr [ngClass]="{pill:details?function.id==details.id:false,deleteFailed:failedDeletingMap[function.id]}"
-          *ngFor="let function of functions |hasFunctionAccess:user;let i = index"
-          (click)="onContextMenu($event, function)" style="cursor:pointer" [contextMenu]="contextMenu"
-          (contextmenu)="onContextMenu($event, function)">
-        <td colspan="100%" *ngIf="deletingMap[function.id]" align="center">
-          <img src="assets/img/balls-3.svg" height="60px" alt="">
-          Deleting {{function.name}}...
-        </td>
-        <td *ngIf="!deletingMap[function.id]">{{i + 1}}</td>
-        <td *ngIf="!deletingMap[function.id]">{{function.name}}</td>
-        <td *ngIf="!deletingMap[function.id]">{{function.rules.length}}</td>
-        <td *ngIf="!deletingMap[function.id]">{{function.lastUpdated | amTimeAgo}}</td>
-      </tr>
-      </tbody>
-      <tbody *ngIf="loading">
-      <tr>
-        <td colspan="100%" align="center">
-          <img src="assets/img/balls-3.svg" alt=""><br/>
-          Loading Functions..
-        </td>
-      </tbody>
-      <tbody *ngIf="!loading">
-      <tr *ngIf="(functions |hasFunctionAccess:user).length == 0">
-        <td colspan="100%">
-          <div class="alert alert-primary" role="alert">
-            There is no function registered!
-            <button [routerLink]="['/functions','new']" class="btn btn-default btn-sm pull-right">Create New Function
-            </button>
-          </div>
-        </td>
-      </tr>
-      </tbody>
-    </table>-->
     <context-menu>
       <ng-template contextMenuItem (execute)="navigate($event.item.id)">
         <i class="fa fa-pencil" aria-hidden="true"></i> Edit
@@ -167,6 +126,14 @@
             </td>
             <td>
               {{details.lastUpdated | date:'dd-MM-yyyy'}}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Default Rule
+            </td>
+            <td>
+              {{details | defaultRule}}
             </td>
           </tr>
         </table>
