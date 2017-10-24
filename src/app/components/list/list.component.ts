@@ -24,6 +24,8 @@ export class ListComponent implements OnInit {
   functions;
   userGroups;
   user;
+  filterQuery;
+  errorResults
   ngOnInit() {
     this.loading = true;
     this.functionService.getAll().subscribe((functions:any)=> {
@@ -35,10 +37,18 @@ export class ListComponent implements OnInit {
           this.user = user;
           this.loading = false;
         },(error)=>{
+          this.errorResults = error;
+          this.toasterService.pop('error', 'Error', error.message);
           this.loading = false;
         })
+      },(error)=>{
+        this.errorResults = error;
+        this.toasterService.pop('error', 'Error', error.message);
+        this.loading = false;
       })
     },(error)=>{
+      this.errorResults = error;
+      this.toasterService.pop('error', 'Error', error.message);
       this.functions = [];
       this.loading = false;
     })

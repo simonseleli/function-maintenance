@@ -37,8 +37,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { ListComponent } from './components/list/list.component';
 import { FunctionComponent } from './components/function/function.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-//import { MenuComponent } from './components/menu/menu.component';
-import {FilterPipe} from "./components/menu/filter.pipe";
+
 import { MomentModule } from 'angular2-moment';
 import {ToasterModule} from 'angular2-toaster';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -77,7 +76,6 @@ import { DefaultRulePipe } from './pipes/default-rule.pipe';
     FunctionComponent,
     DashboardComponent,
     MultiselectComponent,
-    FilterPipe,
     HasAccessPipe,
     SearchPipe,
     HasFunctionAccessPipe,

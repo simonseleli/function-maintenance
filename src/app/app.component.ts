@@ -65,18 +65,7 @@ export class AppComponent {
   };
   user;
   ngOnInit() {
-    this.functionService.getAll().subscribe((functions:any)=> {
-      functions.forEach((sFunction, index)=> {
-        this.functions[sFunction.id] = sFunction;
-        this.items.push({id: this.functions[sFunction.id].id, text: this.functions[sFunction.id].name});
-        if (sFunction.name == "Basic") {
-          this.functionId = sFunction.id;
-        }
-      })
-      this.items = this.items.splice(0, this.items.length);
-      this.loadItems = true;
-      this.load();
-    })
+
   }
   selectedFunction:any={
     function:"",

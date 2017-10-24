@@ -31,7 +31,6 @@ export class FunctionComponent implements OnInit {
     if(this.id == "new"){
       this.functionService.getId().subscribe((results:any)=> {
         this.http.get("dataElements.json?pageSize=1").subscribe((dataElementResults)=>{
-          console.log(JSON.stringify({"data": dataElementResults.dataElements[0].id}));
           this.func={
             function:'//Example of function implementation\n' +
             'parameters.progress(50);\n' +
@@ -90,7 +89,10 @@ export class FunctionComponent implements OnInit {
     this.show = false;
     setTimeout(()=>{
       this.parameters = event;
-      this.parameters.rule.json = JSON.parse(event.rule.json);
+      console.log("Wrong Rule:",event.rule)
+      if(typeof event.rule.json == "string"){
+        this.parameters.rule.json = JSON.parse(event.rule.json);
+      }
       if(this.selectedRule){
         this.parameters.rule = this.selectedRule;
       }

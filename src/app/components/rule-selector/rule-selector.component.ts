@@ -8,6 +8,7 @@ import { Component, OnInit, Input,Output, EventEmitter } from '@angular/core';
 export class RuleSelectorComponent implements OnInit {
 
   @Input() rules:any=[];
+  searchText;
   selectedRule;
   @Output() onRuleUpdate: EventEmitter<any> = new EventEmitter<any>();
   constructor() { }
