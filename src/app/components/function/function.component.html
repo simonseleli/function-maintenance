@@ -24,12 +24,12 @@
 
           </div>
           <label>Rules:</label>
-          <button class="btn btn-primary btn-sm pull-right" (click)="createNewRule()">Create Rule</button>
           <app-rules tourAnchor="rules" name="rules"
                      [operation]="operation"
                      [(ngModel)]="func.rules"
                      (edit)="editRule($event)"
-                     (onSelectRule)="onSelectRule($event)">
+                     (onSelectRule)="onSelectRule($event)"
+                     (onNewRule)="createNewRule()">
 
           </app-rules>
         </div>

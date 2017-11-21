@@ -89,12 +89,14 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
     this.newRule = JSON.parse(event);
   }
 
+  deleteIndex = -1;
   @Output() edit : EventEmitter<any> = new EventEmitter<any>();
   editRule(rule){
-    /*console.log("Rule:",rule.json);
-    this.newRule = rule;
-    this.newRule.json = JSON.stringify(this.newRule.json);*/
     this.edit.emit(rule);
+  }
+  @Output() onNewRule : EventEmitter<any> = new EventEmitter<any>();
+  createNewRule(){
+    this.onNewRule.emit();
   }
   rules:Array<any>=[];
 

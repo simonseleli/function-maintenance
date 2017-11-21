@@ -3,3 +3,10 @@
   content: "Click to Edit";
   cursor: pointer;
 }
+.onhover{
+  display:none
+}
+
+.onhover:hover{
+  display:block;
+}
