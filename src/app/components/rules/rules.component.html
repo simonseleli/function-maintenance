@@ -33,13 +33,13 @@
       </td>
     </tr>
     </tbody>
-    <tfoot>
+    <tfoot *ngIf="rules.length != 0">
     <tr *ngIf="rules.length != 0">
       <td colspan="4">
         <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
       </td>
     </tr>
-    <tr *ngIf="newRule">
+    <!--<tr *ngIf="newRule">
       <td colspan="100%">
         <div class="col-sm-6">
           <label for="name">Name:</label>
@@ -84,7 +84,7 @@
           <br/>
         </div>
       </td>
-    </tr>
+    </tr>-->
     </tfoot>
   </table>
 </div>
