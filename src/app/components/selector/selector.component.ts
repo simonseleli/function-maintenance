@@ -15,7 +15,7 @@ export class SelectorComponent implements OnInit {
   }
 
   @Input() rules:any
-  @Input() parameters:any = {
+  parameters:any = {
     //dx: "FwpCBGQvYdL.BktmzfgqCjX"
   }
 
@@ -77,7 +77,9 @@ export class SelectorComponent implements OnInit {
     }else{
       parameters.pe = this.parameters.pe;
     }
+    console.log("Parameters:",parameters)
     this.onRun.emit(parameters);
+    console.log("Parameters:",this.parameters);
   }
 
   dataSelector;

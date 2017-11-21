@@ -21,7 +21,7 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
   setDisabledState(isDisabled:boolean):void {
   }
 
-  //@Input() rules:Array<any>=[];
+  @Input() operation;
 
   constructor(private http:HttpClientService) {
   }
@@ -89,10 +89,12 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
     this.newRule = JSON.parse(event);
   }
 
+  @Output() edit : EventEmitter<any> = new EventEmitter<any>();
   editRule(rule){
-    console.log("Rule:",rule.json);
+    /*console.log("Rule:",rule.json);
     this.newRule = rule;
-    this.newRule.json = JSON.stringify(this.newRule.json);
+    this.newRule.json = JSON.stringify(this.newRule.json);*/
+    this.edit.emit(rule);
   }
   rules:Array<any>=[];
 

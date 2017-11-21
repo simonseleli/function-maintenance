@@ -11,13 +11,15 @@ import {HttpClientService} from "../../services/http-client.service";
 })
 export class FunctionComponent implements OnInit {
 
-  id
+  id;
+  operation
   constructor(private functionService:FunctionService,
               private route:ActivatedRoute,
               private toasterService: ToasterService,
               private http:HttpClientService) {
     this.route.params.subscribe((params:any)=> {
       this.id = params.id;
+      this.operation = params.operation;
       this.init()
     })
   }
@@ -55,7 +57,6 @@ export class FunctionComponent implements OnInit {
               }
             ]
           };
-          console.log("FUNC:",this.func)
           this.testFunc = this.func;
           this.latestCode = this.func.function;
           this.loading = false;
@@ -68,7 +69,6 @@ export class FunctionComponent implements OnInit {
     }else{
       this.functionService.get(this.id).subscribe((func:any)=> {
         this.func = func;
-        console.log("FUNC:",func)
         this.testFunc = func;
         this.latestCode = func.function;
         this.loading = false;
@@ -89,7 +89,6 @@ export class FunctionComponent implements OnInit {
     this.show = false;
     setTimeout(()=>{
       this.parameters = event;
-      console.log("Wrong Rule:",event.rule)
       if(typeof event.rule.json == "string"){
         this.parameters.rule.json = JSON.parse(event.rule.json);
       }
@@ -124,13 +123,72 @@ export class FunctionComponent implements OnInit {
   }
   selectedRule
   onSelectRule(event){
-    console.log(event);
-    console.log("JSON:",JSON.parse(event.json));
     this.parameters.rule = {
       id:event.id,
       name:event.name,
       description:event.description,
       json: JSON.parse(event.json)
     };
+  }
+  newRule;
+  functionLarge;
+  createNewRule(){
+    this.newRule = {
+      name:"",
+      description:"",
+      json:""
+    };
+    setTimeout(()=>{
+      this.functionLarge = true;
+    })
+  }
+  editRule(rule){
+    console.log(rule.json);
+    console.log(JSON.stringify(rule.json));
+
+    this.newRule = Object.assign({}, rule);
+    if(typeof rule.json != 'string')
+      this.newRule.json = JSON.stringify(this.newRule.json);
+    setTimeout(()=>{
+      this.functionLarge = true;
+    })
+  }
+  savingRule
+  ruleErrors
+  saveRule(){
+    if(!this.newRule.id){
+      this.savingRule = true;
+      this.ruleErrors = {}
+      let canSave = true;
+      if(this.newRule.name == ""){
+        canSave = false;
+        this.ruleErrors.name = {
+          type:'danger',
+          object:{message:"Please enter a valid name."}
+        }
+      }
+      if(canSave){
+        this.http.get("system/id").subscribe((results:any)=>{
+          this.newRule.id = results.codes[0];
+          this.func.rules.push(this.newRule);
+          this.newRule = undefined;
+          this.savingRule = false;
+        })
+      }else{
+        this.savingRule = false;
+      }
+    }else{
+      console.log(this.newRule.json);
+      console.log(JSON.stringify(this.newRule.json));
+      this.func.rules.forEach((rule)=>{
+        if(rule.id == this.newRule.id){
+          Object.keys(this.newRule).forEach((key)=>{
+            rule[key] = this.newRule[key];
+          })
+        }
+      })
+      this.newRule = undefined;
+      this.savingRule = false;
+    }
   }
 }

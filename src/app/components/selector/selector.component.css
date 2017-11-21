@@ -385,3 +385,7 @@ table * {
 .disabled-orgunit {
   color: #888;
 }
+
+.test .dropdown-item{
+  cursor:pointer;
+}

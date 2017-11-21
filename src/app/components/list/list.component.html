@@ -1,3 +1,7 @@
+<div *ngIf="!(functions && user)" style="text-align: center;">
+  <img src="assets/img/balls-3.svg" alt="">
+  <h4 style="margin-top: 50px;">Loading Functions</h4>
+</div>
 <div *ngIf="functions && user" class="row">
   <div class="col-sm-8">
     <input class="form-control" [(ngModel)]="filterQuery" placeholder="Search"/>
@@ -29,11 +33,11 @@
           <mfDefaultSorter by="name">Name</mfDefaultSorter>
         </th>
         <th>
-          Rules
+          <mfDefaultSorter by="rules.length">Rules</mfDefaultSorter>
         </th>
         <th>
 
-          <mfDefaultSorter by="function.length">Length</mfDefaultSorter>
+          <mfDefaultSorter by="function.length">Characters</mfDefaultSorter>
         </th>
         <th>
           <mfDefaultSorter by="created">Created</mfDefaultSorter>
@@ -84,6 +88,9 @@
     <context-menu>
       <ng-template contextMenuItem (execute)="navigate($event.item.id)">
         <i class="fa fa-pencil" aria-hidden="true"></i> Edit
+      </ng-template>
+      <ng-template contextMenuItem (execute)="test($event.item.id)">
+        <i class="fa fa-check" aria-hidden="true"></i> Test
       </ng-template>
       <ng-template contextMenuItem (execute)="delete($event.item)">
         <i class="fa fa-trash-o" aria-hidden="true"></i> Delete

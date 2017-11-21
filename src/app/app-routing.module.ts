@@ -12,6 +12,9 @@ const routes: Routes = [
   },
   {
     path: 'functions/:id', component: FunctionComponent,
+  },
+  {
+    path: 'functions/:id/:operation', component: FunctionComponent,
   }
 ];
 

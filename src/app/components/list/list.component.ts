@@ -71,6 +71,9 @@ export class ListComponent implements OnInit {
   navigate(functionId){
     this.router.navigate([functionId], {relativeTo: this.route});
   }
+  test(functionId){
+    this.router.navigate([functionId,'test'], {relativeTo: this.route});
+  }
   deletingMap = {}
   failedDeletingMap = {}
   delete(func){
