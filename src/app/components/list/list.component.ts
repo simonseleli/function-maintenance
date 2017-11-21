@@ -25,7 +25,8 @@ export class ListComponent implements OnInit {
   userGroups;
   user;
   filterQuery;
-  errorResults
+  errorResults;
+  deleteItem = -1;
   ngOnInit() {
     this.loading = true;
     this.functionService.getAll().subscribe((functions:any)=> {
@@ -75,21 +76,24 @@ export class ListComponent implements OnInit {
     this.router.navigate([functionId,'test'], {relativeTo: this.route});
   }
   deletingMap = {}
-  failedDeletingMap = {}
+  failedDeletingMap = {};
+  mf
   delete(func){
+    console.log(this.mf);
     this.failedDeletingMap[func.id] = undefined;
-    if(confirm("Are you sure you want to delete the function " + func.name + "?")){
-      this.deletingMap[func.id] = true;
-      this.functionService.delete(func).subscribe((results)=>{
-        this.functions.splice(this.functions.indexOf(func),1);
-        this.deletingMap[func.id] = undefined;
-        this.toasterService.pop('success', 'Success', 'Function deleted successfully.');
-      },(error)=>{
-        this.toasterService.pop('error', 'Delete Error', error.message);
-        this.deletingMap[func.id] = undefined;
-        this.failedDeletingMap[func.id] = true;
-      })
-    }
+    this.deletingMap[func.id] = true;
+    this.functionService.delete(func).subscribe((results)=>{
+      this.functions.splice(this.functions.indexOf(func),1);
+      this.deletingMap[func.id] = undefined;
+      this.deleteItem = -1;
+      this.functions = this.functions.clone();
+      this.toasterService.pop('success', 'Success', 'Function deleted successfully.');
+    },(error)=>{
+      this.toasterService.pop('error', 'Delete Error', error.message);
+      this.deletingMap[func.id] = undefined;
+      this.deleteItem = -1;
+      this.failedDeletingMap[func.id] = true;
+    })
   }
   setUserGroup(func,userGroup,access){
     var found = false;

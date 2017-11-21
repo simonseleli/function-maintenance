@@ -49,24 +49,35 @@
         </th>
       </tr>
       </thead>
-      <tbody>
-      <tr *ngFor="let function of mf.data;let i = index" (click)="details = function;sharing = undefined" style="cursor:pointer"
-          [contextMenu]="contextMenu"
-          (contextmenu)="onContextMenu($event, function)"
-          [ngClass]="{'selected':details == function || sharing == function}"
-      >
-        <td colspan="100%" *ngIf="deletingMap[function.id]" align="center">
-          <img src="assets/img/balls-3.svg" height="60px" alt="">
-          Deleting {{function.name}}...
-        </td>
-        <td *ngIf="!deletingMap[function.id]">{{((mf.activePage - 1) * mf.rowsOnPage)+ i + 1}}</td>
-        <td *ngIf="!deletingMap[function.id]">{{function.name}}</td>
-        <td *ngIf="!deletingMap[function.id]">{{function.rules.length}}</td>
-        <td *ngIf="!deletingMap[function.id]">{{function.function.length}}</td>
-        <td *ngIf="!deletingMap[function.id]">{{function.created | amTimeAgo}}</td>
-        <td *ngIf="!deletingMap[function.id]">{{function.lastUpdated | amTimeAgo}}</td>
-        <td *ngIf="!deletingMap[function.id]" (click)="onContextMenu($event, function)"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></td>
+      <tbody *ngFor="let function of mf.data;let i = index" (click)="details = function;sharing = undefined" style="cursor:pointer"
+             [contextMenu]="contextMenu"
+             (contextmenu)="onContextMenu($event, function)"
+             >
+      <tr *ngIf="deleteItem != function" [ngClass]="{'selected':details == function || sharing == function}">
+
+        <td>{{((mf.activePage - 1) * mf.rowsOnPage)+ i + 1}}</td>
+        <td>{{function.name}}</td>
+        <td>{{function.rules.length}}</td>
+        <td>{{function.function.length}}</td>
+        <td>{{function.created | amTimeAgo}}</td>
+        <td>{{function.lastUpdated | amTimeAgo}}</td>
+        <td (click)="onContextMenu($event, function)"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></td>
       </tr>
+      <tr *ngIf="deleteItem == function">
+        <td colspan="100%" align="center">
+          <div *ngIf="!deletingMap[function.id]">
+            Are you sure you want to delete '{{function.name}}'?
+          <button (click)="delete(deleteItem)" class="btn btn-danger">Delete</button>
+          <button (click)="deleteItem = -1" class="btn btn-success">Cancel</button>
+          </div>
+          <div *ngIf="deletingMap[function.id]">
+            <img src="assets/img/balls-3.svg" height="60px" alt="">
+            Deleting {{function.name}}...
+          </div>
+        </td>
+      </tr>
+      </tbody>
+      <tbody>
       <tr *ngIf="mf.data.length == 0">
         <td colspan="100%">
           <app-message [type]="'info'"
@@ -92,7 +103,7 @@
       <ng-template contextMenuItem (execute)="test($event.item.id)">
         <i class="fa fa-check" aria-hidden="true"></i> Test
       </ng-template>
-      <ng-template contextMenuItem (execute)="delete($event.item)">
+      <ng-template contextMenuItem (execute)="deleteItem = $event.item">
         <i class="fa fa-trash-o" aria-hidden="true"></i> Delete
       </ng-template>
       <ng-template contextMenuItem (execute)="sharing = $event.item;details = undefined">
