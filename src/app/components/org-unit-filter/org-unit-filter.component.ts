@@ -13,7 +13,7 @@ import { OrgUnitService } from '../../services/org-unit.service';
 export class OrgUnitFilterComponent implements OnInit {
   // the object that will carry the output value you can send one from outside to config start values
   @Input() orgunit_model: any =  {
-    selection_mode: 'Usr_orgUnit',
+    selection_mode: 'orgUnit',
     selected_levels: [],
     show_update_button: true,
     selected_groups: [],
@@ -145,7 +145,7 @@ export class OrgUnitFilterComponent implements OnInit {
                 const level = this.orgunitService.getUserHighestOrgUnitlevel( userOrgunit );
                 this.orgunit_model.user_orgunits = this.orgunitService.getUserOrgUnits( userOrgunit );
                 this.orgunitService.user_orgunits = this.orgunitService.getUserOrgUnits( userOrgunit );
-                if (this.orgunit_model.selection_mode === 'Usr_orgUnit') {
+                if (this.orgunit_model.selection_mode === 'orgUnit') {
                   this.orgunit_model.selected_orgunits = this.orgunit_model.user_orgunits;
                 }
                 const all_levels = data.pager.total;
@@ -279,7 +279,7 @@ export class OrgUnitFilterComponent implements OnInit {
   // action to be called when a tree item is deselected(Remove item in array of selected items
   deactivateOrg ( $event ) {
     this.period_selector.reset();
-    if (this.orgunit_model.selection_mode === 'Usr_orgUnit') {
+    if (this.orgunit_model.selection_mode === 'orgUnit') {
       this.orgunit_model.selection_mode = 'orgUnit';
       this.period_selector.reset();
     }
@@ -301,7 +301,7 @@ export class OrgUnitFilterComponent implements OnInit {
     this.activateOrgData($event.node.data)
   }
   activateOrgData(data){
-    if (this.orgunit_model.selection_mode === 'Usr_orgUnit') {
+    if (this.orgunit_model.selection_mode === 'orgUnit') {
       this.orgunit_model.selection_mode = 'orgUnit';
       this.period_selector.reset();
     }

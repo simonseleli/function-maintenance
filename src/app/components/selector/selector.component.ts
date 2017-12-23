@@ -24,7 +24,8 @@ export class SelectorComponent implements OnInit {
 
 
   orgunit_settings = {
-    'selection_mode': 'Usr_orgUnit',
+    //'selection_mode': 'Usr_orgUnit',
+    'selection_mode': 'orgUnit',
     'selected_levels': [],
     'show_update_button': true,
     'selected_groups': [],

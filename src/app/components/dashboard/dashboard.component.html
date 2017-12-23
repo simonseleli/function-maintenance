@@ -3,11 +3,17 @@
 </div>
 <div *ngIf="results" class="card panel-default">
   <div class="card-body">
+    <!--<app-layout></app-layout>-->
     <app-dashboard-card [externalAnalytics]="results"
                         [cardData]="prepareCardData()"
                         [externalDimensions]="getCurrentDimension()"
                         [externalLayout]="currentLayout" [externalAnalytics]="results"></app-dashboard-card>
     </div>
+  <!--<app-chart-item
+    [chartConfiguration]="chartConfiguration"
+    [analyticsObject]="results"
+    [chartHeight]="'300px'"
+  ></app-chart-item>-->
   </div>
 <div *ngIf="loadingError" class="alert alert-danger" role="alert">
   {{loadingError.message}}

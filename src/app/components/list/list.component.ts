@@ -77,17 +77,22 @@ export class ListComponent implements OnInit {
   }
   deletingMap = {}
   failedDeletingMap = {};
-  mf
+  mf;
+  deleting = false;
   delete(func){
-    console.log(this.mf);
     this.failedDeletingMap[func.id] = undefined;
     this.deletingMap[func.id] = true;
+
     this.functionService.delete(func).subscribe((results)=>{
-      this.functions.splice(this.functions.indexOf(func),1);
-      this.deletingMap[func.id] = undefined;
-      this.deleteItem = -1;
-      this.functions = this.functions.clone();
-      this.toasterService.pop('success', 'Success', 'Function deleted successfully.');
+      this.deleting = true;
+
+      setTimeout(()=>{
+        this.functions.splice(this.functions.indexOf(func),1);
+        this.deletingMap[func.id] = undefined;
+        this.deleteItem = -1;
+        this.toasterService.pop('success', 'Success', 'Function deleted successfully.');
+        this.deleting = false;
+      })
     },(error)=>{
       this.toasterService.pop('error', 'Delete Error', error.message);
       this.deletingMap[func.id] = undefined;

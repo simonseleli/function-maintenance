@@ -15,6 +15,7 @@ export class FunctionComponent implements OnInit {
   operation
   constructor(private functionService:FunctionService,
               private route:ActivatedRoute,
+              private router:Router,
               private toasterService: ToasterService,
               private http:HttpClientService) {
     this.route.params.subscribe((params:any)=> {
@@ -95,15 +96,14 @@ export class FunctionComponent implements OnInit {
       if(this.selectedRule){
         this.parameters.rule = this.selectedRule;
       }
-      this.testFunc = {
-        "function":this.latestCode
-      };
+      this.testFunc = this.func;
+      this.testFunc.function = this.latestCode;
       this.show = true;
     })
   }
   loadingSave;
   loadingSaveError;
-  save(){
+  save(goBack){
     this.loadingSave = true;
     this.loadingSaveError = false;
     if(this.func.name && this.func.name != ""){
@@ -112,6 +112,9 @@ export class FunctionComponent implements OnInit {
         this.func = results;
         this.loadingSave = false;
         this.toasterService.pop('success', 'Success', 'Function saved successfully.');
+        if(!goBack){
+          this.router.navigateByUrl('/functions');
+        }
       },(error)=>{
         this.loadingSave = false;
         this.loadingSaveError = error;

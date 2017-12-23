@@ -1,0 +1,3 @@
+[submodule "src/app/chart-module"]
+	path = src/app/chart-module
+	url = git@github.com:hisptz/chart-module.git

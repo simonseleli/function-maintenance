@@ -8,7 +8,7 @@
             <input class="form-control form-control-sm" [(ngModel)]="filterQuery" placeholder="Filter By Name"/>
           </div>
           <div class="col-sm-2">
-            <button class="btn btn-primary btn-sm pull-right" (click)="createNewRule()"><i class="fa fa-plus" aria-hidden="true"> </i> <span class="onhover">Create Rule</span></button>
+            <button *ngIf="operation != 'test'" class="btn btn-primary btn-sm pull-right" (click)="createNewRule()"><i class="fa fa-plus" aria-hidden="true"> </i> <span class="onhover">Create Rule</span></button>
           </div>
         </div>
       </th>
@@ -46,8 +46,8 @@
       </td>
     </tr>
     </tbody>
-    <tfoot *ngIf="rules.length != 0">
-    <tr *ngIf="rules.length != 0">
+    <tfoot>
+    <tr >
       <td colspan="4">
         <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
       </td>

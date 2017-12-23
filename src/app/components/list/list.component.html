@@ -21,7 +21,7 @@
 </div>
 <div class="row">
   <div [ngClass]="{'col-sm-12':!(details || sharing),'col-sm-8':details || sharing}">
-    <table *ngIf="functions && user" class="table table-hover table-sm"
+    <table *ngIf="functions && user && !deleting" class="table table-hover table-sm"
            [mfData]="functions | hasFunctionAccess:user | dataFilter : filterQuery:'name'" #mf="mfDataTable"
            [mfRowsOnPage]="5">
       <thead>
@@ -163,6 +163,12 @@
                 <tr><td>Name</td><td>{{(details | defaultRule).name}}</td></tr>
                 <tr><td>Description</td><td>{{(details | defaultRule).description}}</td></tr>
               </table>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{(details | defaultRule) | json}}
+              <app-dashboard [parameters]="{rule:(details | defaultRule),ou:user.organisationUnits[0].id,pe:'201701'}" [func]="details"></app-dashboard>
             </td>
           </tr>
         </table>

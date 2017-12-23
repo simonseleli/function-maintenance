@@ -19,6 +19,22 @@ export class DashboardComponent implements OnInit {
   }
   @Input() func
   @Input() parameters;
+  chartConfiguration = {
+    renderId:"id1",
+    type:"table",
+    axes: [
+      {
+        name: "",
+        orientation: "left"
+      },
+      {
+        name: "",
+        orientation: "right"
+      }
+    ],
+    xAxisType: ["ou","pe"],
+    yAxisType: "dx"
+  }
   show
   getCurrentDimension() {
     let currentDimensions = [];
@@ -39,6 +55,7 @@ export class DashboardComponent implements OnInit {
   results;
   loadingError;
   ngOnInit() {
+    console.log("Parameters:",this.parameters);
     this.results = false;
     this.loading = false;
     try{

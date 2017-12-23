@@ -3,26 +3,30 @@
   Loading Function Into Position
 </div>
 <div *ngIf="!loading">
+  <div class="row">
+    <div class="col-sm-12" (click)="functionLarge = false">
+      <div class="card panel-default">
+        <div class="card-body">
+          <div class="row">
+            <div tourAnchor="functionname" class="col-sm-4">
+              <label for="name">Name:</label>
+              <input [disabled]="operation == 'test'" id="name" class="form-control" [(ngModel)]="func.name">
+            </div>
+            <div class="col-sm-8">
+              <label for="name">Description:</label>
+              <textarea [disabled]="operation == 'test'" class="form-control" [(ngModel)]="func.description"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <app-selector [rules]="func.rules" (onRun)="onRun($event)" (onLayoutUpdate)="onLayoutUpdate($event)"></app-selector>
   <app-dashboard *ngIf="show" [parameters]="parameters" [func]="testFunc"></app-dashboard><br/>
   <div class="row">
     <div [ngClass]="{'col-sm-6':!functionLarge,'col-sm-3':functionLarge,'blur':functionLarge}" (click)="functionLarge = false">
       <div class="card panel-default">
         <div class="card-body">
-          <div class="row">
-            <div tourAnchor="functionname" class="col-sm-6">
-              <label for="name">Name:</label>
-              <input [disabled]="operation == 'test'" id="name" class="form-control" [(ngModel)]="func.name">
-              <br/>
-            </div>
-            <div class="col-sm-12">
-              <label for="name">Description:</label>
-              <textarea [disabled]="operation == 'test'" class="form-control" [(ngModel)]="func.description"></textarea>
-              <br/>
-            </div>
-            <br/><br/>
-
-          </div>
           <label>Rules:</label>
           <app-rules tourAnchor="rules" name="rules"
                      [operation]="operation"
@@ -108,14 +112,20 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-12">
+  <div *ngIf="operation != 'test'" class="col-sm-12">
     <br /><br />
     <div *ngIf="loadingSaveError" class="alert alert-danger">
       <strong>Saving Error!</strong> Error saving function. Please try again.
     </div>
-    <button class="btn btn-success" (click)="save()">
+    <button class="btn btn-success" (click)="save(false)">
       <span *ngIf="!loadingSave"><span *ngIf="!func.id">Save</span><span *ngIf="func.id">Update</span></span>
               <span *ngIf="loadingSave">
+                <img width='20px' height='20px' src="assets/img/balls-3.svg" alt="">
+              </span>
+    </button>
+    <button class="btn btn-success" (click)="save(true)">
+      <span *ngIf="!loadingSave"><span *ngIf="!func.id">Save</span><span *ngIf="func.id">Update and Back</span></span>
+      <span *ngIf="loadingSave">
                 <img width='20px' height='20px' src="assets/img/balls-3.svg" alt="">
               </span>
     </button>
