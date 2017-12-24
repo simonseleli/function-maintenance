@@ -166,9 +166,9 @@
             </td>
           </tr>
           <tr>
-            <td>
-              {{(details | defaultRule) | json}}
-              <app-dashboard [parameters]="{rule:(details | defaultRule),ou:user.organisationUnits[0].id,pe:'201701'}" [func]="details"></app-dashboard>
+            <td colspan="2">
+              <!--For: {{user.organisationUnits[0].name}}-->
+              <app-dashboard [parameters]="{rule:(details | defaultRule),ou:user.organisationUnits[0].id,pe:currentYear}" [func]="details"></app-dashboard>
             </td>
           </tr>
         </table>

@@ -58,6 +58,7 @@ export class ListComponent implements OnInit {
   // Optional
   @ViewChild(ContextMenuComponent) public contextMenu: ContextMenuComponent;
 
+  currentYear = (new Date()).getFullYear();
   public onContextMenu($event: MouseEvent, item: any): void {
     this.contextMenuService.show.next({
       // Optional - if unspecified, all context menu components will open

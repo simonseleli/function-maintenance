@@ -20,7 +20,7 @@
           </h4>
         </div>
         <div class="col-sm-2">
-          <!--<button (click)="startTour()" class="btn btn-default pull-right"><i class="fa fa-tour"></i> Take a Tour</button>-->
+          <button (click)="startTour()" class="btn btn-default pull-right"><i class="fa fa-tour"></i> Take a Tour</button>
           <button *ngIf="router.url != '/functions'" [routerLink]="['/']" class="btn btn-default pull-right"><i class="fa fa-home"></i> Home</button>
         </div>
       </div>

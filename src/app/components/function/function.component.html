@@ -27,7 +27,9 @@
     <div [ngClass]="{'col-sm-6':!functionLarge,'col-sm-3':functionLarge,'blur':functionLarge}" (click)="functionLarge = false">
       <div class="card panel-default">
         <div class="card-body">
-          <label>Rules:</label>
+          <div>
+            <h5 class="card-title">Rules</h5>
+          </div>
           <app-rules tourAnchor="rules" name="rules"
                      [operation]="operation"
                      [(ngModel)]="func.rules"
