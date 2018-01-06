@@ -132,6 +132,9 @@ export class FunctionService {
             }
             observable.push(this.createCompletenessFunctions());
             observable.push(this.createStockOutFunctions());
+            if(parseFloat(response.version) > 2.23){
+              observable.push(this.createStockOutFunctions());
+            }
             Observable.forkJoin(observable).subscribe((responses:any)=>{
               this.getAll().subscribe((funcs)=>{
                 observ.next(funcs);
@@ -154,6 +157,62 @@ export class FunctionService {
 
   }
   createStockOutFunctions(){
+    return new Observable((observable)=>{
+      let stockout:any = {
+        "function": "//Example of function implementation\nparameters.progress(50);\nfunction calculatePercentageForOU(ou){\n    return new Promise(function(resolve,reject){\n      $.ajax({\n                    \turl: \"../../../api" +this.apiVersion+ "/analytics.json?dimension=dx:\" + parameters.rule.json.data + \"&dimension=pe:\" + parameters.pe + \"&dimension=ou:LEVEL-4;\" + ou + \"&hierarchyMeta=true\",\n                    \ttype: \"GET\",\n                    \tsuccess: function(analyticsResults) {\n                    \t    var orgUnits = [];\n                    \t    analyticsResults.rows.forEach(function(row){\n                    \t        var orgUnitId = row[1] + '.' + row[2]\n                    \t        if(orgUnits.indexOf(orgUnitId) == -1){\n                    \t            orgUnits.push(orgUnitId);\n                    \t        }\n                    \t    })\n                    \t    analyticsResults.metaData.dx = [parameters.rule.id];\n                    \t    analyticsResults.metaData.names[parameters.rule.id] = parameters.rule.name;\n                    \t    analyticsResults.rows = [];\n                    \t    analyticsResults.metaData.pe.forEach(function(pe){\n                    \t        var currentPeOrgUnits = [];\n                    \t        orgUnits.forEach(function(orgUnit) {\n                    \t            if (orgUnit.split('.')[0] === pe) {\n                    \t               currentPeOrgUnits.push(orgUnit)\n                    \t            }\n                    \t        });\n                    \t        \n                    \t        if (currentPeOrgUnits.length > 0) {\n                    \t            analyticsResults.rows.push([parameters.rule.id,pe,ou,\"\" + (currentPeOrgUnits.length * 100 / analyticsResults.metaData.ou.length).toFixed(2)])\n                    \t        }\n                    \t    });\n                    \t\tanalyticsResults.metaData.ou = [ou];\n                    \t\tresolve(analyticsResults);\n                    \t},\n                    \terror:function(error){\n                    \t\t  reject(error);\n                    \t}\n                    });  \n    })\n}\n$.ajax({\n    url: \"../../../api" +this.apiVersion+ "/analytics.json?dimension=pe:\" + parameters.pe + \"&dimension=ou:\" + parameters.ou + \"&skipData=true\",\n    type: \"GET\",\n    success: function(dummyAnalyticsResults) {\n        var promises = [];\n        var analytics;\n        dummyAnalyticsResults.metaData.ou.forEach(function(ou){\n            promises.push(calculatePercentageForOU(ou).then(function(analyticsResults){\n                if(!analytics){\n                    analytics = analyticsResults;\n                }else{\n                   analytics.metaData.ou = analytics.metaData.ou.concat(analyticsResults.metaData.ou);\n                   analyticsResults.metaData.ou.forEach(function(ouid){\n                       analytics.metaData.names[ouid] = analyticsResults.metaData.names[ouid];\n                   })\n                    analytics.rows = analytics.rows.concat(analyticsResults.rows);\n                }\n            }));\n        })\n        \n        Promise.all(promises).then(function(){\n            parameters.success(analytics);\n        },function(error){\n            parameters.error(error);\n        })\n},error:function(error){\n    reject(error);\n}\n});",
+        "rules": [
+        ],
+        "name": "Facilities With Stockout",
+        "description": "Number of facilities with stockout"
+      };
+      this.http.get("dataElements.json?filter=name:ilike:stockout&filter=valueType:eq:BOOLEAN&rootJunction=OR&paging=false").subscribe((dataElementResults)=>{
+        if(dataElementResults.dataElements.length == 0){
+          //TODO add a provision if the dhis server has no stockout data elements
+        }else{
+          this.getId(dataElementResults.dataElements.length).subscribe((codeResults)=>{
+            dataElementResults.dataElements.forEach((dataElement)=>{
+              if(dataElement.displayName.toLowerCase().indexOf("stockout") >= -1){
+                let rule:any = {
+                  id: codeResults.codes[0],
+                  name: dataElement.displayName,
+                  description: "This is the rule. Using the data set '" + dataElement.displayName+ "'.",
+                  json: {"data": dataElement.id}
+                }
+                if(stockout.rules.length == 0){
+                  rule.isDefault = true;
+                }
+                stockout.rules.push(rule);
+              }
+            })
+            if(stockout.rules.length == 0){
+              stockout.rules.push({
+                id: codeResults.codes[0],
+                name: dataElementResults.dataElements[0].displayName,
+                isDefault:true,
+                description: "This is the rule. Using the data element '" + dataElementResults.dataElements[0].displayName+ "'.",
+                json: {"data": dataElementResults.dataElements[0].id}
+              });
+            }
+            this.save(stockout).subscribe((res)=>{
+              observable.next(res);
+              observable.complete();
+            },(error)=>{
+              observable.error(error.json());
+              observable.complete();
+            })
+          },(error)=>{
+            observable.error(error.json());
+            observable.complete();
+          })
+        }
+
+      },(error)=>{
+        observable.error(error.json());
+        observable.complete();
+      })
+    })
+  }
+  createPredictors(){
     return new Observable((observable)=>{
       let stockout:any = {
         "function": "//Example of function implementation\nparameters.progress(50);\nfunction calculatePercentageForOU(ou){\n    return new Promise(function(resolve,reject){\n      $.ajax({\n                    \turl: \"../../../api" +this.apiVersion+ "/analytics.json?dimension=dx:\" + parameters.rule.json.data + \"&dimension=pe:\" + parameters.pe + \"&dimension=ou:LEVEL-4;\" + ou + \"&hierarchyMeta=true\",\n                    \ttype: \"GET\",\n                    \tsuccess: function(analyticsResults) {\n                    \t    var orgUnits = [];\n                    \t    analyticsResults.rows.forEach(function(row){\n                    \t        var orgUnitId = row[1] + '.' + row[2]\n                    \t        if(orgUnits.indexOf(orgUnitId) == -1){\n                    \t            orgUnits.push(orgUnitId);\n                    \t        }\n                    \t    })\n                    \t    analyticsResults.metaData.dx = [parameters.rule.id];\n                    \t    analyticsResults.metaData.names[parameters.rule.id] = parameters.rule.name;\n                    \t    analyticsResults.rows = [];\n                    \t    analyticsResults.metaData.pe.forEach(function(pe){\n                    \t        var currentPeOrgUnits = [];\n                    \t        orgUnits.forEach(function(orgUnit) {\n                    \t            if (orgUnit.split('.')[0] === pe) {\n                    \t               currentPeOrgUnits.push(orgUnit)\n                    \t            }\n                    \t        });\n                    \t        \n                    \t        if (currentPeOrgUnits.length > 0) {\n                    \t            analyticsResults.rows.push([parameters.rule.id,pe,ou,\"\" + (currentPeOrgUnits.length * 100 / analyticsResults.metaData.ou.length).toFixed(2)])\n                    \t        }\n                    \t    });\n                    \t\tanalyticsResults.metaData.ou = [ou];\n                    \t\tresolve(analyticsResults);\n                    \t},\n                    \terror:function(error){\n                    \t\t  reject(error);\n                    \t}\n                    });  \n    })\n}\n$.ajax({\n    url: \"../../../api" +this.apiVersion+ "/analytics.json?dimension=pe:\" + parameters.pe + \"&dimension=ou:\" + parameters.ou + \"&skipData=true\",\n    type: \"GET\",\n    success: function(dummyAnalyticsResults) {\n        var promises = [];\n        var analytics;\n        dummyAnalyticsResults.metaData.ou.forEach(function(ou){\n            promises.push(calculatePercentageForOU(ou).then(function(analyticsResults){\n                if(!analytics){\n                    analytics = analyticsResults;\n                }else{\n                   analytics.metaData.ou = analytics.metaData.ou.concat(analyticsResults.metaData.ou);\n                   analyticsResults.metaData.ou.forEach(function(ouid){\n                       analytics.metaData.names[ouid] = analyticsResults.metaData.names[ouid];\n                   })\n                    analytics.rows = analytics.rows.concat(analyticsResults.rows);\n                }\n            }));\n        })\n        \n        Promise.all(promises).then(function(){\n            parameters.success(analytics);\n        },function(error){\n            parameters.error(error);\n        })\n},error:function(error){\n    reject(error);\n}\n});",

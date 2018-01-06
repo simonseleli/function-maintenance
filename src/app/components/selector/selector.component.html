@@ -17,19 +17,18 @@
     <app-rule-selector (onRuleUpdate)="onRuleUpdate($event)" [rules]="rules"></app-rule-selector>
   </div>
   <div class="col-sm-1">
-    <!--<button class="btn btn-primary btn-sm pull-right col-md-12" (click)="run()"
-            [disabled]="!parameters.rule || !parameters.pe || !parameters.ou">Test
-    </button>-->
-    <div class="btn-group" dropdown>
-      <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
-        Test <span class="caret"></span>
-      </button>
-      <ul *dropdownMenu class="dropdown-menu dropdown-menu-right test" role="menu">
-        <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.OneOne)">1 Org Unit & 1 Period</a></li>
-        <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.OneMany)">1 Org Unit & Multiple Period</a></li>
-        <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.ManyOne)">Multiple Org Unit & 1 Period</a></li>
-        <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.ManyMany)">Multiple Org Unit & Multiple Period</a></li>
-      </ul>
+    <div class="colsm-12">
+      <div class="btn-group col-sm-12" dropdown style="padding:0px">
+        <button dropdownToggle type="button" class="col-sm-12 btn btn-primary dropdown-toggle">
+          Test <span class="caret pull-right"></span>
+        </button>
+        <ul *dropdownMenu class="dropdown-menu dropdown-menu-right test" role="menu">
+          <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.OneOne)">1 Org Unit & 1 Period</a></li>
+          <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.OneMany)">1 Org Unit & Multiple Period</a></li>
+          <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.ManyOne)">Multiple Org Unit & 1 Period</a></li>
+          <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.ManyMany)">Multiple Org Unit & Multiple Period</a></li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>

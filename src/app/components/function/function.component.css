@@ -10,3 +10,6 @@
 .onhover:hover{
   display:block;
 }
+.ace_editor {
+  font-family:monospace!important
+}

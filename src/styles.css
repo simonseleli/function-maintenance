@@ -18,3 +18,9 @@ ul.pagination.pull-right{
 tr.selected,tr.selected:hover{
   background-color: #00b3ee !important;
 }
+#editor,#editor * {
+  font-family:monospace !important;
+}
+.ace_editor, .ace_editor * {
+  font-family:monospace !important;
+}

@@ -24,7 +24,7 @@ export class FunctionComponent implements OnInit {
       this.init()
     })
   }
-
+  options:any = {maxLines: 1000, printMargin: false,fontFamily: "monospace"};
   func;
   loading;
   ngOnInit() {
@@ -90,6 +90,7 @@ export class FunctionComponent implements OnInit {
     this.show = false;
     setTimeout(()=>{
       this.parameters = event;
+      console.warn(event.rule);
       if(typeof event.rule.json == "string"){
         this.parameters.rule.json = JSON.parse(event.rule.json);
       }

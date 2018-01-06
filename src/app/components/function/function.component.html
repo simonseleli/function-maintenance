@@ -47,11 +47,7 @@
           <div>
             <h5 class="card-title">Function Definition</h5>
           </div>
-          <!--<div *ngIf="parameters"
-               class="card card-block card-header">
-            <div class="well well-lg">{{parameters | json}}</div>
-          </div>-->
-          <ace-editor
+          <!--<ace-editor
             [(text)]="func.function"
             [mode]="'javascript'"
             [options]="options"
@@ -60,7 +56,16 @@
             [autoUpdateContent]="true"
             [durationBeforeCallback]="1000"
             (textChanged)="onChange($event)"
-            style="min-height: 430px;max-height: 430px; width:100%; overflow: auto;" #editor></ace-editor>
+            style="min-height: 430px;max-height: 430px; width:100%; overflow: auto;" #editor></ace-editor>-->
+          <ace-editor
+            [(text)]="func.function"
+            [mode]="'javascript'"
+            [options]="options"
+            [readOnly]="operation == 'test'"
+            [theme]="'eclipse'"
+            [autoUpdateContent]="true"
+            [durationBeforeCallback]="1000"
+            (textChanged)="onChange($event)" #editor></ace-editor>
         </div>
       </div>
       <div class="card-body" *ngIf="newRule">
