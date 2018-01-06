@@ -54,10 +54,15 @@ export class DashboardComponent implements OnInit {
   loading;
   results;
   loadingError;
+  progress = 0;
   ngOnInit() {
     console.log("Parameters:",this.parameters);
     this.results = false;
     this.loading = false;
+    this.parameters.progress = (progress)=>{
+      alert(progress);
+      this.progress = progress;
+    }
     try{
       this.functionService.run(this.parameters, this.func).subscribe((results:any)=> {
         this.parameters.rules = this.func.rules;

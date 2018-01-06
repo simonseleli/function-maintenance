@@ -332,9 +332,6 @@ export class FunctionService {
             observ.next(results);
             observ.complete();
           }
-          functionParameters.progress =(results)=>{
-
-          }
           let execute = Function('parameters', functionObject.function);
           execute(functionParameters);
         }catch(e){
