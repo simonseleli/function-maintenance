@@ -108,7 +108,14 @@
             <br/>
           </div>
           <div class="col-sm-12">
-            <button class="btn btn-primary pull-right" (click)="saveRule()"><span *ngIf="!savingRule && !newRule.id">Add</span><span *ngIf="!savingRule && newRule.id">Done</span>
+            <button class="btn btn-default pull-right" (click)="newRule = undefined">
+              <span *ngIf="!savingRule && newRule.id">Cancel</span>
+              <span *ngIf="savingRule">
+            <img width='20px' height='20px' src="assets/img/balls-3.svg" alt="">
+              </span>
+            </button>
+            <button class="btn btn-primary pull-right" (click)="saveRule()">
+              <span *ngIf="!savingRule && !newRule.id">Add</span><span *ngIf="!savingRule && newRule.id">Done</span>
               <span *ngIf="savingRule">
             <img width='20px' height='20px' src="assets/img/balls-3.svg" alt="">
               </span>
