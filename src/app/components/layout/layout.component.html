@@ -1,57 +1,83 @@
-<a class="btn btn-default btn-sm" tooltip="Change layouts" (click)="showLayout = !showLayout">
-  Layout
-</a>
-<div style="position: relative;">
-  <div *ngIf="showLayout" class="layout-block">
-    <div *ngIf="layoutType == 'table'">
-      <div class="col-sm-12">
-        <label>Table Layout</label>
-        <table class="table table-bordered">
-          <thead><tr><th width="33%">Filter</th><th width="33%">Column</th></tr></thead>
-          <tbody><tr>
-            <td dnd-droppable (onDropSuccess)="onDrop($event,'filters')">
-              <div class="draggable" dnd-draggable [dragEnabled]="true" *ngFor="let dimension of layout.filters" [dragData]="{data: dimension, dimension: 'filters'}"><i [ngClass]="icons[dimension]" class="fa"></i> {{names[dimension]}}</div>
-            </td>
-            <td dnd-droppable (onDropSuccess)="onDrop($event,'columns')">
-              <div class="draggable" dnd-draggable [dragEnabled]="true" *ngFor="let dimension of layout.columns" [dragData]="{data: dimension, dimension: 'columns'}"><i [ngClass]="icons[dimension]" class="fa"></i> {{names[dimension]}}</div>
-            </td>
-          </tr>
-          </tbody>
-          <thead><tr><th width="33%">Row</th></thead>
-          <tbody>
-          <tr>
-            <td dnd-droppable (onDropSuccess)="onDrop($event,'rows')">
-              <div class="draggable" dnd-draggable [dragEnabled]="true" *ngFor="let dimension of layout.rows" [dragData]="{data: dimension, dimension: 'rows'}"><i [ngClass]="icons[dimension]" class="fa"></i> {{names[dimension]}}</div>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div *ngIf="layoutType == 'chart'">
-      <div class="col-sm-12">
-        <label>Chart Layout</label>
-        <table class="table table-bordered">
-          <thead><tr><th width="33%">Category</th><th width="33%">Series</th><th width="33%">Filter</th></tr></thead>
-          <tbody><tr>
-            <td dnd-droppable (onDropSuccess)="onDrop($event,'category')">
-              <div class="draggable" dnd-draggable [dragEnabled]="true" *ngIf="layout.category != ''" [dragData]="{data: layout.category, dimension: 'category'}"><i [ngClass]="icons[layout.category]" class="fa"></i> {{names[layout.category]}}</div>
-            </td>
-            <td dnd-droppable (onDropSuccess)="onDrop($event,'series')">
-              <div class="draggable" dnd-draggable [dragEnabled]="true" *ngIf="layout.series != ''" [dragData]="{data: layout.series, dimension: 'series'}"><i [ngClass]="icons[layout.series]" class="fa"></i> {{names[layout.series]}}</div>
-            </td>
-            <td dnd-droppable (onDropSuccess)="onDrop($event,'filters')">
-              <div class="draggable" dnd-draggable [dragEnabled]="true" *ngFor="let dimension of layout.filters" [dragData]="{data: dimension, dimension: 'filters'}"><i [ngClass]="icons[dimension]" class="fa"></i> {{names[dimension]}}</div>
-            </td>
-          </tr></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="col-sm-12">
-      <div class="pull-right">
-        <button class="btn btn-default btn-sm" (click)="updateLayout()"><i class="fa fa-refresh"></i>Update</button>
-        <button class="btn btn-default btn-sm" (click)="showLayout= false"><i class="fa fa-times"></i>Close</button>
-      </div>
+<div class="layout-container">
+  <h5>Table / Chart Layout</h5>
+  <table class="table table-bordered">
+    <tr >
+      <!--<td rowspan="2" dnd-droppable (onDropSuccess)="onDrop($event,'excluded')">-->
+      <!--<div>-->
+      <!--<label>Excluded dimension</label>-->
+      <!--</div>-->
+      <!--<div class="draggable" dnd-draggable [dragEnabled]="true" *ngFor="let dimension of layout.excluded" [dragData]="{data: dimension, dimension: 'excluded'}"><span [ngClass]="icons[dimension]"></span> {{names[dimension]}}</div>-->
+      <!--</td>-->
+      <td
+        class="dimension-drops"
+      >
+        <div>
+          <label>Filters</label>
+        </div>
+        <div
+          class="drag-container"
+          [dragula]="'bag-one'"
+          [dragulaModel]="filters">
+          <div
+            class="draggable"
+            *ngFor="let filter of filters"
+          >
+            <img [src]="icons[filter.value]">
+            &nbsp;
+            <span>{{filter.name}}</span>
+          </div>
+        </div>
+      </td>
+      <td
+        class="dimension-drops"
+      >
+        <div>
+          <label>{{columnName}}</label>
+        </div>
+        <div
+          class="drag-container"
+          [dragula]="'bag-one'"
+          [dragulaModel]="columns">
+          <div
+            class="draggable"
+            *ngFor="let column of columns"
+          >
+            <img [src]="icons[column.value]">
+            &nbsp;
+            <span>{{column.name}}</span>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td
+        class="dimension-drops"
+      >
+        <div>
+          <label>{{rowName}}</label>
+        </div>
+        <div
+          class="drag-container"
+          [dragula]="'bag-one'"
+          [dragulaModel]="rows">
+          <div
+            class="draggable"
+            *ngFor="let row of rows"
+          >
+            <img [src]="icons[row.value]">
+            &nbsp;
+            <span>{{row.name}}</span>
+          </div>
+        </div>
+      </td>
+      <td class="dimension-drops"></td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="layout-footer">
+    <div>
+      <button class="btn btn-outline-secondary btn-sm" (click)="updateLayout()"><i class="fa fa-refresh"></i>Update</button>
+      <button class="btn btn-outline-secondary btn-sm" (click)="close()"><i class="fa fa-times"></i>Close</button>
     </div>
   </div>
 </div>

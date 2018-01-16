@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {FunctionService} from "../../services/function.service";
 import { ActivatedRoute,Params,Router,NavigationStart } from '@angular/router';
 import {ToasterService} from 'angular2-toaster';
@@ -194,5 +194,18 @@ export class FunctionComponent implements OnInit {
       this.newRule = undefined;
       this.savingRule = false;
     }
+  }
+
+  @ViewChild('editor') editor;
+
+  undo(){
+    this.editor.getEditor().undo()
+  }
+  redo(){
+    this.editor.getEditor().redo()
+  }
+  setFontSize(){
+    console.warn("Options:",this.options);
+    this.editor.getEditor().setFontSize(this.options.fontSize + "px")
   }
 }

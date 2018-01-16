@@ -10,7 +10,6 @@ import {HttpClientService} from "./services/http-client.service";
 import {SelectModule} from 'ng2-select';
 import { RunnerComponent } from './components/runner/runner.component';
 import { VisualizerComponent } from './components/visualizer/visualizer.component';
-import {Ng2HighchartsModule} from "ng2-highcharts";
 import { RulesComponent } from './components/rules/rules.component';
 import { MessageComponent } from './components/message/message.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -20,14 +19,11 @@ import {FilterLevelPipe} from "./services/filter-level.pipe";
 import { SelectorComponent } from './components/selector/selector.component';
 import {PeriodFilterComponent} from "./components/period-filter/period-filter.component";
 import {FilterService} from "./services/filter.service";
-import {Constants} from "./dashboard-card/providers/constants";
-import {DashboardCardModule} from "./dashboard-card/dashboard-card.module";
-import {LayoutComponent} from "./components/layout/layout.component";
 import {DndModule,DragDropService,DragDropConfig} from "ng2-dnd";
 import {DataFilterComponent} from "./components/data-filter/data-filter.component";
 import {FilterByNamePipe} from "./services/filter-by-name.pipe";
 import {DataFilterService} from "./services/data-filter.service";
-import {Store} from "./dashboard-card/providers/store";
+/*import {Store} from "./dashboard-card/providers/store";*/
 import {TreeModule} from "angular-tree-component";
 import {FunctionService} from "./services/function.service";
 import {NgxPaginationModule} from "ngx-pagination";
@@ -59,6 +55,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { DefaultRulePipe } from './pipes/default-rule.pipe';
 import {ChartModule} from "./chart-module/chart.module";
 import {TableModule} from "./table/table.module";
+import {LayoutModule} from "./components/layout/layout.module";
 
 @NgModule({
   declarations: [
@@ -71,7 +68,6 @@ import {TableModule} from "./table/table.module";
     FilterLevelPipe,
     SelectorComponent,
     PeriodFilterComponent,
-    LayoutComponent,
     DataFilterComponent,
     FilterByNamePipe,
     ListComponent,
@@ -87,6 +83,7 @@ import {TableModule} from "./table/table.module";
   ],
   imports: [
     BrowserModule,
+    LayoutModule,
     BsDropdownModule.forRoot(),
     DataTableModule,
     MenuModule,
@@ -96,11 +93,9 @@ import {TableModule} from "./table/table.module";
     PrettyJsonModule,
     TreeModule,
     SelectModule,
-    Ng2HighchartsModule,
     TooltipModule.forRoot(),
     PopoverModule.forRoot(),
     TourNgBootstrapModule.forRoot(),
-    DashboardCardModule,
     DndModule,
     NgxPaginationModule,
     AppRoutingModule,
@@ -115,7 +110,9 @@ import {TableModule} from "./table/table.module";
     }),
     MomentModule
   ],
-  providers: [HttpClientService,FilterService,Constants,OrgUnitService,UserService,DragDropService,DragDropConfig,DataFilterService,Store,FunctionService,DataService,LocalStorageService],
+  providers: [HttpClientService,FilterService,
+    OrgUnitService,UserService,DragDropService,DragDropConfig,DataFilterService,
+    FunctionService,DataService,LocalStorageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

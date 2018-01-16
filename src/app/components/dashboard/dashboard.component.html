@@ -2,23 +2,101 @@
   <img src="assets/img/balls-3.svg" alt=""> <br/>
   {{progress}}%
 </div>
-<div *ngIf="results" class="card panel-default">
+<div *ngIf="results && showResult" class="card panel-default">
   <div class="card-body">
+    <div class="visualization-card"
+    >
+      <!--Visualization card header content-->
+      <div
+        class="visualization-card-header"
+      >
+        <div class="visualization-card-header-left">
+          <div
+            class="visualization-filter-section-container"
+          >
+            <div class="btn-group col-sm-12 pull-right" dropdown style="padding:0px">
+              <button dropdownToggle type="button" class="col-sm-12 btn btn-default dropdown-toggle">
+                Layout <span class="caret pull-right"></span>
+              </button>
+              <div *dropdownMenu class="dropdown-menu dropdown-menu-right layout" role="menu">
+                <app-layout (onLayoutUpdate)="onLayoutUpdate($event)">
+
+                </app-layout>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="visualization-card-header-right">
+
+        </div>
+      </div>
+      <!--End of Visualization card header content-->
+
+      <div
+        class="visualization-card-loading-block"
+        *ngIf="!loaded"
+      >
+
+      </div>
+
+      <div
+        class="visualization-card-body"
+      >
+        <!--chart block-->
+        <div
+          class="chart-container"
+          *ngIf="currentVisualization === 'CHART'"
+        >
+          <app-chart-item
+            [chartConfiguration]="chartConfiguration"
+            [analyticsObject]="results"
+            [chartHeight]="chartHeight"
+          ></app-chart-item>
+        </div>
+        <!--end of chart block-->
+
+        <!--table block-->
+        <div
+          class="table-container"
+          *ngIf="currentVisualization === 'TABLE'"
+        >
+          <app-table-item
+            [analyticsObject]="results"
+            [tableConfiguration]="tableConfiguration"
+          >
+          </app-table-item>
+        </div>
+        <!--end of table block-->
+
+        <!--map block-->
+        <div
+          class="map-container"
+          *ngIf="currentVisualization === 'MAP'"
+        >
+
+        </div>
+        <!--end of map-block-->
+
+      </div>
+      <div
+        class="visualization-card-footer animated fadeInLeft"
+      >
+        <div
+          class="visualization-card-footer-left"
+        >
+          <button class="btn btn-outline btn-sm" (click)="changeVisualization('TABLE','table')"><img src="assets/icons/table.png" /></button>
+          <button class="btn btn-outline btn-sm" (click)="changeVisualization('CHART','bar')"><img src="assets/icons/bar.png" /></button>
+          <button class="btn btn-outline btn-sm" (click)="changeVisualization('CHART','line')"><img src="assets/icons/line.png" /></button>
+          <!--<button class="button" (click="changeVisualization('CHART','bar')")><img src="assets/icons/table.png" /></button>-->
+        </div>
+      </div>
+    </div>
     <!--<app-layout></app-layout>-->
     <!--<app-dashboard-card [externalAnalytics]="results"
                         [cardData]="prepareCardData()"
                         [externalDimensions]="getCurrentDimension()"
                         [externalLayout]="currentLayout"></app-dashboard-card>-->
-    <app-table-item
-      [analyticsObject]="results"
-      [tableConfiguration]="tableConfiguration"
-    >
-    </app-table-item>
-    <app-chart-item
-      [chartConfiguration]="chartConfiguration"
-      [analyticsObject]="results"
-      [chartHeight]="chartHeight"
-    ></app-chart-item>
     </div>
 
   </div>

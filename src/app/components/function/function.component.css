@@ -13,3 +13,10 @@
 .ace_editor {
   font-family:monospace!important
 }
+
+.edit{
+  position: relative;
+  top: -.75rem;
+  right: -1.25rem;
+  padding: .75rem 1.25rem;
+}

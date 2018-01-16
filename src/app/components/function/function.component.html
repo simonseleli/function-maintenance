@@ -3,6 +3,17 @@
   Loading Function Into Position
 </div>
 <div *ngIf="!loading">
+  <div *ngIf="operation == 'test'" class="row">
+    <div class="col-sm-12">
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <button type="button" class="btn btn-outline-success pull-right btn-sm" data-dismiss="alert" aria-label="Close" [routerLink]="['/functions',func.id]">
+          Go to Edit
+        </button>
+        <strong>Testing Mode!</strong> You are now in testing mode. Click button on the right to edit.
+      </div>
+      <!--<button class="btn btn-default pull-right">Go to Edit</button>-->
+    </div>
+  </div>
   <div class="row">
     <div class="col-sm-12" (click)="functionLarge = false">
       <div class="card panel-default">
@@ -57,6 +68,9 @@
             [durationBeforeCallback]="1000"
             (textChanged)="onChange($event)"
             style="min-height: 430px;max-height: 430px; width:100%; overflow: auto;" #editor></ace-editor>-->
+          <button class="btn btn-outline-dark" (click)="undo()"><i class="fa fa-undo" aria-hidden="true"></i></button>
+          <button class="btn btn-outline-dark" (click)="redo()"><i class="fa fa-repeat" aria-hidden="true"></i></button>
+          <input [(ngModel)]="options.fontSize" class="form-control" (ngModelChange)="setFontSize()"/>
           <ace-editor
             [(text)]="func.function"
             [mode]="'javascript'"
@@ -103,8 +117,7 @@
               [readOnly]="false"
               [autoUpdateContent]="true"
               [durationBeforeCallback]="1000"
-              (textChanged)="onChange($event)"
-              style="min-height: 200px; width:100%; overflow: auto;" #editor></ace-editor>
+              style="min-height: 200px; width:100%; overflow: auto;"></ace-editor>
             <br/>
           </div>
           <div class="col-sm-12">

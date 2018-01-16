@@ -76,13 +76,29 @@ export class DashboardComponent implements OnInit {
     currentDimensions.push({name: 'ou', value: this.parameters.ou});
     return currentDimensions;
   }
-  currentLayout = {
-    rows: ['pe'],
-    columns: ['dx'],
-    filters: ['ou']
-  }
+  currentVisualization = 'TABLE'
+  showResult = true;
   onLayoutUpdate(event){
-
+    console.warn("Event:",event);
+    this.tableConfiguration.rows = [];
+    this.tableConfiguration.columns = [];
+    this.chartConfiguration.xAxisType = [];
+    this.chartConfiguration.yAxisType = "";
+    event.rows.forEach((row)=>{
+      this.tableConfiguration.rows.push(row.value);
+      this.chartConfiguration.xAxisType.push(row.value);
+    })
+    event.columns.forEach((column)=>{
+      this.tableConfiguration.columns.push(column.value);
+      this.chartConfiguration.yAxisType = column.value;
+    })
+    this.showVisualization();
+  }
+  showVisualization(){
+    this.showResult = false;
+    setTimeout(()=>{
+      this.showResult = true;
+    })
   }
   loading;
   results;
@@ -111,4 +127,11 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  changeVisualization(vType,chartType){
+    this.currentVisualization = vType;
+    if(vType == 'CHART'){
+      this.chartConfiguration.type = chartType;
+    }
+    this.showVisualization();
+  }
 }

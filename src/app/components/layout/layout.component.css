@@ -3,6 +3,7 @@
 }
 .draggable{
   border: 1px solid lightgrey;
+  display: flex;
   padding: 3px;
 }
 
@@ -17,18 +18,45 @@
   background-color: #ececec;
 }
 
-.layout-block {
-  position: absolute;
-  border-radius: 4px;
-  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
-  background-color: #fff;
-  border: 1px solid rgba(0, 0, 0, .15);
-  max-height: 360px;
-  overflow: hidden;
-  min-width: 500px;
-  z-index: 1000;
-  padding: 5px 5px;
-  /*margin-left:15; */
-  margin-top: 2px;
+.dimension-drops{
+  height: 125px;
+  width: 50%;
+}
+
+
+.dnd-drag-enter {
+  opacity:0.7;
+  border: 1px dotted #204d74;
+}
+
+.dnd-drag-over {
+  border: 0px dotted #204d74;
+}
+
+.dnd-sortable-drag {
+  -moz-transform:scale(0.9);
+  -webkit-transform:scale(0.9);
+  transform:scale(0.9);
+  opacity:0.7;
+  border: 2px dashed #000;
+}
+
+.draggable:hover {
+  cursor: move;
+}
+
+.draggable img {
+  padding-top: 5px;
+  padding-left: 5px;
+  height: 20px;
+  width: 20px;
+}
+
+.drag-container {
+  height: 100%;
+}
+
+.layout-footer {
+  display: flex;
+  justify-content: flex-end;
 }
