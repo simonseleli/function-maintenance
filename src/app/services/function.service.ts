@@ -101,7 +101,6 @@ export class FunctionService {
           })
         }else{
           this.http.get("system/info").subscribe((response)=>{
-            alert(response.version);
             if(parseFloat(response.version) > 2.24){
               this.apiVersion = "/24"
             }
@@ -126,7 +125,6 @@ export class FunctionService {
         if(foundError.httpStatusCode == 404){
           let observable = [];
           this.http.get("system/info").subscribe((response)=>{
-            alert(response.version);
             if(parseFloat(response.version) > 2.24){
               this.apiVersion = "/24"
             }

@@ -58,6 +58,7 @@ import { RuleSelectorComponent } from './components/rule-selector/rule-selector.
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { DefaultRulePipe } from './pipes/default-rule.pipe';
 import {ChartModule} from "./chart-module/chart.module";
+import {TableModule} from "./table/table.module";
 
 @NgModule({
   declarations: [
@@ -107,6 +108,7 @@ import {ChartModule} from "./chart-module/chart.module";
     BrowserAnimationsModule,
     CollapseModule.forRoot(),
     ChartModule,
+    TableModule,
     ContextMenuModule.forRoot({
       useBootstrap4: true,
       autoFocus: true,

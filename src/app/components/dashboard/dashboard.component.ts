@@ -20,21 +20,54 @@ export class DashboardComponent implements OnInit {
   @Input() func
   @Input() parameters;
   chartConfiguration = {
-    renderId:"id1",
-    type:"table",
-    axes: [
-      {
-        name: "",
-        orientation: "left"
-      },
-      {
-        name: "",
-        orientation: "right"
-      }
+    "renderId": "cX2przhv9UC_0",
+    "type": "line",
+    "title": "Function Results",
+    "subtitle": "",
+    "hideTitle": false,
+    "hideSubtitle": false,
+    "showData": false,
+    "hideEmptyRows": true,
+    "hideLegend": false,
+    "cumulativeValues": false,
+    "targetLineLabel": "",
+    "baseLineLabel": "",
+    "legendAlign": "bottom",
+    "reverseLegend": false,
+    "showLabels": true,
+    "axes": [],
+    "sortOrder": 0,
+    "percentStackedValues": false,
+    "multiAxisTypes": [],
+    "setting":{},
+    "xAxisType": [
+      "pe"
     ],
-    xAxisType: ["ou","pe"],
-    yAxisType: "dx"
+    "yAxisType": "ou"
   }
+
+  tableConfiguration = {
+    "title": "Function Results",
+    "subtitle": "",
+    "showColumnTotal": true,
+    "showColumnSubtotal": true,
+    "showRowTotal": true,
+    "setting":{},
+    "showRowSubtotal": true,
+    "showDimensionLabels": true,
+    "hideEmptyRows": true,
+    "showHierarchy": true,
+    "displayList": false,
+    "rows": [
+      "pe"
+    ],
+    "columns": [
+      "ou"
+    ],
+    "legendSet": null,
+    "styles": null
+  }
+
   show
   getCurrentDimension() {
     let currentDimensions = [];
@@ -56,20 +89,18 @@ export class DashboardComponent implements OnInit {
   loadingError;
   progress = 0;
   ngOnInit() {
-    console.log("Parameters:",this.parameters);
     this.results = false;
     this.loading = false;
     this.parameters.progress = (progress)=>{
-      alert(progress);
       this.progress = progress;
     }
     try{
       this.functionService.run(this.parameters, this.func).subscribe((results:any)=> {
         this.parameters.rules = this.func.rules;
         this.results = results;
+        console.warn("Results:",JSON.stringify(results));
         this.loading = true;
       },(error)=>{
-        console.log(error);
         this.loadingError = JSON.parse(error.responseText);
         this.loading = false;
       })
