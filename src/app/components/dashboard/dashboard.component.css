@@ -34,6 +34,7 @@
 .visualization-card-footer-right,
 .visualization-card-footer-left {
   display: flex;
+  margin-left:20px
 }
 
 .visualization-filter-section-container {

@@ -13,7 +13,7 @@ import { VisualizerComponent } from './components/visualizer/visualizer.componen
 import { RulesComponent } from './components/rules/rules.component';
 import { MessageComponent } from './components/message/message.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 import {OrgUnitFilterComponent} from "./components/org-unit-filter/org-unit-filter.component";
 import {FilterLevelPipe} from "./services/filter-level.pipe";
 import { SelectorComponent } from './components/selector/selector.component';
@@ -94,6 +94,7 @@ import {LayoutModule} from "./components/layout/layout.module";
     TreeModule,
     SelectModule,
     TooltipModule.forRoot(),
+    TabsModule.forRoot(),
     PopoverModule.forRoot(),
     TourNgBootstrapModule.forRoot(),
     DndModule,

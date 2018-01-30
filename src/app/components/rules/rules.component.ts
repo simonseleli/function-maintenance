@@ -27,6 +27,7 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
   }
 
   noRules = {message:'There is a no rule registered.'};
+  mfDataTable
   ngOnInit() {
 
   }

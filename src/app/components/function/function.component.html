@@ -54,32 +54,111 @@
     </div>
     <div [ngClass]="{'col-sm-6':!functionLarge,'col-sm-9':functionLarge,'blur':!functionLarge}" (click)="functionLarge = true">
       <div class="card panel-default">
-        <div class="card-body" *ngIf="!newRule">
+        <div class="card-body">
           <div>
-            <h5 class="card-title">Function Definition</h5>
+            <tabset #staticTabs>
+              <tab heading="Function Definition" id="tab1">
+                <div class="row">
+                  <div class="col-sm-6">
+                  <div *ngIf="functionLarge" class="btn-toolbar" role="toolbar" style="margin-top:10px;margin-bottom:10px">
+                    <div class="btn-group mr-2" role="group">
+                      <button class="btn" data-original-title="Bold - Ctrl+B"(click)="undo()"><i class="fa fa-folder-open" aria-hidden="true"></i></button>
+                      <button class="btn" data-original-title="Italic - Ctrl+I" (click)="redo()"><i class="fa fa-save" aria-hidden="true"></i></button>
+                    </div>
+                    <div class="btn-group mr-2" role="group">
+                      <button class="btn" data-original-title="Bold - Ctrl+B"(click)="copy()"><i class="fa fa-copy" aria-hidden="true"></i></button>
+                      <button class="btn" data-original-title="Italic - Ctrl+I" (click)="cut()"><i class="fa fa-cut" aria-hidden="true"></i></button>
+                      <button class="btn" data-original-title="Italic - Ctrl+I" (click)="paste()"><i class="fa fa-paste" aria-hidden="true"></i></button>
+                    </div>
+                    <div class="btn-group mr-2" role="group">
+                      <button class="btn" data-original-title="Bold - Ctrl+B"(click)="undo()"><i class="fa fa-undo" aria-hidden="true"></i></button>
+                      <button class="btn" data-original-title="Italic - Ctrl+I" (click)="redo()"><i class="fa fa-repeat" aria-hidden="true"></i></button>
+                    </div>
+                    <div class="btn-group col-sm-2" dropdown>
+                      <input type="text" [(ngModel)]="options.fontSize" (ngModelChange)="setFontSize()" class="form-control"
+                             aria-describedby="btnGroupAddon">
+                      <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                        <span class="caret"></span>
+                      </button>
+                      <ul *dropdownMenu class="dropdown-menu" role="menu" style="height: 200px;overflow-y: scroll;overflow-x: hidden;">
+                        <li role="menuitem"><a class="dropdown-item" *ngFor="let size of sizes" (click)="options.fontSize = size">{{size}}</a></li>
+                      </ul>
+                    </div>
+                    <div class="btn-group mr-2" role="group">
+                      <button [disabled]="this.options.tabSize == 0" class="btn" data-original-title="Bold - Ctrl+B"(click)="indent(-1)"><i class="fa fa-outdent" aria-hidden="true"></i></button>
+                      <button class="btn" data-original-title="Italic - Ctrl+I" (click)="indent(-1)"><i class="fa fa-indent" aria-hidden="true"></i></button>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <ace-editor
+                      [(text)]="func.function"
+                      [mode]="'javascript'"
+                      [options]="options"
+                      [readOnly]="operation == 'test'"
+                      [theme]="'eclipse'"
+                      [autoUpdateContent]="true"
+                      [durationBeforeCallback]="1000"
+                      (textChanged)="onChange($event)" #editor></ace-editor>
+                  </div>
+                </div>
+              </tab>
+              <tab *ngFor="let ruleDetail of ruleDetails"[removable]="true">
+                <ng-template tabHeading>
+                  <span>{{ruleDetail.name == ""? "New Rule":ruleDetail.name}}</span><span class="bs-remove-tab" (click)="removeRule(ruleDetail)"> ❌</span>
+                </ng-template>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <label>Name:</label>
+                    <input class="form-control" [(ngModel)]="ruleDetail.name"><br/>
+                    <!--<app-message *ngIf="errors.name" [type]="errors.name.type" [messageObject]="errors.name.object">
+                    </app-message>-->
+                  </div>
+                  <div class="col-sm-12">
+                    <label for="name">Description:</label>
+                    <textarea class="form-control" [(ngModel)]="ruleDetail.description"></textarea>
+                    <br/>
+                  </div>
+                  <div class="col-sm-12">
+                    <ng-template #popTemplate>
+                      <div class="card text-white bg-primary mb-3" style="min-width: 20rem;">
+                        <div class="card-body">
+                          <h5 class="card-title">Java Script Object Notation (JSON)</h5>
+                          <p  ng-non-bindable class="card-text">This is the json which will be used in the code as a data input.<br />
+                            Example:<br />{{ {"data":"OxYgdYZaBwS"} | json}}
+                          </p>
+                        </div>
+                      </div>
+                    </ng-template>
+                    <label for="name">JSON <i class="fa fa-info-circle" containerClass="tooltip-class" placement="right" [popover]="popTemplate"></i></label>
+                    <ace-editor
+                      [(text)]="ruleDetail.json"
+                      [mode]="'javascript'"
+                      [readOnly]="false"
+                      [autoUpdateContent]="true"
+                      [durationBeforeCallback]="1000"
+                      style="min-height: 200px; width:100%; overflow: auto;"></ace-editor>
+                    <br/>
+                  </div>
+                  <div class="col-sm-12">
+                    <button class="btn btn-default pull-right" (click)="removeRule(ruleDetail)">
+                      <span *ngIf="!savingRule">Cancel</span>
+                      <span *ngIf="savingRule">
+            <img width='20px' height='20px' src="assets/img/balls-3.svg" alt="">
+              </span>
+                    </button>
+                    <button class="btn btn-primary pull-right" (click)="saveRule(ruleDetail)">
+                      <span *ngIf="!savingRule && !ruleDetail.id">Add</span><span *ngIf="!savingRule && ruleDetail.id">Done</span>
+                      <span *ngIf="savingRule">
+            <img width='20px' height='20px' src="assets/img/balls-3.svg" alt="">
+              </span>
+                    </button>
+                    <br/>
+                  </div>
+                </div>
+              </tab>
+            </tabset>
           </div>
-          <!--<ace-editor
-            [(text)]="func.function"
-            [mode]="'javascript'"
-            [options]="options"
-            [readOnly]="operation == 'test'"
-            [theme]="'github'"
-            [autoUpdateContent]="true"
-            [durationBeforeCallback]="1000"
-            (textChanged)="onChange($event)"
-            style="min-height: 430px;max-height: 430px; width:100%; overflow: auto;" #editor></ace-editor>-->
-          <button class="btn btn-outline-dark" (click)="undo()"><i class="fa fa-undo" aria-hidden="true"></i></button>
-          <button class="btn btn-outline-dark" (click)="redo()"><i class="fa fa-repeat" aria-hidden="true"></i></button>
-          <input [(ngModel)]="options.fontSize" class="form-control" (ngModelChange)="setFontSize()"/>
-          <ace-editor
-            [(text)]="func.function"
-            [mode]="'javascript'"
-            [options]="options"
-            [readOnly]="operation == 'test'"
-            [theme]="'eclipse'"
-            [autoUpdateContent]="true"
-            [durationBeforeCallback]="1000"
-            (textChanged)="onChange($event)" #editor></ace-editor>
         </div>
       </div>
       <div class="card-body" *ngIf="newRule">
@@ -144,19 +223,16 @@
     <div *ngIf="loadingSaveError" class="alert alert-danger">
       <strong>Saving Error!</strong> Error saving function. Please try again.
     </div>
-    <button class="btn btn-success" (click)="save(false)">
-      <span *ngIf="!loadingSave"><span *ngIf="!func.id">Save</span><span *ngIf="func.id">Update</span></span>
-              <span *ngIf="loadingSave">
-                <img width='20px' height='20px' src="assets/img/balls-3.svg" alt="">
-              </span>
+    <span *ngIf="loadingSave">
+      <img width='40px' height='40px' src="assets/img/balls-3.svg" alt=""> Saving function...
+    </span>
+    <button *ngIf="!loadingSave" class="btn btn-success" (click)="save(false)">
+      <span><span *ngIf="!func.id">Save</span><span *ngIf="func.id">Update</span></span>
     </button>
-    <button class="btn btn-success" (click)="save(true)">
-      <span *ngIf="!loadingSave"><span *ngIf="!func.id">Save</span><span *ngIf="func.id">Update and Back</span></span>
-      <span *ngIf="loadingSave">
-                <img width='20px' height='20px' src="assets/img/balls-3.svg" alt="">
-              </span>
+    <button *ngIf="!loadingSave" class="btn btn-success" (click)="save(true)">
+      <span><span *ngIf="!func.id">Save</span><span *ngIf="func.id">Update and Back</span></span>
     </button>
-    <button class="btn btn-default" [routerLink]="['/functions']">Cancel</button>
+    <button *ngIf="!loadingSave" class="btn btn-default" [routerLink]="['/functions']">Cancel</button>
     <br /><br />
   </div>
 
