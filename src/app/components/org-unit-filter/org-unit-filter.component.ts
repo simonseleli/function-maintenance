@@ -201,22 +201,11 @@ export class OrgUnitFilterComponent implements OnInit {
 
   selectedOrgUnits = []
   setOnePeriod(){
-    console.log("Selected orgunit:",this.orgunit_model.selected_orgunits)
     this.orgunit_model.selected_orgunits = [this.orgunit_model.selected_orgunits[0]];
     //this.orgunit_model.selected_orgunits = this.selectedOrgUnits;
   }
   setMultiplePeriod(){
-    this.orgunit_model.selected_orgunits = this.getOrgUnitsObjectForAnalytics(this.orgunit_model, true)
-    //console.log("Organisition:",orgUnits);
-
-    //this.selectedOrgUnits = orgUnits.split(";")
-    //this.orgunit_model.selected_orgunits = this.selectedOrgUnits;
-    /*if(this.orgunit_model.selected_orgunits.length <= 1) {
-      this.orgunit_model.selected_orgunits = [];
-      this.periods.forEach((period)=>{
-        this.selected_periods.push(period)
-      })
-    }*/
+    this.orgunit_model.selected_orgunits = this.getOrgUnitsObjectForAnalytics(this.orgunit_model, true);
   }
   updateOrgunits() {
     this.displayOrgTree();
@@ -309,7 +298,6 @@ export class OrgUnitFilterComponent implements OnInit {
 
   // add item to array of selected items when item is selected
   activateOrg = ($event) => {
-    console.log("Event:",$event);
     this.period_selector.reset();
     this.activateOrgData($event.node.data)
   }
@@ -488,7 +476,6 @@ export class OrgUnitFilterComponent implements OnInit {
         orgUnits.push({level:detailed_orgunit.level,name:detailed_orgunit.data.name,id:detailed_orgunit.id});
         if (detailed_orgunit.hasOwnProperty('children') && with_children) {
           for ( const orgunit of detailed_orgunit.children ) {
-            console.log("Here:",orgunit)
             orgUnits.push({level:orgunit.level,name:orgunit.data.name,id:orgunit.id});
           }
         }
