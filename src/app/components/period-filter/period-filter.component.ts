@@ -81,13 +81,12 @@ export class PeriodFilterComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.period_type_config = PERIOD_TYPE;
     if (this.period_type !== '') {
       this.changePeriodType();
       this.emitPeriod(false);
     }
-    this.selected_periods = this.periods.slice(0,4);
+    this.selected_periods = this.periods.slice(0,1);
     this.updatePeriods();
     // this.getRelativePeriodText('LAST_5_YEARS');
   }
@@ -181,6 +180,27 @@ export class PeriodFilterComponent implements OnInit {
     });
     return count;
 
+  }
+  public setOnePeriod(){
+    let period = this.selected_periods[0];
+    this.selected_periods = [];
+    this.selected_periods.push(period);
+  }
+  public setMultiplePeriod(){
+    if(this.selected_periods.length <= 1) {
+      this.selected_periods = [];
+      this.periods.forEach((period)=>{
+        this.selected_periods.push(period)
+      })
+    }
+  }
+
+  public getSelectedPeriods(){
+    let selected_periods = [];
+    this.selected_periods.forEach((period)=>{
+      selected_periods.push(period.id)
+    })
+    return selected_periods.join(";")
   }
   // action to be called when a tree item is deselected(Remove item in array of selected items
   deactivatePer ( $event ) {

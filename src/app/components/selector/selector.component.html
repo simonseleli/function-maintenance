@@ -1,16 +1,17 @@
 <div class="row">
   <div class="col-sm-4">
-    <app-org-unit-filter [showUpdate]="true"
+    <app-org-unit-filter
+      #orgUnitTree
+      [showUpdate]="true"
                          [orgunit_model] = "orgunit_settings"
-                         (onOrgUnitChange)= "onOrgUnitUpdate($event)"
                          (onOrgUnitUpdate)= "onOrgUnitUpdate($event)"></app-org-unit-filter>
   </div>
   <div class="col-sm-4">
     <app-period-filter
+      #periodTree
       [showUpdate]="true"
 
-      (onPeriodUpdate) = "onPeriodUpdate($event)"
-      (onPeriodChange) = "onPeriodUpdate($event)">
+      (onPeriodUpdate) = "onPeriodUpdate($event)">
     </app-period-filter>
   </div>
   <div class="col-sm-3">

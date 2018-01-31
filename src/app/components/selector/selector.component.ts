@@ -1,4 +1,6 @@
-import { Component, OnInit, EventEmitter,Output,Input } from '@angular/core';
+import {Component, OnInit, EventEmitter, Output, Input, ViewChild} from '@angular/core';
+import {PeriodFilterComponent} from "../period-filter/period-filter.component";
+import {OrgUnitFilterComponent} from "../org-unit-filter/org-unit-filter.component";
 
 @Component({
   selector: 'app-selector',
@@ -49,7 +51,7 @@ export class SelectorComponent implements OnInit {
 
   updateSelection() {
     if (this.parameters.ou && this.parameters.rule && this.parameters.pe) {
-      this.run({orgUnits:1,periods:1});
+      this.run({orgUnits:this.parameters.ou.split(";").length > 1?0:1,periods:this.parameters.pe.split(";").length > 1?0:1});
     }
   }
 
@@ -61,26 +63,27 @@ export class SelectorComponent implements OnInit {
     ManyOne:{orgUnits:0,periods:1},
     ManyMany:{orgUnits:0,periods:0},
   }
+  @ViewChild('periodTree') periodComponent: PeriodFilterComponent;
+  @ViewChild('orgUnitTree') orgUnitComponent: OrgUnitFilterComponent;
   run(counts) {
     let parameters:any = {
       rule:this.parameters.rule
     }
-    console.log("Parameters:",this.parameters);
     if(counts.orgUnits == 1){
       let splt = this.parameters.ou.split(";");
       parameters.ou = splt[0];
+      this.orgUnitComponent.setOnePeriod()
     }else{
       parameters.ou = this.parameters.ou;
+      this.orgUnitComponent.setMultiplePeriod()
     }
     if(counts.periods == 1){
-      let splt = this.parameters.pe.split(";");
-      parameters.pe = splt[0];
+      this.periodComponent.setOnePeriod()
     }else{
-      parameters.pe = this.parameters.pe;
+      this.periodComponent.setMultiplePeriod()
     }
-    console.log("Parameters:",parameters)
+    parameters.pe = this.periodComponent.getSelectedPeriods()
     this.onRun.emit(parameters);
-    console.log("Parameters:",this.parameters);
   }
 
   dataSelector;

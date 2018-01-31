@@ -79,7 +79,6 @@ export class DashboardComponent implements OnInit {
   currentVisualization = 'TABLE'
   showResult = true;
   onLayoutUpdate(event){
-    console.warn("Event:",event);
     this.tableConfiguration.rows = [];
     this.tableConfiguration.columns = [];
     this.chartConfiguration.xAxisType = [];
@@ -114,7 +113,6 @@ export class DashboardComponent implements OnInit {
       this.functionService.run(this.parameters, this.func).subscribe((results:any)=> {
         this.parameters.rules = this.func.rules;
         this.results = results;
-        console.warn("Results:",JSON.stringify(results));
         this.loading = true;
       },(error)=>{
         this.loadingError = JSON.parse(error.responseText);
@@ -126,12 +124,31 @@ export class DashboardComponent implements OnInit {
     }
 
   }
-
-  changeVisualization(vType,chartType){
+  selectedChartType
+  changeVisualization(vType){
     this.currentVisualization = vType;
     if(vType == 'CHART'){
-      this.chartConfiguration.type = chartType;
+      if(this.selectedChartType){
+        this.chartConfiguration.type = this.selectedChartType
+      }else {
+        this.chartConfiguration.type = "column";
+      }
     }
+    this.showVisualization();
+  }
+  chartTypes = [
+    {name:"Column Chart",text:"column"},
+    {name:"Line Chart",text:"line"},
+    {name:"Bar Chart",text:"bar"},
+    {name:"Area Chart",text:"area"},
+    {name:"Pie Chart",text:"pie"},
+    /*{name:"Stacked Column Chart",text:"stacked-column"},
+    {name:"Stacked Bar Chart",text:"stacked-bar"},*/
+    {name:"Gauge Chart",text:"gauge"},
+    {name:"Radar Chart",text:"radar"}
+  ]
+  showChart(type){
+    this.chartConfiguration.type = type;
     this.showVisualization();
   }
 }

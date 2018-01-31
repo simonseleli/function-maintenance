@@ -14,11 +14,12 @@
           <div
             class="visualization-filter-section-container"
           >
-            <div class="btn-group col-sm-12 pull-right" dropdown style="padding:0px">
-              <button dropdownToggle type="button" class="col-sm-12 btn btn-default dropdown-toggle">
-                Layout <span class="caret pull-right"></span>
-              </button>
-              <div *dropdownMenu class="dropdown-menu dropdown-menu-right layout" role="menu">
+            <div class="btn-group col-sm-12 pull-left" dropdown style="padding:0px;margin-left: 20px;">
+              <a dropdownToggle class="btn btn-default dashboard-filter-btn">
+                <img src="assets/img/layout.png">
+                <div style="float: right;margin-top: 4px;">Layout</div>
+              </a>
+              <div *dropdownMenu class="dropdown-menu dropdown-menu-left layout" role="menu">
                 <app-layout (onLayoutUpdate)="onLayoutUpdate($event)">
 
                 </app-layout>
@@ -77,7 +78,16 @@
 
         </div>
         <!--end of map-block-->
+        <div class="options-block"*ngIf="currentVisualization === 'CHART'">
+          <ul class="nav nav-stacked">
+            <li *ngFor="let chartType of chartTypes" style="margin-top: 8px;">
+              <a title="{{chartType.name}}" (click)="showChart(chartType.text)">
+                <img alt="" class="chart-option-icon" src="assets/img/{{chartType.text}}.png">
+              </a>
+            </li>
 
+          </ul>
+        </div>
       </div>
       <div
         class="visualization-card-footer animated fadeInLeft"
@@ -85,10 +95,17 @@
         <div
           class="visualization-card-footer-left"
         >
-          <button class="btn btn-outline-dark btn-lg" (click)="changeVisualization('TABLE','table')"><i class="fa fa-table" aria-hidden="true"></i></button>
-          <button class="btn btn-outline-dark btn-lg" (click)="changeVisualization('CHART','bar')"><i class="fa fa-bar-chart" aria-hidden="true"></i></button>
-          <button class="btn btn-outline-dark btn-lg" (click)="changeVisualization('CHART','line')"><i class="fa fa-line-chart" aria-hidden="true"></i></button>
-          <!--<button class="button" (click="changeVisualization('CHART','bar')")><img src="assets/icons/table.png" /></button>-->
+          <div class="">
+            <ul class="nav nav-pills dashboard-footer-nav">
+
+            <li>
+              <a (click)="changeVisualization('TABLE','table')"><i class="fa fa-table"></i></a>
+            </li>
+            <li>
+              <a (click)="changeVisualization('CHART','bar')" class="active-visualisation"><i class="fa fa-line-chart"></i></a>
+            </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
