@@ -93,7 +93,6 @@ export class FunctionComponent implements OnInit {
     this.show = false;
     setTimeout(()=>{
       this.parameters = event;
-      console.warn(event.rule);
       if(typeof event.rule.json == "string"){
         this.parameters.rule.json = JSON.parse(event.rule.json);
       }
@@ -151,8 +150,6 @@ export class FunctionComponent implements OnInit {
   @ViewChild('staticTabs') staticTabs: TabsetComponent;
   ruleDetails = []
   editRule(rule){
-    console.log(rule.json);
-    console.log(JSON.stringify(rule.json));
     let selectedRule = Object.assign({}, rule);
     if(typeof selectedRule.json != 'string')
       selectedRule.json = JSON.stringify(selectedRule.json);
@@ -193,7 +190,6 @@ export class FunctionComponent implements OnInit {
       }
       if(canSave){
         this.http.get("system/id").subscribe((results:any)=>{
-          console.log("Rule Details:",this.ruleDetails)
           newRule.id = results.codes[0];
           this.func.rules.push(newRule);
           this.savingRule = false;
@@ -232,7 +228,6 @@ export class FunctionComponent implements OnInit {
   ]
   indent(width){
     this.options.tabSize += width;
-    console.log("Tab Indent:",Object.getOwnPropertyNames(this.editor.getEditor()));
     this.editor.getEditor().setTabSize(this.options.tabSize);
   }
   setFontSize(){
