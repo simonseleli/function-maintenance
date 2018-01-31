@@ -17,7 +17,7 @@ import {DashboardItemComponent} from "./components/dashboard-item/dashboard-item
 import {DashboardService} from "./providers/dashboard.service";
 import {Utilities} from "./providers/utilities";
 import { DashboardItemContainerComponent } from './components/dashboard-item-container/dashboard-item-container.component';
-import {TreeModule} from "angular2-tree-component";
+import {TreeModule} from "angular-tree-component";
 
 @NgModule({
   imports: [

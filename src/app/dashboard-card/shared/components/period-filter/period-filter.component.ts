@@ -1,6 +1,6 @@
 import {Component, OnInit, Output, Input, EventEmitter, ViewChild, AfterViewInit} from '@angular/core';
-import {TreeComponent} from "angular2-tree-component/dist/components/tree.component";
-import {IActionMapping,TREE_ACTIONS} from "angular2-tree-component/dist/models/tree-options.model";
+import {TreeComponent} from "angular-tree-component/dist/components/tree.component";
+import {IActionMapping,TREE_ACTIONS} from "angular-tree-component/dist/models/tree-options.model";
 
 
 const PERIOD_TYPE: Array<any> = [

@@ -1,7 +1,7 @@
 import {Component, OnInit, Input, Output, EventEmitter, ViewChild} from '@angular/core';
 import {Response, Http} from "@angular/http";
-import {TreeComponent} from "angular2-tree-component/dist/components/tree.component";
-import {IActionMapping,TREE_ACTIONS} from "angular2-tree-component/dist/models/tree-options.model";
+import {TreeComponent} from "angular-tree-component/dist/components/tree.component";
+import {IActionMapping,TREE_ACTIONS} from "angular-tree-component/dist/models/tree-options.model";
 import {Observable} from "rxjs";
 import {OrgUnitService} from "./org-unit.service";
 
