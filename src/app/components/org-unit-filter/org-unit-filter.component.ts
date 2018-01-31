@@ -201,11 +201,23 @@ export class OrgUnitFilterComponent implements OnInit {
 
   selectedOrgUnits = []
   setOnePeriod(){
-    this.orgunit_model.selected_orgunits = [this.orgunit_model.selected_orgunits[0]];
+    if(this.orgunit_model.selected_orgunits.length == 0){
+      this.orgunit_model.selected_orgunits = [{name:this.organisationunits[0].name,id:this.organisationunits[0].id,level:this.organisationunits[0].level}];
+    }else{
+      this.orgunit_model.selected_orgunits = [this.orgunit_model.selected_orgunits[0]];
+    }
+    //
     //this.orgunit_model.selected_orgunits = this.selectedOrgUnits;
   }
   setMultiplePeriod(){
+    if(this.orgunit_model.selected_orgunits.length == 0){
+      console.log("Here1:",this.organisationunits);
+      this.orgunit_model.selected_orgunits.push({name:this.organisationunits[0].name,id:this.organisationunits[0].id,level:this.organisationunits[0].level})
+    }else{
+
+    }
     this.orgunit_model.selected_orgunits = this.getOrgUnitsObjectForAnalytics(this.orgunit_model, true);
+    //
   }
   updateOrgunits() {
     this.displayOrgTree();

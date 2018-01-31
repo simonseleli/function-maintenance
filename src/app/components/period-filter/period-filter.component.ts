@@ -182,9 +182,10 @@ export class PeriodFilterComponent implements OnInit {
 
   }
   public setOnePeriod(){
-    let period = this.selected_periods[0];
-    this.selected_periods = [];
-    this.selected_periods.push(period);
+    if(this.selected_periods.length != 1){
+      this.selected_periods = [];
+      this.selected_periods.push(this.periods[0]);
+    }
   }
   public setMultiplePeriod(){
     if(this.selected_periods.length <= 1) {
