@@ -89,7 +89,7 @@
         </div>
 
         <div *ngIf="orgunit_tree_config.loading">{{ orgunit_tree_config.loading_message }}</div>
-        <div *ngIf="organisationunits.length > 0" class="tree-area" [ngClass]="{'someclass': orgunit_model.selected_user_orgunit.length != 0}">
+        <div *ngIf="organisationunits.length > 0" class="tree-area"  style="z-index: 10000;" [ngClass]="{'someclass': orgunit_model.selected_user_orgunit.length != 0}">
           <tree-root
             #orgtree
             [nodes]="organisationunits"

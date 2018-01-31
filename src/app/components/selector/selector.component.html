@@ -23,7 +23,7 @@
         <button dropdownToggle type="button" class="col-sm-12 btn btn-primary dropdown-toggle">
           Test <span class="caret pull-right"></span>
         </button>
-        <ul *dropdownMenu class="dropdown-menu dropdown-menu-right test" role="menu">
+        <ul *dropdownMenu class="dropdown-menu dropdown-menu-right test" style="z-index: 10000;" role="menu">
           <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.OneOne)">1 Org Unit & 1 Period</a></li>
           <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.OneMany)">1 Org Unit & Multiple Period</a></li>
           <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.ManyOne)">Multiple Org Unit & 1 Period</a></li>
