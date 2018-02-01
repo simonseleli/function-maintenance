@@ -57,7 +57,6 @@ import {ChartModule} from "./chart-module/chart.module";
 import {TableModule} from "./table/table.module";
 import {LayoutModule} from "./components/layout/layout.module";
 import { EditorComponent } from './components/editor/editor.component';
-import { SnippetComponent } from './components/snippet/snippet.component';
 
 @NgModule({
   declarations: [
@@ -82,8 +81,7 @@ import { SnippetComponent } from './components/snippet/snippet.component';
     DataFilterPipe,
     RuleSelectorComponent,
     DefaultRulePipe,
-    EditorComponent,
-    SnippetComponent
+    EditorComponent
   ],
   imports: [
     BrowserModule,
