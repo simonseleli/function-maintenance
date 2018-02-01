@@ -1,5 +1,20 @@
 <div class="row">
-  <div class="col-sm-6">
+  <div class="col-sm-12" style="margin-bottom:10px;margin-top:-5px">
+
+    <span *ngFor="let snippet of snippets;let i = index"
+          (click)="isCollapsed[i] = !isCollapsed[i];shown(snippet,i)" class="badge badge-pill badge-danger">{{snippet.name}}</span>
+    <div *ngFor="let snippet of snippets;let i = index" (collapsed)="collapsed($event,i)"
+         (expanded)="expanded($event)"
+         [collapse]="!isCollapsed[i]"
+         class="card card-block card-header">
+      <div id="editor{{i}}" style="width:100%;height:300px;">
+      </div>
+      <button class="btn" tooltip="Paste" data-original-title="Italic - Ctrl+I" (click)="setCode(snippet.code)">
+        <i class="fa fa-paste" aria-hidden="true"></i></button>
+      <button class="btn" tooltip="Close" (click)="isCollapsed[i] = false"><i class="fa fa-times" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <div class="col-sm-8">
     <div class="btn-toolbar" role="toolbar" style="margin-bottom:10px">
       <!--<div class="btn-group mr-2" role="group">
         <button class="btn" data-original-title="Bold - Ctrl+B"(click)="undo()"><i class="fa fa-folder-open" aria-hidden="true"></i></button>
@@ -36,10 +51,13 @@
           </ul>
         </div>
       </div>
-      <!--<div class="btn-group mr-2" role="group">
-        <button [disabled]="this.options.tabSize == 0" class="btn" data-original-title="Bold - Ctrl+B"(click)="indent(-1)"><i class="fa fa-outdent" aria-hidden="true"></i></button>
-        <button class="btn" data-original-title="Italic - Ctrl+I" (click)="indent(-1)"><i class="fa fa-indent" aria-hidden="true"></i></button>
-      </div>-->
+      <div class="btn-group mr-2" role="group">
+        <button class="btn"  tooltip="Fold" data-original-title="Bold - Ctrl+B"(click)="fold()"><i class="fa fa-compress" aria-hidden="true"></i></button>
+        <button class="btn" tooltip="Un Fold" data-original-title="Italic - Ctrl+I" (click)="unFold()"><i class="fa fa-expand" aria-hidden="true"></i></button>
+      </div>
+      <div class="btn-group mr-2" role="group">
+        <button class="btn" tooltip="Format" (click)="format()"><i class="fa fa-repeat" aria-hidden="true"></i></button>
+      </div>
     </div>
   </div>
   <div class="col-sm-12">

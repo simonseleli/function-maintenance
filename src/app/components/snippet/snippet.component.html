@@ -1,0 +1,24 @@
+<!--<div class="btn-group" [autoClose]="false" dropdown  (onShown)="shown(snippet,index);hidden = false" #drop>
+  <span dropdownToggle class="badge badge-pill badge-danger">{{snippet.name}}</span>
+  <div *dropdownMenu class="dropdown-menu" role="menu" [ngClass]="{'hide':hidden}">
+    <div style="padding:20px">
+      <div id="editor{{index}}" style="width:500px;height:300px;">
+      </div>
+      <button class="btn" (click)="setCode(snippet.code)">Paste</button>
+      <button class="btn" (click)="hidden = true">Close</button>
+    </div>
+  </div>
+</div>-->
+<button type="button" class="btn btn-primary"
+        (click)="isCollapsed = !isCollapsed">Toggle collapse
+</button>
+<hr>
+<div (collapsed)="collapsed($event)"
+     (expanded)="expanded($event)"
+     [collapse]="isCollapsed"
+     class="card card-block card-header">
+  <div id="editor{{index}}" style="width:500px;height:300px;">
+  </div>
+  <button class="btn" (click)="setCode(snippet.code)">Paste</button>
+  <button class="btn" (click)="hidden = true">Close</button>
+</div>
