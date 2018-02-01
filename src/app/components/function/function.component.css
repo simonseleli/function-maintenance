@@ -14,7 +14,7 @@
   font-family:monospace!important
 }
 
-.edit{
+#editor{
   position: relative;
   top: -.75rem;
   right: -1.25rem;

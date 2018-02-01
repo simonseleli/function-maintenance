@@ -215,32 +215,10 @@ export class FunctionComponent implements OnInit {
     this.staticTabs.tabs[index].active = true;
   }
 
-  @ViewChild('editor') editor;
-
-  undo(){
-    this.editor.getEditor().undo()
-  }
-  redo(){
-    this.editor.getEditor().redo()
-  }
-  sizes = [
-    10,11,12,13,14, 16,20,24
-  ]
-  indent(width){
-    this.options.tabSize += width;
-    this.editor.getEditor().setTabSize(this.options.tabSize);
-  }
-  setFontSize(){
-    this.editor.getEditor().setFontSize(this.options.fontSize + "px")
-  }
   copy(){
     document.execCommand('copy');
   }
   cut(){
     document.execCommand('cut');
-  }
-  paste(){
-    this.editor.getEditor().session._emit('paste');
-    window.document["session"] = this.editor.getEditor().session;
   }
 }

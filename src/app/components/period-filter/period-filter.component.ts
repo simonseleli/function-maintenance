@@ -181,6 +181,9 @@ export class PeriodFilterComponent implements OnInit {
     return count;
 
   }
+  public setNoPeriod(){
+    this.selected_periods = [];
+  }
   public setOnePeriod(){
     if(this.selected_periods.length != 1){
       this.selected_periods = [];

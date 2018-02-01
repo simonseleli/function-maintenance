@@ -58,17 +58,18 @@
           <div>
             <tabset #staticTabs>
               <tab heading="Function Definition" id="tab1">
-                <div class="row">
+                <editor [mode]="'javascript'" [code]="func.function" (onCodeUpdate)="onChange($event)"></editor>
+                <!--<div class="row">
                   <div class="col-sm-6">
                   <div *ngIf="functionLarge" class="btn-toolbar" role="toolbar" style="margin-top:10px;margin-bottom:10px">
-                    <!--<div class="btn-group mr-2" role="group">
+                    &lt;!&ndash;<div class="btn-group mr-2" role="group">
                       <button class="btn" data-original-title="Bold - Ctrl+B"(click)="undo()"><i class="fa fa-folder-open" aria-hidden="true"></i></button>
                       <button class="btn" data-original-title="Italic - Ctrl+I" (click)="redo()"><i class="fa fa-save" aria-hidden="true"></i></button>
-                    </div>-->
+                    </div>&ndash;&gt;
                     <div class="btn-group mr-2" role="group">
                       <button class="btn" data-original-title="Bold - Ctrl+B"(click)="copy()"><i class="fa fa-copy" aria-hidden="true"></i></button>
                       <button class="btn" data-original-title="Italic - Ctrl+I" (click)="cut()"><i class="fa fa-cut" aria-hidden="true"></i></button>
-                      <!--<button class="btn" data-original-title="Italic - Ctrl+I" (click)="paste()"><i class="fa fa-paste" aria-hidden="true"></i></button>-->
+                      &lt;!&ndash;<button class="btn" data-original-title="Italic - Ctrl+I" (click)="paste()"><i class="fa fa-paste" aria-hidden="true"></i></button>&ndash;&gt;
                     </div>
                     <div class="btn-group mr-2" role="group">
                       <button class="btn" data-original-title="Bold - Ctrl+B"(click)="undo()"><i class="fa fa-undo" aria-hidden="true"></i></button>
@@ -84,10 +85,10 @@
                         <li role="menuitem"><a class="dropdown-item" *ngFor="let size of sizes" (click)="options.fontSize = size">{{size}}</a></li>
                       </ul>
                     </div>
-                    <!--<div class="btn-group mr-2" role="group">
+                    &lt;!&ndash;<div class="btn-group mr-2" role="group">
                       <button [disabled]="this.options.tabSize == 0" class="btn" data-original-title="Bold - Ctrl+B"(click)="indent(-1)"><i class="fa fa-outdent" aria-hidden="true"></i></button>
                       <button class="btn" data-original-title="Italic - Ctrl+I" (click)="indent(-1)"><i class="fa fa-indent" aria-hidden="true"></i></button>
-                    </div>-->
+                    </div>&ndash;&gt;
                   </div>
                   </div>
                   <div class="col-sm-12">
@@ -96,12 +97,12 @@
                       [mode]="'javascript'"
                       [options]="options"
                       [readOnly]="operation == 'test'"
-                      [theme]="'eclipse'"
+                      [theme]="'chrome'"
                       [autoUpdateContent]="true"
                       [durationBeforeCallback]="1000"
                       (textChanged)="onChange($event)" #editor></ace-editor>
                   </div>
-                </div>
+                </div>-->
               </tab>
               <tab *ngFor="let ruleDetail of ruleDetails"[removable]="true">
                 <ng-template tabHeading>

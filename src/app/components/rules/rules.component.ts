@@ -78,9 +78,19 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
   @Output() onSelectRule : EventEmitter<any> = new EventEmitter<any>();
   selectedRule;
   selectRule(rule){
-    console.log("Rules",rule);
     this.selectedRule = rule.id;
     this.onSelectRule.emit(rule);
+  }
+  makeDefault(selectedRule){
+    this.rules.forEach((rule)=>{
+      if(selectedRule.id = rule.id){
+        rule.isDefault = true;
+      }else{
+        rule.isDefault = false;
+      }
+    })
+
+    console.log("Rules:",this.rules);
   }
   onChange(event){
     console.log("Event:",event);

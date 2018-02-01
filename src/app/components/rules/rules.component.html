@@ -25,8 +25,10 @@
       <!--<td>{{mfActivePage}} - {{i + 1}}</td>-->
       <td>{{rule.name}} <span *ngIf="rule.id == selectedRule">- (Selected Rule for testing)</span><span *ngIf="rule.isDefault" class="badge badge-pill badge-info pull-right">Default</span></td>
       <td *ngIf="operation != 'test'">
-        <button tooltip="Edit Rule" (click)="editRule(rule)" class="btn btn-default btn-sm">
+        <button tooltip="Edit Rule" (click)="editRule(rule)" class="btn btn-primary btn-sm">
           <i class="fa fa-pencil" aria-hidden="true"> </i></button>
+        <button *ngIf="!rule.isDefault" tooltip="Make Rule Default" (click)="makeDefault(rule)" class="btn btn-default btn-sm">
+          <i class="fa fa-check" aria-hidden="true"> </i></button>
         <button *ngIf="!rule.isDefault" tooltip="Remove Rule" (click)="deleteIndex = i" class="btn btn-danger btn-sm">
           <i class="fa fa-close" aria-hidden="true"> </i></button>
       </td>

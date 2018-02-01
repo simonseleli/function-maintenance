@@ -56,6 +56,7 @@ import { DefaultRulePipe } from './pipes/default-rule.pipe';
 import {ChartModule} from "./chart-module/chart.module";
 import {TableModule} from "./table/table.module";
 import {LayoutModule} from "./components/layout/layout.module";
+import { EditorComponent } from './components/editor/editor.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import {LayoutModule} from "./components/layout/layout.module";
     HasFunctionAccessPipe,
     DataFilterPipe,
     RuleSelectorComponent,
-    DefaultRulePipe
+    DefaultRulePipe,
+    EditorComponent
   ],
   imports: [
     BrowserModule,

@@ -200,7 +200,7 @@ export class OrgUnitFilterComponent implements OnInit {
   }
 
   selectedOrgUnits = []
-  setOnePeriod(){
+  setOneOrgUnit(){
     if(this.orgunit_model.selected_orgunits.length == 0){
       this.orgunit_model.selected_orgunits = [{name:this.organisationunits[0].name,id:this.organisationunits[0].id,level:this.organisationunits[0].level}];
     }else{
@@ -209,7 +209,7 @@ export class OrgUnitFilterComponent implements OnInit {
     //
     //this.orgunit_model.selected_orgunits = this.selectedOrgUnits;
   }
-  setMultiplePeriod(){
+  setMultipleOrgUnits(){
     if(this.orgunit_model.selected_orgunits.length == 0){
       console.log("Here1:",this.organisationunits);
       this.orgunit_model.selected_orgunits.push({name:this.organisationunits[0].name,id:this.organisationunits[0].id,level:this.organisationunits[0].level})
@@ -218,6 +218,17 @@ export class OrgUnitFilterComponent implements OnInit {
     }
     this.orgunit_model.selected_orgunits = this.getOrgUnitsObjectForAnalytics(this.orgunit_model, true);
     //
+  }
+  setNoOrgUnits(){
+    this.orgunit_model.selected_orgunits = [];
+    //
+  }
+  getSelectedOrgUnits(){
+    let ou = [];
+    this.orgunit_model.selected_orgunits.forEach((orgUnit)=>{
+      ou.push(orgUnit.id)
+    })
+    return ou.join(";")
   }
   updateOrgunits() {
     this.displayOrgTree();

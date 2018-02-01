@@ -64,8 +64,8 @@ export class SelectorComponent implements OnInit {
     OneMany:{name:"1 Org Unit & Multiple Period",orgUnits:1,periods:2},
     ManyOne:{name:"Multiple Org Unit & 1 Period",orgUnits:2,periods:1},
     ManyMany:{name:"Multiple Org Unit & Multiple Period",orgUnits:2,periods:2},
-    ZeroOne:{name:"0 Org Unit & 1 Period",orgUnits:0,periods:1},
-    OneZero:{name:"1 Org Unit & 0 Period",orgUnits:1,periods:0}
+    ZeroOne:{name:"0 Org Unit & 1 Period",orgUnits:0,periods:1,exception:true},
+    OneZero:{name:"1 Org Unit & 0 Period",orgUnits:1,periods:0,exception:true}
   }
   @ViewChild('periodTree') periodComponent: PeriodFilterComponent;
   @ViewChild('orgUnitTree') orgUnitComponent: OrgUnitFilterComponent;
@@ -73,18 +73,20 @@ export class SelectorComponent implements OnInit {
     let parameters:any = {
       rule:this.parameters.rule
     }
-    if(counts.orgUnits == 1){
-      let splt = this.parameters.ou.split(";");
-      parameters.ou = splt[0];
-      this.orgUnitComponent.setOnePeriod()
+    if(counts.orgUnits == 2){
+      this.orgUnitComponent.setMultipleOrgUnits()
+    }else if(counts.orgUnits == 1){
+      this.orgUnitComponent.setOneOrgUnit()
     }else{
-      parameters.ou = this.parameters.ou;
-      this.orgUnitComponent.setMultiplePeriod()
+      this.orgUnitComponent.setNoOrgUnits();
     }
-    if(counts.periods == 1){
+    parameters.ou = this.orgUnitComponent.getSelectedOrgUnits()
+    if(counts.periods == 2){
+      this.periodComponent.setMultiplePeriod()
+    }else if(counts.periods == 1){
       this.periodComponent.setOnePeriod()
     }else{
-      this.periodComponent.setMultiplePeriod()
+      this.periodComponent.setNoPeriod()
     }
     parameters.pe = this.periodComponent.getSelectedPeriods()
     this.onRun.emit(parameters);
