@@ -2,7 +2,7 @@
   <div class="col-sm-12" style="margin-bottom:10px;margin-top:-5px">
 
     <span *ngFor="let snippet of snippets;let i = index"
-          (click)="isCollapsed[i] = !isCollapsed[i];shown(snippet,i)" class="badge badge-pill badge-danger">{{snippet.name}}</span>
+          (click)="isCollapsed[i] = !isCollapsed[i];shown(snippet,i)" class="badge badge-pill badge-secondary">{{snippet.name}}</span>
     <div *ngFor="let snippet of snippets;let i = index" (collapsed)="collapsed($event,i)"
          (expanded)="expanded($event)"
          [collapse]="!isCollapsed[i]"
