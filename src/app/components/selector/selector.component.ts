@@ -57,11 +57,15 @@ export class SelectorComponent implements OnInit {
 
   @Output() onRun:EventEmitter<any> = new EventEmitter<any>();
 
+  objectKeys = Object.keys;
+
   runOptions={
-    OneOne:{orgUnits:1,periods:1},
-    OneMany:{orgUnits:1,periods:0},
-    ManyOne:{orgUnits:0,periods:1},
-    ManyMany:{orgUnits:0,periods:0},
+    OneOne:{name:"1 Org Unit & 1 Period",orgUnits:1,periods:1},
+    OneMany:{name:"1 Org Unit & Multiple Period",orgUnits:1,periods:2},
+    ManyOne:{name:"Multiple Org Unit & 1 Period",orgUnits:2,periods:1},
+    ManyMany:{name:"Multiple Org Unit & Multiple Period",orgUnits:2,periods:2},
+    ZeroOne:{name:"0 Org Unit & 1 Period",orgUnits:0,periods:1},
+    OneZero:{name:"1 Org Unit & 0 Period",orgUnits:1,periods:0}
   }
   @ViewChild('periodTree') periodComponent: PeriodFilterComponent;
   @ViewChild('orgUnitTree') orgUnitComponent: OrgUnitFilterComponent;

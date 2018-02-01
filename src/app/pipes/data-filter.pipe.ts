@@ -7,7 +7,6 @@ export class DataFilterPipe implements PipeTransform {
 
   transform(array: any[], query: string,dataIndex): any {
     if (query) {
-      console.log(array,query);
       return array.filter(row=> {
         return row[dataIndex].toLowerCase().indexOf(query.toLowerCase()) > -1
       });

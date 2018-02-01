@@ -18,17 +18,22 @@
     <app-rule-selector (onRuleUpdate)="onRuleUpdate($event)" [rules]="rules"></app-rule-selector>
   </div>
   <div class="col-sm-1">
-    <div class="colsm-12">
-      <div class="btn-group col-sm-12" dropdown style="padding:0px">
-        <button dropdownToggle type="button" class="col-sm-12 btn btn-primary dropdown-toggle">
-          Test <span class="caret pull-right"></span>
-        </button>
-        <ul *dropdownMenu class="dropdown-menu dropdown-menu-right test" style="z-index: 10000;" role="menu">
-          <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.OneOne)">1 Org Unit & 1 Period</a></li>
-          <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.OneMany)">1 Org Unit & Multiple Period</a></li>
-          <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.ManyOne)">Multiple Org Unit & 1 Period</a></li>
-          <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.ManyMany)">Multiple Org Unit & Multiple Period</a></li>
-        </ul>
+    <div>
+      <div class="btn-group" role="group" style="width: 100%;" aria-label="Button group with nested dropdown">
+        <button type="button" class="btn btn-outline-primary" style="width: 100%;" (click)="">Test</button>
+
+        <div class="btn-group" dropdown style="padding:0px">
+          <button dropdownToggle type="button" class="col-sm-12 btn btn-primary dropdown-toggle">
+            <span class="caret pull-right"></span>
+          </button>
+          <ul *dropdownMenu class="dropdown-menu dropdown-menu-right test" style="z-index: 10000;" role="menu">
+            <li role="menuitem" *ngFor="let key of objectKeys(runOptions)"><a class="dropdown-item" (click)="run(runOptions[key])">{{runOptions[key].name}}</a></li>
+            <!--<li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.OneOne)">1 Org Unit & 1 Period</a></li>
+            <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.OneMany)">1 Org Unit & Multiple Period</a></li>
+            <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.ManyOne)">Multiple Org Unit & 1 Period</a></li>
+            <li role="menuitem"><a class="dropdown-item" (click)="run(runOptions.ManyMany)">Multiple Org Unit & Multiple Period</a></li>-->
+          </ul>
+        </div>
       </div>
     </div>
   </div>
