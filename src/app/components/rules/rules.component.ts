@@ -83,7 +83,7 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
   }
   makeDefault(selectedRule){
     this.rules.forEach((rule)=>{
-      if(selectedRule.id = rule.id){
+      if(selectedRule.id === rule.id){
         rule.isDefault = true;
       }else{
         rule.isDefault = false;

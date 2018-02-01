@@ -207,6 +207,7 @@ export class FunctionComponent implements OnInit {
       })
       this.savingRule = false;
     }
+    console.log("Rules Created:",this.func.rules);
   }
 
   removeRule(rule){
