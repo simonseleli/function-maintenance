@@ -24,3 +24,20 @@ tr.selected,tr.selected:hover{
 .ace_editor, .ace_editor * {
   font-family:monospace !important;
 }
+tab{
+  border-left:1px solid #ddd;
+  border-right:1px solid #ddd;
+  border-bottom:1px solid #ddd;
+  padding-left: 18px;
+  padding-right: 18px;
+  padding-top: 18px;
+  min-height:300px
+}
+.nav-tabs .nav-link.active{
+  background-color:white !important;
+  opacity:1
+}
+.nav-tabs .nav-link{
+  background-color:#D3D3BD !important;
+  opacity:0.5
+}

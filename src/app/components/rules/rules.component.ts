@@ -89,8 +89,6 @@ export class RulesComponent implements OnInit, ControlValueAccessor {
         rule.isDefault = false;
       }
     })
-
-    console.log("Rules:",this.rules);
   }
   onChange(event){
     console.log("Event:",event);

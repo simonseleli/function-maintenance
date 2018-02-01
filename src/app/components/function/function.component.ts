@@ -156,7 +156,7 @@ export class FunctionComponent implements OnInit {
     let index = -1;
     this.ruleDetails.forEach((ruleDetail,i)=>{
       if(ruleDetail.id == selectedRule.id){
-        index = i;
+        index = i + 1;
       }
     })
     if(index < 0){
@@ -167,12 +167,6 @@ export class FunctionComponent implements OnInit {
       this.staticTabs.tabs[index].active = true;
       this.functionLarge = true
     })
-    /*this.newRule = Object.assign({}, rule);
-    if(typeof rule.json != 'string')
-      this.newRule.json = JSON.stringify(this.newRule.json);
-    setTimeout(()=>{
-      this.functionLarge = true;
-    })*/
   }
   savingRule
   ruleErrors
@@ -207,7 +201,6 @@ export class FunctionComponent implements OnInit {
       })
       this.savingRule = false;
     }
-    console.log("Rules Created:",this.func.rules);
   }
 
   removeRule(rule){
