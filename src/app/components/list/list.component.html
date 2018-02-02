@@ -118,6 +118,20 @@
   <div class="col-sm-4" *ngIf="details">
     <div class="card">
       <div class="card-body">
+        <div class="action-buttons pull-right">
+          <button class="btn btn-outline-success" (click)="navigate(details.id)">
+            <i class="fa fa-pencil" aria-hidden="true"></i> <span class="text">Edit</span>
+          </button>
+          <button class="btn btn-outline-success" (click)="test(details.id)">
+            <i class="fa fa-check" aria-hidden="true"></i> <span class="text">Test</span>
+          </button>
+          <button class="btn btn-outline-success" (click)="sharing = details;details = undefined">
+            <i class="fa fa-share-alt" aria-hidden="true"></i> <span class="text">Sharing</span>
+          </button>
+          <button class="btn btn-outline-danger" (click)="deleteItem = details">
+            <i class="fa fa-trash-o" aria-hidden="true"></i> <span class="text">Delete</span>
+          </button>
+        </div>
         <h5 class="card-title">{{details.name}}</h5>
         <h6 class="card-subtitle mb-2 text-muted">These  are the details</h6>
         <table class="table table-hover table-striped">
@@ -172,6 +186,20 @@
             </td>
           </tr>
         </table>
+        <div class="action-buttons pull-right">
+          <button class="btn btn-outline-success" (click)="navigate(details.id)">
+            <i class="fa fa-pencil" aria-hidden="true"></i> <span class="text">Edit</span>
+          </button>
+          <button class="btn btn-outline-success" (click)="test(details.id)">
+            <i class="fa fa-check" aria-hidden="true"></i> <span class="text">Test</span>
+          </button>
+          <button class="btn btn-outline-success" (click)="sharing = details;details = undefined">
+            <i class="fa fa-share-alt" aria-hidden="true"></i> <span class="text">Sharing</span>
+          </button>
+          <button class="btn btn-outline-danger" (click)="deleteItem = details">
+            <i class="fa fa-trash-o" aria-hidden="true"></i> <span class="text">Delete</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -179,6 +207,20 @@
   <div class="col-sm-4" *ngIf="sharing">
     <div class="card">
       <div class="card-body">
+        <div class="action-buttons pull-right">
+          <button class="btn btn-outline-success" (click)="navigate(details.id)">
+            <i class="fa fa-pencil" aria-hidden="true"></i> <span class="text">Edit</span>
+          </button>
+          <button class="btn btn-outline-success" (click)="test(details.id)">
+            <i class="fa fa-check" aria-hidden="true"></i> <span class="text">Test</span>
+          </button>
+          <button class="btn btn-outline-success" (click)="details = sharing;sharing = undefined">
+            <i class="fa fa-info" aria-hidden="true"></i> <span class="text">Details</span>
+          </button>
+          <button class="btn btn-outline-danger" (click)="deleteItem = details">
+            <i class="fa fa-trash-o" aria-hidden="true"></i> <span class="text">Delete</span>
+          </button>
+        </div>
         <h5 class="card-title">Sharing Settings {{sharing.name}}</h5>
         <h6 class="card-subtitle mb-2 text-muted">These  are the sharing setting</h6>
         <table class="table table-hover table-bordered">
