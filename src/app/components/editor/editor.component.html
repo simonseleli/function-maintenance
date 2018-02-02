@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-sm-12" style="margin-bottom:10px;margin-top:-5px">
+  <div *ngIf="snippets" class="col-sm-12" style="margin-bottom:10px;margin-top:-5px">
 
     <span *ngFor="let snippet of snippets;let i = index"
           (click)="isCollapsed[i] = !isCollapsed[i];shown(snippet,i)" class="badge badge-pill badge-secondary">{{snippet.name}}</span>
@@ -7,14 +7,14 @@
          (expanded)="expanded($event)"
          [collapse]="!isCollapsed[i]"
          class="card card-block card-header">
-      <div id="editor{{i}}" style="width:100%;height:300px;">
+      <div id="readonly-editor{{i}}" style="width:100%;height:300px;">
       </div>
       <button class="btn" tooltip="Paste" data-original-title="Italic - Ctrl+I" (click)="setCode(snippet.code)">
         <i class="fa fa-paste" aria-hidden="true"></i></button>
       <button class="btn" tooltip="Close" (click)="isCollapsed[i] = false"><i class="fa fa-times" aria-hidden="true"></i></button>
     </div>
   </div>
-  <div class="col-sm-8">
+  <div *ngIf="editor" class="col-sm-8">
     <div class="btn-toolbar" role="toolbar" style="margin-bottom:10px">
       <!--<div class="btn-group mr-2" role="group">
         <button class="btn" data-original-title="Bold - Ctrl+B"(click)="undo()"><i class="fa fa-folder-open" aria-hidden="true"></i></button>
@@ -61,7 +61,7 @@
     </div>
   </div>
   <div class="col-sm-12">
-    <div id="editor" class="ace-editor">
+    <div id="editor{{id}}" class="ace-editor">
 
     </div>
   </div>

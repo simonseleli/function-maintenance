@@ -62,7 +62,9 @@
                 </ng-template>
                 <div class="row">
                   <div class="col-sm-12">
-                    <editor [mode]="'javascript'" [code]="func.function" (onCodeUpdate)="onChange($event)"></editor>
+                    <editor [mode]="'javascript'" [code]="func.function"
+                            [snippets]="snippets"
+                            (onCodeUpdate)="onChange($event)"></editor>
                   </div>
                 </div>
               </tab>
@@ -92,13 +94,19 @@
                       </div>
                     </ng-template>
                     <label for="name">JSON <i class="fa fa-info-circle" containerClass="tooltip-class" placement="right" [popover]="popTemplate"></i></label>
-                    <ace-editor
+                    <!--<ace-editor
                       [(text)]="ruleDetail.json"
                       [mode]="'javascript'"
                       [readOnly]="false"
                       [autoUpdateContent]="true"
                       [durationBeforeCallback]="1000"
-                      style="min-height: 200px; width:100%; overflow: auto;"></ace-editor>
+                      (textChanged)="onRuleJSONChange($event,ruleDetail)"
+                      style="min-height: 200px; width:100%; overflow: auto;"></ace-editor>-->
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <editor [mode]="'javascript'" [code]="ruleDetail.json" (onCodeUpdate)="onRuleJSONChange($event,ruleDetail)"></editor>
+                      </div>
+                    </div>
                     <br/>
                   </div>
                   <div class="col-sm-12">
