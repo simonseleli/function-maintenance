@@ -272,7 +272,7 @@ export class FunctionService {
         "function": "//Example of function implementation\n$.ajax({\n\turl: \"../../../api" +this.apiVersion+ "/analytics.json?dimension=dx:\" + parameters.rule.json.data + \".REPORTING_RATE&dimension=pe:\" + parameters.pe + \"&dimension=ou:\" + parameters.ou,\n\ttype: \"GET\",\n\tsuccess: function(analyticsResults) {\n\t    var rows = [];\n\t    analyticsResults.rows.forEach(function(row){\n\t        if(parseFloat(row[3]) > 100){\n\t            row[3] = \"100\";\n\t        }\n\t        rows.push(row);\n\t    })\n\t    analyticsResults.rows = rows;\n\t\tparameters.success(analyticsResults);\n\t},\n\terror:function(error){\n\t\t  parameters.error(error);\n\t}\n});",
         "rules": [
         ],
-        "name": "Completeness Over 100",
+        "name": "Limit Reporting Rate to 100% Maximum",
         "description": "This returns completeness. If the completeness is over a hundred it returns 100."
       };
       this.http.get("dataSets.json?paging=false").subscribe((dataSetResults)=>{

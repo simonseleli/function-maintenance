@@ -186,10 +186,10 @@
       <img width='40px' height='40px' src="assets/img/balls-3.svg" alt=""> Saving function...
     </span>
     <button *ngIf="!loadingSave" class="btn btn-success" (click)="save(false)">
-      <span><span *ngIf="!func.id">Save</span><span *ngIf="func.id">Update</span></span>
+      <span><span *ngIf="!func.id">Save</span><span *ngIf="func.id">Update</span> and Go Back</span>
     </button>
     <button *ngIf="!loadingSave" class="btn btn-success" (click)="save(true)">
-      <span><span *ngIf="!func.id">Save</span><span *ngIf="func.id">Update and Back</span></span>
+      <span><span *ngIf="!func.id">Save</span><span *ngIf="func.id">Updateg</span> and Continue Editing</span>
     </button>
     <button *ngIf="!loadingSave" class="btn btn-default" [routerLink]="['/functions']">Cancel</button>
     <br /><br />
