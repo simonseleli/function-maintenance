@@ -23,11 +23,9 @@ export class EditorComponent implements OnInit {
 
   isCollapsed = {}
   collapsed(event: any): void {
-    console.log(event);
   }
 
   expanded(event: any): void {
-    console.log(event);
   }
   modes = {
     "javascript":"ace/mode/javascript",
@@ -44,7 +42,6 @@ export class EditorComponent implements OnInit {
       this.setTheme(this.themeGroups[0].themes[0])
       this.setFontSize(this.fontSize);
       this.editor.getSession().on('change', (e)=> {
-        console.log(JSON.stringify(this.editor.getValue()))
         this.onCodeUpdate.emit(this.editor.getValue());
       });
       this.editor.getSession().setUndoManager(new ace.UndoManager())
@@ -104,8 +101,7 @@ export class EditorComponent implements OnInit {
   unFold(){
     this.editor.getSession().unfold();//.foldAll(1, 28);
   }
-  setCode(code){
-    console.log("Selection:",this.editor.getSelectionRange())
+  setCode(code,i){
     let range = this.editor.getSelectionRange();
     if(range.start.row == range.end.row && range.start.column == range.end.column){
       this.editor.session.insert(this.editor.getCursorPosition() , code);
@@ -114,6 +110,7 @@ export class EditorComponent implements OnInit {
     }
     //this.editor.session.insert(this.editor.getCursorPosition() , code);
     this.editor.setValue(js_beautify(this.editor.getValue()));
+    this.isCollapsed[i] = false
   }
   format(){
     this.editor.setValue(js_beautify(this.editor.getValue()));

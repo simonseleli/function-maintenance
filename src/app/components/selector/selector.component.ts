@@ -51,7 +51,8 @@ export class SelectorComponent implements OnInit {
 
   updateSelection() {
     if (this.parameters.ou && this.parameters.rule && this.parameters.pe) {
-      this.run({orgUnits:this.parameters.ou.split(";").length > 1?0:1,periods:this.parameters.pe.split(";").length > 1?0:1});
+      this.currentRunOption.periods = this.parameters.ou.split(";").length > 1?2:this.parameters.ou.split(";").length
+      this.run(this.currentRunOption);
     }
   }
 
@@ -67,6 +68,7 @@ export class SelectorComponent implements OnInit {
     ZeroOne:{name:"0 Org Unit & 1 Period",orgUnits:0,periods:1,exception:true},
     OneZero:{name:"1 Org Unit & 0 Period",orgUnits:1,periods:0,exception:true}
   }
+  currentRunOption
   @ViewChild('periodTree') periodComponent: PeriodFilterComponent;
   @ViewChild('orgUnitTree') orgUnitComponent: OrgUnitFilterComponent;
   run(counts) {
@@ -90,6 +92,7 @@ export class SelectorComponent implements OnInit {
     }
     parameters.pe = this.periodComponent.getSelectedPeriods()
     this.onRun.emit(parameters);
+    this.currentRunOption = counts;
   }
 
   dataSelector;

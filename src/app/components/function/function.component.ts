@@ -148,7 +148,7 @@ export class FunctionComponent implements OnInit {
   }
 
   snippets = [
-    {name:"Aggregate Analytics",code:"function analyticsRequest() {\n    return new Promise(function(resolve, reject) {\n        $.ajax({\n            url: \"../../../api/25/analytics.json?dimension=pe:\" + parameters.pe + \"&dimension=ou:\" + parameters.ou + \"&hierarchyMeta=true\",\n            type: \"GET\",\n            success: function(analyticsResults) {\n                try{\n                    //Code goes here\n                    resolve(analyticsResults);\n                }catch(e){\n                   reject(error); \n                }\n            },\n            error: function(error) {\n                reject(error);\n            }\n        });\n    })\n}"},
+    {name:"Aggregate Analytics",code:"function analyticsRequest() {\n    return new Promise(function(resolve, reject) {\n        $.ajax({\n            url: \"../../../api/25/analytics.json?dimension=pe:\" + parameters.pe + \"&dimension=ou:\" + parameters.ou + \"&hierarchyMeta=true\",\n            type: \"GET\",\n            success: function(analyticsResults) {\n                try {\n                    //Code goes here\n                    analyticsResults.metaData = metaData.metaData;\n                    analyticsResults.metaData.names[parameters.rule.id] = parameters.rule.name;\n                    analyticsResults.metaData.dx = [parameters.rule.id];\n                    resolve(analyticsResults);\n                } catch (e) {\n                    reject(error);\n                }\n            },\n            error: function(error) {\n                reject(error);\n            }\n        });\n    })\n}"},
     {name:"Organisation Unit",code:"function organisationUnitsRequest() {\n    return new Promise(function(resolve, reject) {\n        $.ajax({\n            url: \"../../../api/25/organisationUnits.json\",\n            type: \"GET\",\n            success: function(organisatioUnitsResults) {\n                try {\n                    //Code goes here\n                    resolve(organisatioUnitsResults);\n                } catch (e) {\n                    reject(error);\n                }\n            },\n            error: function(error) {\n                reject(error);\n            }\n        });\n    })\n}"},
     {name:"Data Value Sets",code:"function dataValueSetsRequest() {\n    return new Promise(function(resolve, reject) {\n        $.ajax({\n            url: \"../../../api/25/dataValueSets.json?dataSet=dataSetID&orgUnit=orgUnitId&period=period\",\n            type: \"GET\",\n            success: function(dataValueSetsResults) {\n                try {\n                    //Code goes here\n                    resolve(dataValueSetsResults);\n                } catch (e) {\n                    reject(error);\n                }\n            },\n            error: function(error) {\n                reject(error);\n            }\n        });\n    })\n}"},
     {name:"Analytics Format",code:"{\n    \"headers\": [{\n        \"name\": \"dx\",\n        \"column\": \"Data\",\n        \"valueType\": \"TEXT\",\n        \"type\": \"java.lang.String\",\n        \"hidden\": false,\n        \"meta\": true\n    }, {\n        \"name\": \"pe\",\n        \"column\": \"Period\",\n        \"valueType\": \"TEXT\",\n        \"type\": \"java.lang.String\",\n        \"hidden\": false,\n        \"meta\": true\n    }, {\n        \"name\": \"ou\",\n        \"column\": \"Organisation unit\",\n        \"valueType\": \"TEXT\",\n        \"type\": \"java.lang.String\",\n        \"hidden\": false,\n        \"meta\": true\n    }, {\n        \"name\": \"value\",\n        \"column\": \"Value\",\n        \"valueType\": \"NUMBER\",\n        \"type\": \"java.lang.Double\",\n        \"hidden\": false,\n        \"meta\": false\n    }],\n    \"metaData\": {\n        \"names\": {\n            \"dx\": \"Data\",\n            \"pe\": \"Period\",\n            \"ou\": \"Organisation unit\",\n            \"m0frOspS7JY\": \"MOH - Tanzania\",\n            \"QHq2gYjwLPc\": \"3.2.2-1 Progress Facility profile shared locally\",\n            \"201812\": \"December 2018\",\n            \"uGIJ6IdkP7Q\": \"default\"\n        },\n        \"dx\": [\"QHq2gYjwLPc\"],\n        \"pe\": [\"201812\"],\n        \"ou\": [\"m0frOspS7JY\"],\n        \"co\": [\"uGIJ6IdkP7Q\"]\n    },\n    \"rows\": [],\n    \"width\": 0,\n    \"height\": 0\n}"},
@@ -204,7 +204,6 @@ export class FunctionComponent implements OnInit {
           Object.keys(newRule).forEach((key)=>{
             rule[key] = newRule[key];
           })
-          console.log(rule);
         }
       })
       this.savingRule = false;
@@ -212,7 +211,6 @@ export class FunctionComponent implements OnInit {
   }
   onRuleJSONChange(event,rule){
     rule.json = event;
-    console.log(event,rule);
   }
   removeRule(rule){
     let index = this.ruleDetails.indexOf(rule);
