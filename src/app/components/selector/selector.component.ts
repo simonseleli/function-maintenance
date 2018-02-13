@@ -50,6 +50,9 @@ export class SelectorComponent implements OnInit {
   }
 
   updateSelection() {
+    if(!this.currentRunOption){
+      this.currentRunOption = this.runOptions.OneOne;
+    }
     if (this.parameters.ou && this.parameters.rule && this.parameters.pe) {
       this.currentRunOption.periods = this.parameters.ou.split(";").length > 1?2:this.parameters.ou.split(";").length
       this.run(this.currentRunOption);
