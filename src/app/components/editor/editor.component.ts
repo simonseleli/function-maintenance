@@ -56,6 +56,9 @@ export class EditorComponent implements OnInit {
     setTimeout(()=>{
       let editor = ace.edit("readonly-editor" + index);
       editor.session.setMode(this.modes[this.mode]);
+      editor.getSession().on('change', (e)=> {
+        console.log(JSON.stringify(editor.getValue()));
+      });
       editor.setValue(snippet.code);
       editor.renderer.setShowGutter(false);
     })
