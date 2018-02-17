@@ -149,6 +149,7 @@ export class FunctionService {
   }
   creationOfNewFunctionObseravble(){
     let observable = [];
+    observable.push(this.predictor());
     observable.push(this.createCompletenessFunctions());
     observable.push(this.createEarlyCompletenessFunctions());
     observable.push(this.createReportingRateByFilledData());
@@ -274,7 +275,7 @@ export class FunctionService {
         "function": "//Example of function implementation\n$.ajax({\n\turl: \"../../../api" +this.apiVersion+ "/analytics.json?dimension=dx:\" + parameters.rule.json.data + \".REPORTING_RATE&dimension=pe:\" + parameters.pe + \"&dimension=ou:\" + parameters.ou,\n\ttype: \"GET\",\n\tsuccess: function(analyticsResults) {\n\t    var rows = [];\n\t    analyticsResults.rows.forEach(function(row){\n\t        if(parseFloat(row[3]) > 100){\n\t            row[3] = \"100\";\n\t        }\n\t        rows.push(row);\n\t    })\n\t    analyticsResults.rows = rows;\n\t\tparameters.success(analyticsResults);\n\t},\n\terror:function(error){\n\t\t  parameters.error(error);\n\t}\n});",
         "rules": [
         ],
-        "name": "Limit Reporting Rate to 100% Maximum",
+        "name": "Limit Reporting Rate to Maximum of 100%",
         "description": "This returns completeness. If the completeness is over a hundred it returns 100."
       };
       this.http.get("dataSets.json?paging=false").subscribe((dataSetResults)=>{
@@ -433,29 +434,6 @@ export class FunctionService {
       let completeness:any = {
         "function": "//Example of function implementation\nfunction analyticsRequest() {\n    return new Promise(function(resolve, reject) {\n        $.ajax({\n            url: \"../../../api/25/analytics.json?dimension=pe:\" + parameters.pe + \"&dimension=ou:\" + parameters.ou + \"&hierarchyMeta=true&skipData=true\",\n            type: \"GET\",\n            success: function(analyticsResults) {\n                try {\n                    //Code goes here\n                    analyticsResults.headers = [{\n                        \"name\": \"dx\",\n                        \"column\": \"Data\",\n                        \"type\": \"java.lang.String\",\n                        \"hidden\": false,\n                        \"meta\": true\n                    }, {\n                        \"name\": \"pe\",\n                        \"column\": \"Period\",\n                        \"type\": \"java.lang.String\",\n                        \"hidden\": false,\n                        \"meta\": true\n                    }, {\n                        \"name\": \"ou\",\n                        \"column\": \"Organisation Unit\",\n                        \"type\": \"java.lang.String\",\n                        \"hidden\": false,\n                        \"meta\": true\n                    }, {\n                        \"name\": \"value\",\n                        \"column\": \"Value\",\n                        \"type\": \"java.lang.Double\",\n                        \"hidden\": false,\n                        \"meta\": false\n                    }];\n                    analyticsResults.metaData.names[parameters.rule.id] = parameters.rule.name;\n                    analyticsResults.metaData.dx = [parameters.rule.id];\n                    resolve(analyticsResults);\n                } catch (e) {\n                    reject(error);\n                }\n            },\n            error: function(error) {\n                reject(error);\n            }\n        });\n    })\n}\n\nfunction getAnalyticsDataRequest(dx,pe,ou) {\n    return new Promise(function(resolve, reject) {\n        $.ajax({\n            url: \"../../../api/25/analytics.json?dimension=dx:\" + dx.join(\";\") + \"&dimension=pe:\" + getPeriods(pe).join(\";\") + \"&dimension=ou:\" + ou.join(\";\") + \"\",\n            type: \"GET\",\n            success: function(analyticsResults) {\n                try {\n                    resolve(analyticsResults);\n                } catch (e) {\n                    reject(error);\n                }\n            },\n            error: function(error) {\n                reject(error);\n            }\n        });\n    })\n}\nanalyticsRequest().then(function(result) {\n    getAnalyticsDataRequest(extractDX(parameters.rule.json.generator.expression),result.metaData.pe,result.metaData.ou).then(function(analyticsResults){\n        console.log(analyticsResults);\n        result.metaData.ou.forEach(function(ou){\n            result.metaData.pe.forEach(function(pe){\n                var periods = getPeriods([pe]);\n                var values = {};\n                analyticsResults.rows.forEach(function(row){\n                    if(periods.indexOf(row[1]) > -1 && row[2] == ou){\n                        if(!values[row[0]]){\n                            values[row[0]] = []\n                        }\n                        values[row[0]].push(parseInt(row[3]))\n                    }\n                })\n                var expression = parameters.rule.json.generator.expression;\n                console.log(values);\n                Object.keys(values).forEach(function(key){\n                    expression = expression.split(\"#{\" + key + \"}\").join(JSON.stringify(values[key]));\n                })\n                expression = expression.split(\"AVG\").join(\"Mean\").split(\"STDDEV\").join(\"StandardDeviation\");\n                console.log(eval(\"(\" + expression + \")\"));\n                try{\n                    var val = eval(\"(\" + expression + \")\").toFixed(2);\n                    console.log(\"OU:\",ou);\n                    result.rows.push([parameters.rule.id,pe,ou,val])\n                }catch(e){\n                    console.error(e);\n                }\n            })  \n        })\n        console.log(result);\n        parameters.success(result);\n    },function(error) {\n        parameters.error(error);\n    })\n},function(error) {\n        parameters.error(error);\n})\ncst = {\n    formulaPattern: /#\\{.+?\\}/g,\n    constantPattern: /C\\{.+?\\}/g,\n    separator: \".\"\n}\nfunction getPeriods(inputPeriods){\n    var periods = []\n    inputPeriods.forEach(function(period){\n        for(j = 0;j< parameters.rule.json.annualSampleCount;j++){\n            var currentYear = parseInt(period.substr(0,4)) - j;\n            for(i = 1; i <= parameters.rule.json.sequentialSampleCount;i++){\n                var month = parseInt(period.substr(4)) - i;\n                var year = currentYear\n                if(month < 1){\n                    month = 12 + month\n                    year--;\n                }\n                var newPeriod = \"\";\n                if(month < 10){\n                    newPeriod = year + \"0\" + month;\n                }else{\n                    newPeriod = year + \"\" + month\n                }\n                if(periods.indexOf(newPeriod) == -1){\n                    periods.push(newPeriod)\n                }\n            }   \n        }\n    })\n    return periods;\n}\nfunction extractDX(expression) {\n    var idExpressions = expression.match(/#\\{.+?\\}/g);\n    var dx = []\n    for (k in idExpressions) {\n        var d = idExpressions[k].replace(/[#\\{\\}]/g, '');\n        if(dx.indexOf(d) == -1)\n            dx.push(d);\n    }\n    return dx;\n}\n\nfunction StandardDeviation(numbersArr) {\n    var meanVal = Mean(numbersArr);\n    var SDprep = 0;\n    for (var key in numbersArr)\n        SDprep += Math.pow((parseFloat(numbersArr[key]) - meanVal), 2);\n    return Math.sqrt(SDprep / numbersArr.length);\n}\n\nfunction Mean(numbersArr) {\n    var total = 0;\n    for (var key in numbersArr)\n        total += numbersArr[key];\n    return (total / numbersArr.length);\n\n}",
         "rules": [
-          {
-            "id": "IhyqdL83eYw",
-            "name": "Default",
-            "isDefault": true,
-            "description": "This is the default rule. Using the data element '0'.",
-            "json": {
-              "sequentialSampleCount": 6,
-              "annualSampleCount": 3,
-              "periodType": "Monthly",
-              "generator": {
-                "expression": "AVG(#{r6nrJANOqMw})+1.5*STDDEV(#{r6nrJANOqMw})",
-                "description": "Malaria outbreak threshold",
-                "missingValueStrategy": "SKIP_IF_ALL_VALUES_MISSING",
-                "dataElements": [],
-                "sampleElements": []
-              },
-              "organisationUnitLevels": [
-                {
-                  "id": "m9lBJogzE95"
-                }
-              ]
-            }
-          }
         ],
         "description": "Calculates the prediction given past data",
         "name": "Predictor"
