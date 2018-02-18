@@ -39,7 +39,7 @@
           <li role="menuitem"><a class="dropdown-item" *ngFor="let size of sizes" (click)="setFontSize(size)">{{size}}</a></li>
         </ul>
       </div>
-      <div tooltip="Theme" class="btn-group" dropdown>
+      <div tooltip="Theme" style="margin-right: 10px;" class="btn-group" dropdown>
         <button class="btn" data-original-title="Bold - Ctrl+B" (click)="setTheme(selectedTheme)">{{selectedTheme.name}}</button>
         <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
           <span class="caret"></span>
