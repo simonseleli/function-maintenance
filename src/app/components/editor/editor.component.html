@@ -1,8 +1,8 @@
 <div class="row">
   <div *ngIf="snippets" class="col-sm-12" style="margin-bottom:10px;margin-top:-5px">
 
-    <span *ngFor="let snippet of snippets;let i = index"
-          (click)="isCollapsed[i] = !isCollapsed[i];shown(snippet,i)" class="badge badge-pill badge-secondary">{{snippet.name}}</span>
+    <button [ngClass]="{'btn-primary':isCollapsed[i],'btn-secondary':!isCollapsed[i]}" style="margin-right: 10px;" class="btn btn-sm" *ngFor="let snippet of snippets;let i = index"
+          (click)="isCollapsed[i] = !isCollapsed[i];shown(snippet,i)">{{snippet.name}}</button>
     <div *ngFor="let snippet of snippets;let i = index" (collapsed)="collapsed($event,i)"
          (expanded)="expanded($event)"
          [collapse]="!isCollapsed[i]"
@@ -14,7 +14,7 @@
       <button class="btn" tooltip="Close" (click)="isCollapsed[i] = false"><i class="fa fa-times" aria-hidden="true"></i></button>
     </div>
   </div>
-  <div *ngIf="editor" class="col-sm-8">
+  <div *ngIf="editor" class="col-sm-12">
     <div class="btn-toolbar" role="toolbar" style="margin-bottom:10px">
       <!--<div class="btn-group mr-2" role="group">
         <button class="btn" data-original-title="Bold - Ctrl+B"(click)="undo()"><i class="fa fa-folder-open" aria-hidden="true"></i></button>
@@ -39,7 +39,7 @@
           <li role="menuitem"><a class="dropdown-item" *ngFor="let size of sizes" (click)="setFontSize(size)">{{size}}</a></li>
         </ul>
       </div>
-      <div tooltip="Theme" class="btn-group col-sm-2" dropdown>
+      <div tooltip="Theme" class="btn-group" dropdown>
         <button class="btn" data-original-title="Bold - Ctrl+B" (click)="setTheme(selectedTheme)">{{selectedTheme.name}}</button>
         <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
           <span class="caret"></span>
