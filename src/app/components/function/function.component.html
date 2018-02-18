@@ -63,6 +63,7 @@
                 <div class="row">
                   <div class="col-sm-12">
                     <editor [mode]="'javascript'" [code]="func.function"
+                            [readonly]="operation == 'test'"
                             [snippets]="snippets"
                             (onCodeUpdate)="onChange($event)"></editor>
                   </div>
@@ -104,7 +105,7 @@
                       style="min-height: 200px; width:100%; overflow: auto;"></ace-editor>-->
                     <div class="row">
                       <div class="col-sm-12">
-                        <editor [mode]="'javascript'" [code]="ruleDetail.json" (onCodeUpdate)="onRuleJSONChange($event,ruleDetail)"></editor>
+                        <editor [mode]="'javascript'" [readonly]="operation == 'test'" [code]="ruleDetail.json" (onCodeUpdate)="onRuleJSONChange($event,ruleDetail)"></editor>
                       </div>
                     </div>
                     <br/>

@@ -15,7 +15,8 @@ export class EditorComponent implements OnInit {
     this.id = idNumber
   }
 
-  @Input() code
+  @Input() code;
+  @Input() readonly = false;
   @Input() mode;
   @Output() onCodeUpdate = new EventEmitter();
 
@@ -38,6 +39,7 @@ export class EditorComponent implements OnInit {
     setTimeout(()=>{
       this.editor = ace.edit("editor" + this.id);
       this.editor.session.setMode(this.modes[this.mode]);
+      this.editor.setReadOnly(this.readonly)
       this.editor.setValue(this.code);
       this.setTheme(this.themeGroups[0].themes[0])
       this.setFontSize(this.fontSize);
