@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 declare var ace
+window['define'] = ace.define
+ace.config.set("basePath", "assets/js/ace");
 declare var js_beautify
 
 let idNumber = 0;
@@ -66,8 +68,47 @@ export class EditorComponent implements OnInit {
     })
   }
   themeGroups = [
-    {name:"Bright",themes:[{name:"Chrome",url:"ace/theme/chrome"}]},
-    {name:"Dark",themes:[{name:"Monokai",url:"ace/theme/monokai"}]}
+    {name:"Bright",themes:[
+      {name:"Chrome",url:"ace/theme/chrome"},
+      {name:"Clouds",url:"ace/theme/clouds"},
+      {name:"Crimson Editor",url:"ace/theme/crimson_editor"},
+      {name:"Dawn",url:"ace/theme/dawn"},
+      {name:"Dreamweaver",url:"ace/theme/dreamweaver"},
+      {name:"Eclipse",url:"ace/theme/eclipse"},
+      {name:"GitHub",url:"ace/theme/github"},
+      {name:"IPlastic",url:"ace/theme/iplastic"},
+      {name:"Solarized Light",url:"ace/theme/solarized_light"},
+      {name:"TextMate",url:"ace/theme/textmate"},
+      {name:"Tomorrow",url:"ace/theme/tomorrow"},
+      {name:"XCode",url:"ace/theme/xcode"},
+      {name:"Kuroir",url:"ace/theme/kuroir"},
+      {name:"KatzenMilch",url:"ace/theme/katzenmilch"},
+      {name:"SQL Server",url:"ace/theme/sqlserver"}
+      ]},
+    {name:"Dark",themes:[
+      {name:"Ambiance",url:"ace/theme/ambiance"},
+      {name:"Chaos",url:"ace/theme/chaos"},
+      {name:"Clouds Midnight",url:"ace/theme/clouds_midnight"},
+      {name:"Dracula",url:"ace/theme/dracula"},
+      {name:"Cobalt",url:"ace/theme/cobalt"},
+      {name:"Gruvbox",url:"ace/theme/gruvbox"},
+      {name:"Green on Black",url:"ace/theme/gob"},
+      {name:"idle Fingers",url:"ace/theme/idle_fingers"},
+      {name:"krTheme",url:"ace/theme/kr_theme"},
+      {name:"Merbivore",url:"ace/theme/merbivore"},
+      {name:"Merbivore Soft",url:"ace/theme/merbivore_soft"},
+      {name:"Mono Industrial",url:"ace/theme/mono_industrial"},
+      {name:"Monokai",url:"ace/theme/monokai"},
+      {name:"Pastel on dark",url:"ace/theme/pastel_on_dark"},
+      {name:"Solarized Dark",url:"ace/theme/solarized_dark"},
+      {name:"Terminal",url:"ace/theme/terminal"},
+      {name:"Tomorrow Night",url:"ace/theme/tomorrow_night"},
+      {name:"Tomorrow Night Blue",url:"ace/theme/tomorrow_night_blue"},
+      {name:"Tomorrow Night Bright",url:"ace/theme/tomorrow_night_bright"},
+      {name:"Tomorrow Night 80s",url:"ace/theme/tomorrow_night_eighties"},
+      {name:"Twilight",url:"ace/theme/twilight"},
+      {name:"Vibrant Ink",url:"ace/theme/vibrant_ink"}
+    ]}
   ]
   selectedTheme
   setTheme(theme){
