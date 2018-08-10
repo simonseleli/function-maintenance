@@ -1,7 +1,7 @@
 import { Component, OnInit,ViewChild } from '@angular/core';
 import {FunctionService} from "../../services/function.service";
-import {ContextMenuService} from "ngx-contextmenu/lib/contextMenu.service";
-import {ContextMenuComponent} from "ngx-contextmenu/lib/contextMenu.component";
+import {ContextMenuService} from "ngx-contextmenu";
+import {ContextMenuComponent} from "ngx-contextmenu";
 import { ActivatedRoute,Params,Router,NavigationStart } from '@angular/router';
 import {ToasterService} from 'angular2-toaster';
 import {UserService} from "../../services/user.service";

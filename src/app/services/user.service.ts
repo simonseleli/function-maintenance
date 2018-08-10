@@ -32,7 +32,7 @@ export class UserService {
         observable.next(this.user);
         observable.complete();
       }else{
-        this.http.get("25/me").subscribe((results)=>{
+        this.http.get("26/me").subscribe((results)=>{
           this.user = results;
           observable.next(this.user);
           observable.complete();

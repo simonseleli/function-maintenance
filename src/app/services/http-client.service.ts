@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import {Http, Headers} from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class HttpClientService {
   public APIURL = "../../../api/";
-  constructor(private http: Http) {
+  constructor(private http: HttpClient) {
     this.http = http;
   }
 
-  createAuthorizationHeader(headers:Headers,options?) {
+  createAuthorizationHeader(headers:HttpHeaders,options?) {
     if(options){
       for(let key in options){
         headers.append(key, options[key]);
@@ -17,7 +17,7 @@ export class HttpClientService {
   }
 
   get(url) {
-    let headers = new Headers();
+    let headers = new HttpHeaders();
     this.createAuthorizationHeader(headers);
     return this.http.get(this.APIURL + url, {
       headers: headers
@@ -25,21 +25,21 @@ export class HttpClientService {
   }
 
   post(url, data,options?) {
-    let headers = new Headers();
+    let headers = new HttpHeaders();
     this.createAuthorizationHeader(headers,options);
     return this.http.post(this.APIURL + url, data, {
       headers: headers
     }).map(this.responseHandler());
   }
   put(url, data,options?) {
-    let headers = new Headers();
+    let headers = new HttpHeaders();
     this.createAuthorizationHeader(headers,options);
     return this.http.put(this.APIURL + url, data, {
       headers: headers
     }).map(this.responseHandler());
   }
   delete(url,options?) {
-    let headers = new Headers();
+    let headers = new HttpHeaders();
     this.createAuthorizationHeader(headers,options);
     return this.http.delete(this.APIURL + url, {
       headers: headers

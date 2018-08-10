@@ -20,9 +20,9 @@
                 <div style="float: right;margin-top: 4px;">Layout</div>
               </a>
               <div *dropdownMenu class="dropdown-menu dropdown-menu-left layout" role="menu">
-                <app-layout (onLayoutUpdate)="onLayoutUpdate($event)">
+                <!--<app-layout (onLayoutUpdate)="onLayoutUpdate($event)">
 
-                </app-layout>
+                </app-layout>-->
               </div>
             </div>
 
@@ -49,11 +49,11 @@
           class="chart-container"
           *ngIf="currentVisualization === 'CHART'"
         >
-          <app-chart-item
+          <!--<app-chart-item
             [chartConfiguration]="chartConfiguration"
             [analyticsObject]="results"
             [chartHeight]="chartHeight"
-          ></app-chart-item>
+          ></app-chart-item>-->
         </div>
         <!--end of chart block-->
 
@@ -62,11 +62,11 @@
           class="table-container"
           *ngIf="currentVisualization === 'TABLE'"
         >
-          <app-table-item
+          <!--<app-table-item
             [analyticsObject]="results"
             [tableConfiguration]="tableConfiguration"
           >
-          </app-table-item>
+          </app-table-item>-->
         </div>
         <!--end of table block-->
 

@@ -1,6 +1,0 @@
-[submodule "src/app/chart-module"]
-	path = src/app/chart-module
-	url = git@github.com:hisptz/chart-module.git
-[submodule "src/app/table"]
-	path = src/app/table
-	url = git@github.com:hisptz/table-module.git

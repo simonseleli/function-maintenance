@@ -1,6 +1,4 @@
 import {Component, OnInit, EventEmitter, Output, Input, ViewChild} from '@angular/core';
-import {PeriodFilterComponent} from "../period-filter/period-filter.component";
-import {OrgUnitFilterComponent} from "../org-unit-filter/org-unit-filter.component";
 
 @Component({
   selector: 'app-selector',
@@ -72,10 +70,8 @@ export class SelectorComponent implements OnInit {
     OneZero:{name:"1 Org Unit & 0 Period",orgUnits:1,periods:0,exception:true}
   }
   currentRunOption
-  @ViewChild('periodTree') periodComponent: PeriodFilterComponent;
-  @ViewChild('orgUnitTree') orgUnitComponent: OrgUnitFilterComponent;
   run(counts) {
-    let parameters:any = {
+    /*let parameters:any = {
       rule:this.parameters.rule
     }
     if(counts.orgUnits == 2){
@@ -95,7 +91,7 @@ export class SelectorComponent implements OnInit {
     }
     parameters.pe = this.periodComponent.getSelectedPeriods()
     this.onRun.emit(parameters);
-    this.currentRunOption = counts;
+    this.currentRunOption = counts;*/
   }
 
   dataSelector;

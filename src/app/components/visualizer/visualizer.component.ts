@@ -1,16 +1,14 @@
 import { Component, OnInit, Input} from '@angular/core';
-import {VisualizerService} from "../../dashboard-card/providers/visualizer.service";
 
 @Component({
   selector: 'app-visualizer',
   templateUrl: './visualizer.component.html',
-  styleUrls: ['./visualizer.component.css'],
-  providers:[VisualizerService]
+  styleUrls: ['./visualizer.component.css']
 })
 export class VisualizerComponent implements OnInit {
 
   @Input() analyticsResults;
-  constructor(private visualizerService:VisualizerService) { }
+  constructor() { }
 
   chartObject
   ngOnInit() {

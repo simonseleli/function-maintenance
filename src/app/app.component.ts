@@ -1,11 +1,7 @@
 import { Component,ViewChild } from '@angular/core';
-import {HttpClientService} from "./services/http-client.service";
-import {Observable} from 'rxjs/Rx';
 import {FunctionService} from "./services/function.service";
 import {FunctionParameters} from "./models/function-parameters";
-import {FunctionObject} from "./models/function-object";
-import { ActivatedRoute,Params,Router,NavigationStart } from '@angular/router';
-import {TourService,IStepOption} from "ngx-tour-ng-bootstrap";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -20,40 +16,11 @@ export class AppComponent {
     ou: "v5UR6nUPljk",
     pe: "2016Q4"
   }
-  constructor(private functionService: FunctionService, public router: Router,private tourService:TourService){
+  constructor(private functionService: FunctionService, public router: Router){
 
-    this.tourService.initialize([
-      /*{
-      anchorId: 'createid',
-      content: 'Create a new function by click this button.',
-      title: 'Create A function',
-      route:'/functions'
-    },*/ {
-      anchorId: 'functionname',
-      content: 'Write the name which will identify your function',
-      title: 'Funciton Name',
-      route:'/functions/new'
-    },
-      {
-        anchorId: 'rules',
-        content: 'Rules Are definitions of what data to act upon. A group of data that is required as input. <br /> This is',
-        title: 'Funciton Rules'
-      },
-      {
-        anchorId: 'addrule',
-        //clickid:true,
-        content: 'Add a new rule. Pay attention to the json since this will be used as data passed as input to your function definition.',
-        title: 'Funciton Rules'
-      }
-    ]);
-    this.tourService.stepShow$.subscribe((step: IStepOption) => {
-      if(step.anchorId == "addrule"){
-        console.log(step);
-      }
-    });
   }
   startTour(){
-    this.tourService.start()
+
   }
   text:string;
   options:any = {fontSize:"20px",maxLines: Infinity};
