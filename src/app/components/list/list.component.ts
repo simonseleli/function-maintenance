@@ -30,6 +30,7 @@ export class ListComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
     this.functionService.getAll().subscribe((functions:any)=> {
+      //alert("Function" + JSON.stringify(functions));
       this.functions = functions;
       this.userService.getUserGroups().subscribe((userGroups:any)=> {
         this.userGroups = userGroups;

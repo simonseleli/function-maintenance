@@ -27,6 +27,7 @@ export class FunctionComponent implements OnInit {
       this.init()
     })
   }
+
   options:any = {maxLines: 1000, printMargin: false,fontFamily: "monospace",fontSize: 13};
   func;
   loading;
@@ -36,7 +37,7 @@ export class FunctionComponent implements OnInit {
     this.loading = true;
     if(this.id == "new"){
       this.functionService.getId().subscribe((results:any)=> {
-        this.http.get("dataElements.json?pageSize=1").subscribe((dataElementResults)=>{
+        this.http.get("dataElements.json?pageSize=1").subscribe((dataElementResults:any)=>{
           this.func={
             function:'//Example of function implementation\n' +
             'parameters.progress(50);\n' +

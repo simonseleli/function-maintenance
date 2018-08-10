@@ -32,6 +32,12 @@
     </div>
   </div>
   <app-selector [rules]="func.rules" (onRun)="onRun($event)" (onLayoutUpdate)="onLayoutUpdate($event)"></app-selector>
+  <ngx-dhis2-visualization
+    [id]="'visualizationId'"
+    [type]="'CHART'"
+    [name]="'Visualization'"
+    [visualizationLayers]="visualizationLayers"
+  ></ngx-dhis2-visualization>
   <app-dashboard *ngIf="show" [parameters]="parameters" [func]="testFunc"></app-dashboard><br/>
   <div class="row">
     <div [ngClass]="{'col-sm-6':!functionLarge,'col-sm-3':functionLarge,'blur':functionLarge}" (click)="functionLarge = false">

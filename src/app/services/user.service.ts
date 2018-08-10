@@ -14,7 +14,7 @@ export class UserService {
         observable.next(this.userGroups);
         observable.complete();
       }else{
-        this.http.get("userGroups").subscribe((results)=>{
+        this.http.get("userGroups").subscribe((results:any)=>{
           this.userGroups = results.userGroups;
           observable.next(this.userGroups);
           observable.complete();

@@ -21,7 +21,7 @@ export class HttpClientService {
     this.createAuthorizationHeader(headers);
     return this.http.get(this.APIURL + url, {
       headers: headers
-    }).map(this.responseHandler());
+    });//.map(this.responseHandler());
   }
 
   post(url, data,options?) {
@@ -29,21 +29,21 @@ export class HttpClientService {
     this.createAuthorizationHeader(headers,options);
     return this.http.post(this.APIURL + url, data, {
       headers: headers
-    }).map(this.responseHandler());
+    });//.map(this.responseHandler());
   }
   put(url, data,options?) {
     let headers = new HttpHeaders();
     this.createAuthorizationHeader(headers,options);
     return this.http.put(this.APIURL + url, data, {
       headers: headers
-    }).map(this.responseHandler());
+    });//.map(this.responseHandler());
   }
   delete(url,options?) {
     let headers = new HttpHeaders();
     this.createAuthorizationHeader(headers,options);
     return this.http.delete(this.APIURL + url, {
       headers: headers
-    }).map(this.responseHandler());
+    });//.map(this.responseHandler());
   }
   responseHandler(){
     return (res)=>{

@@ -1,4 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~font-awesome/css/font-awesome.css";
+@import "~angular2-toaster/toaster.css";
 .t-json-viewer{
   overflow: auto !important;
 }
@@ -41,3 +44,4 @@ tab{
   background-color:#D3D3BD !important;
   opacity:0.5
 }
+

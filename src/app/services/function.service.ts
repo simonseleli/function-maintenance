@@ -82,7 +82,7 @@ export class FunctionService {
   apiVersion = ""
   getAll(){
     return new Observable((observ)=>{
-      this.http.get("dataStore/functions").subscribe((results)=>{
+      this.http.get("dataStore/functions").subscribe((results:any)=>{
         let observable = [];
         if(results.length > 0){
           results.forEach((id)=>{
@@ -100,7 +100,7 @@ export class FunctionService {
             observ.complete();
           })
         }else{
-          this.http.get("system/info").subscribe((response)=>{
+          this.http.get("system/info").subscribe((response:any)=>{
             if(parseFloat(response.version) > 2.24){
               this.apiVersion = "/24"
             }
@@ -121,12 +121,12 @@ export class FunctionService {
       },(error)=>{
         if(error.status == 404){
           let observable = [];
-          this.http.get("system/info").subscribe((response)=>{
+          this.http.get("system/info").subscribe((response:any)=>{
             if(parseFloat(response.version) > 2.24){
               this.apiVersion = "/24"
             }
             Observable.forkJoin(this.creationOfNewFunctionObseravble()).subscribe((responses:any)=>{
-              this.getAll().subscribe((funcs)=>{
+              this.getAll().subscribe((funcs:any)=>{
                 observ.next(funcs);
                 observ.complete();
               },(error)=>{
@@ -165,11 +165,11 @@ export class FunctionService {
         "name": "Facilities With Stockout",
         "description": "Number of facilities with stockout"
       };
-      this.http.get("dataElements.json?filter=name:ilike:stockout&filter=valueType:eq:BOOLEAN&rootJunction=OR&paging=false").subscribe((dataElementResults)=>{
+      this.http.get("dataElements.json?filter=name:ilike:stockout&filter=valueType:eq:BOOLEAN&rootJunction=OR&paging=false").subscribe((dataElementResults:any)=>{
         if(dataElementResults.dataElements.length == 0){
           //TODO add a provision if the dhis server has no stockout data elements
         }else{
-          this.getId(dataElementResults.dataElements.length).subscribe((codeResults)=>{
+          this.getId(dataElementResults.dataElements.length).subscribe((codeResults:any)=>{
             dataElementResults.dataElements.forEach((dataElement)=>{
               if(dataElement.displayName.toLowerCase().indexOf("stockout") >= -1){
                 let rule:any = {
@@ -193,7 +193,7 @@ export class FunctionService {
                 json: {"data": dataElementResults.dataElements[0].id}
               });
             }
-            this.save(stockout).subscribe((res)=>{
+            this.save(stockout).subscribe((res:any)=>{
               observable.next(res);
               observable.complete();
             },(error)=>{
@@ -221,11 +221,11 @@ export class FunctionService {
         "name": "Facilities With Stockout",
         "description": "Number of facilities with stockout"
       };
-      this.http.get("dataElements.json?filter=name:ilike:stockout&filter=valueType:eq:BOOLEAN&rootJunction=OR&paging=false").subscribe((dataElementResults)=>{
+      this.http.get("dataElements.json?filter=name:ilike:stockout&filter=valueType:eq:BOOLEAN&rootJunction=OR&paging=false").subscribe((dataElementResults:any)=>{
         if(dataElementResults.dataElements.length == 0){
           //TODO add a provision if the dhis server has no stockout data elements
         }else{
-          this.getId(dataElementResults.dataElements.length).subscribe((codeResults)=>{
+          this.getId(dataElementResults.dataElements.length).subscribe((codeResults:any)=>{
             dataElementResults.dataElements.forEach((dataElement)=>{
               if(dataElement.displayName.toLowerCase().indexOf("stockout") >= -1){
                 let rule:any = {
@@ -249,7 +249,7 @@ export class FunctionService {
                 json: {"data": dataElementResults.dataElements[0].id}
               });
             }
-            this.save(stockout).subscribe((res)=>{
+            this.save(stockout).subscribe((res:any)=>{
               observable.next(res);
               observable.complete();
             },(error)=>{
@@ -277,8 +277,8 @@ export class FunctionService {
         "name": "Limit Reporting Rate to Maximum of 100%",
         "description": "This returns completeness. If the completeness is over a hundred it returns 100."
       };
-      this.http.get("dataSets.json?paging=false").subscribe((dataSetResults)=>{
-        this.getId(dataSetResults.dataSets.length + 1).subscribe((codeResults)=>{
+      this.http.get("dataSets.json?paging=false").subscribe((dataSetResults:any)=>{
+        this.getId(dataSetResults.dataSets.length + 1).subscribe((codeResults:any)=>{
           dataSetResults.dataSets.forEach((dataSet,index)=>{
             let rule:any = {
               id: codeResults.codes[index],
@@ -291,7 +291,7 @@ export class FunctionService {
             }
             completeness.rules.push(rule);
           })
-          this.save(completeness).subscribe((res)=>{
+          this.save(completeness).subscribe((res:any)=>{
             observable.next(res);
             observable.complete();
           },(error)=>{
@@ -317,8 +317,8 @@ export class FunctionService {
         "name": "Proportion of Early Completeness",
         "description": "Calculates how early the report was submitted\n\nNumerator: Is the difference from the submission date and deadline date\n\nDenominator: Number of submission date"
       };
-      this.http.get("dataSets.json?paging=false").subscribe((dataSetResults)=>{
-        this.getId(dataSetResults.dataSets.length + 1).subscribe((codeResults)=>{
+      this.http.get("dataSets.json?paging=false").subscribe((dataSetResults:any)=>{
+        this.getId(dataSetResults.dataSets.length + 1).subscribe((codeResults:any)=>{
           dataSetResults.dataSets.forEach((dataSet,index)=>{
             let rule:any = {
               id: codeResults.codes[index],
@@ -331,7 +331,7 @@ export class FunctionService {
             }
             completeness.rules.push(rule);
           })
-          this.save(completeness).subscribe((res)=>{
+          this.save(completeness).subscribe((res:any)=>{
             observable.next(res);
             observable.complete();
           },(error)=>{
@@ -357,8 +357,8 @@ export class FunctionService {
         "name": "Reporting Rates By Filled data",
         "description": "Calculates the reporting rate by the amount of fields filled in the report",
       };
-      this.http.get("dataSets.json?paging=false").subscribe((dataSetResults)=>{
-        this.getId(dataSetResults.dataSets.length + 1).subscribe((codeResults)=>{
+      this.http.get("dataSets.json?paging=false").subscribe((dataSetResults:any)=>{
+        this.getId(dataSetResults.dataSets.length + 1).subscribe((codeResults:any)=>{
           dataSetResults.dataSets.forEach((dataSet,index)=>{
             let rule:any = {
               id: codeResults.codes[index],
@@ -371,7 +371,7 @@ export class FunctionService {
             }
             completeness.rules.push(rule);
           })
-          this.save(completeness).subscribe((res)=>{
+          this.save(completeness).subscribe((res:any)=>{
             observable.next(res);
             observable.complete();
           },(error)=>{
@@ -397,8 +397,8 @@ export class FunctionService {
         "name": "Sample Proportion of Facilities Given a condition",
         "description": "This calculates the percentage of facilities given a condition which can be modified to provide the required condition. Currently it calculates the proportion of organisation units reported on a given data set reporting rate"
       };
-      this.http.get("dataSets.json?paging=false").subscribe((dataSetResults)=>{
-        this.getId(dataSetResults.dataSets.length + 1).subscribe((codeResults)=>{
+      this.http.get("dataSets.json?paging=false").subscribe((dataSetResults:any)=>{
+        this.getId(dataSetResults.dataSets.length + 1).subscribe((codeResults:any)=>{
           dataSetResults.dataSets.forEach((dataSet,index)=>{
             let rule:any = {
               id: codeResults.codes[index],
@@ -411,7 +411,7 @@ export class FunctionService {
             }
             completeness.rules.push(rule);
           })
-          this.save(completeness).subscribe((res)=>{
+          this.save(completeness).subscribe((res:any)=>{
             observable.next(res);
             observable.complete();
           },(error)=>{
@@ -437,8 +437,8 @@ export class FunctionService {
         "description": "Calculates the prediction given past data",
         "name": "Predictor"
       };
-      this.http.get("dataElements.json?pageSize=10").subscribe((dataElementResults)=>{
-        this.getId(dataElementResults.dataElements.length + 1).subscribe((codeResults)=>{
+      this.http.get("dataElements.json?pageSize=10").subscribe((dataElementResults:any)=>{
+        this.getId(dataElementResults.dataElements.length + 1).subscribe((codeResults:any)=>{
           dataElementResults.dataElements.forEach((dataElement,index)=>{
             let rule:any = {
               id: codeResults.codes[index],
@@ -461,7 +461,7 @@ export class FunctionService {
             }
             completeness.rules.push(rule);
           })
-          this.save(completeness).subscribe((res)=>{
+          this.save(completeness).subscribe((res:any)=>{
             observable.next(res);
             observable.complete();
           },(error)=>{
@@ -492,8 +492,8 @@ export class FunctionService {
         "name": "Percentage of Org Units Not Reporting a dataset",
         "description": "Calculates the percentage of organisation units not reporting a dataset",
       };
-      this.http.get("dataSets.json?paging=false&fields=id,displayName,organisationUnits[level]").subscribe((dataSetResults)=>{
-        this.getId(dataSetResults.dataSets.length + 1).subscribe((codeResults)=>{
+      this.http.get("dataSets.json?paging=false&fields=id,displayName,organisationUnits[level]").subscribe((dataSetResults:any)=>{
+        this.getId(dataSetResults.dataSets.length + 1).subscribe((codeResults:any)=>{
           dataSetResults.dataSets.forEach((dataSet,index)=>{
             let level = 1;
             if(dataSet.organisationUnits.length > 0){
@@ -510,7 +510,7 @@ export class FunctionService {
             }
             completeness.rules.push(rule);
           })
-          this.save(completeness).subscribe((res)=>{
+          this.save(completeness).subscribe((res:any)=>{
             observable.next(res);
             observable.complete();
           },(error)=>{
