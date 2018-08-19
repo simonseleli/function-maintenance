@@ -1,114 +1,64 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { AceEditorModule } from 'ng2-ace-editor';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { NgxDhis2MenuModule } from '@hisptz/ngx-dhis2-menu';
 
 import { AppComponent } from './app.component';
-import {HttpClientService} from './services/http-client.service';
-import {SelectModule} from 'ng2-select';
-import { RunnerComponent } from './components/runner/runner.component';
-import { VisualizerComponent } from './components/visualizer/visualizer.component';
-import { RulesComponent } from './components/rules/rules.component';
-import { MessageComponent } from './components/message/message.component';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { TabsModule } from 'ngx-bootstrap/tabs';
-import {FilterLevelPipe} from './services/filter-level.pipe';
-import { SelectorComponent } from './components/selector/selector.component';
-import {DataFilterComponent} from './components/data-filter/data-filter.component';
-import {FilterByNamePipe} from './services/filter-by-name.pipe';
-import {DataFilterService} from './services/data-filter.service';
-import {FunctionService} from './services/function.service';
-import {NgxPaginationModule} from 'ngx-pagination';
-import {DataService} from './services/data.service';
-import {LocalStorageService} from './services/local-storage.service';
-import { AppRoutingModule } from './app-routing.module';
-import { ListComponent } from './components/list/list.component';
-import { FunctionComponent } from './components/function/function.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-
-import { MomentModule } from 'angular2-moment';
-import {ToasterModule,ToasterService} from 'angular2-toaster';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {UserService} from './services/user.service';
-import { HasAccessPipe } from './pipes/has-access.pipe';
-import { SearchPipe } from './pipes/search.pipe';
-import { HasFunctionAccessPipe } from './pipes/has-function-access.pipe';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { PopoverModule } from 'ngx-bootstrap/popover';
-import {ContextMenuModule} from 'ngx-contextmenu';
-import {DataTableModule} from 'angular2-datatable';
-import { DataFilterPipe } from './pipes/data-filter.pipe';
-import {MenuModule} from './modules/menu/menu.module';
-import {OrgUnitService} from './services/org-unit.service';
-import { RuleSelectorComponent } from './components/rule-selector/rule-selector.component';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { DefaultRulePipe } from './pipes/default-rule.pipe';
-import { EditorComponent } from './components/editor/editor.component';
-import { NgxDhis2VisualizationModule } from 'ngx-dhis2-visualization';
 import { StoreModule } from '@ngrx/store';
-import { HttpClientModule } from '@angular/common/http';
-import { reducers, metaReducers } from './reducers';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
-import { AppEffects } from './app.effects';
+import { reducers, metaReducers, effects } from './store';
+import { containers } from './containers';
+import { AppRoutingModule } from './app-routing.module';
+import {
+  StoreRouterConnectingModule,
+  RouterStateSerializer
+} from '@ngrx/router-store';
+import { RouteSerializer, CoreModule } from './core';
+import { HttpClient } from '@angular/common/http';
 
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { SharedModule } from './shared/shared.module';
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    RunnerComponent,
-    VisualizerComponent,
-    RulesComponent,
-    MessageComponent,
-    FilterLevelPipe,
-    SelectorComponent,
-    DataFilterComponent,
-    FilterByNamePipe,
-    ListComponent,
-    FunctionComponent,
-    DashboardComponent,
-    HasAccessPipe,
-    SearchPipe,
-    HasFunctionAccessPipe,
-    DataFilterPipe,
-    RuleSelectorComponent,
-    DefaultRulePipe,
-    EditorComponent
-  ],
+  declarations: [AppComponent, ...containers],
   imports: [
     BrowserModule,
-    BsDropdownModule.forRoot(),
-    DataTableModule,
-    MenuModule,
-    FormsModule,
-    HttpClientModule,
-    AceEditorModule,
-    SelectModule,
-    NgxDhis2VisualizationModule.forChild(),
-    TooltipModule.forRoot(),
-    TabsModule.forRoot(),
-    PopoverModule.forRoot(),
-    //DndModule,
-    NgxPaginationModule,
-    AppRoutingModule,
-    ToasterModule,
     BrowserAnimationsModule,
-    CollapseModule.forRoot(),
-    ContextMenuModule.forRoot({
-      useBootstrap4: true,
-      autoFocus: true,
+    CoreModule,
+    SharedModule,
+
+    /**
+     * Translation module
+     */
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
     }),
-    MomentModule,
+    AppRoutingModule,
+    /**
+     * @ngrx/router-store keeps router state up-to-date in the store
+     */
+    StoreRouterConnectingModule,
+    /**
+     * Menu  module
+     */
+    NgxDhis2MenuModule.forRoot(),
     StoreModule.forRoot(reducers, { metaReducers }),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
-    EffectsModule.forRoot([AppEffects])
+    EffectsModule.forRoot(effects)
   ],
-  providers: [
-    HttpClientService,
-    OrgUnitService,UserService,DataFilterService,ToasterService,
-    FunctionService,DataService,LocalStorageService
-  ],
+  providers: [{ provide: RouterStateSerializer, useClass: RouteSerializer }],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

@@ -1,0 +1,5 @@
+.selected {
+  padding: 5px;
+  background-color: burlywood;
+  display: inline;
+}

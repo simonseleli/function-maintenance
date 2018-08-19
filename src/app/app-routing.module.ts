@@ -1,26 +1,20 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {ListComponent} from "./components/list/list.component";
-import {FunctionComponent} from "./components/function/function.component";
-//import {DataEntryComponent} from "./data-entry.component";
+import { HomeComponent } from './containers';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/functions', pathMatch: 'full' },
-
   {
-    path: 'functions', component: ListComponent,
-  },
-  {
-    path: 'functions/:id', component: FunctionComponent,
-  },
-  {
-    path: 'functions/:id/:operation', component: FunctionComponent,
+    path: '',
+    component: HomeComponent
   }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes,{useHash: true})],
-  exports: [RouterModule],
-  providers: []
+  imports: [
+    RouterModule.forRoot(routes, {
+      useHash: true
+    })
+  ],
+  exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

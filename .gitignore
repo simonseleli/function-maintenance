@@ -4,7 +4,6 @@
 /dist
 /tmp
 /out-tsc
-proxy.conf.json
 
 # dependencies
 /node_modules
@@ -28,19 +27,13 @@ proxy.conf.json
 # misc
 /.sass-cache
 /connect.lock
-/coverage/*
+/coverage
 /libpeerconnection.log
 npm-debug.log
+yarn-error.log
 testem.log
 /typings
-
-# e2e
-/e2e/*.js
-/e2e/*.map
 
 # System Files
 .DS_Store
 Thumbs.db
-
-proxy-config.json
-upload.sh

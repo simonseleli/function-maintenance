@@ -1,0 +1,47 @@
+<div class="container-fluid">
+  <!-- header section -->
+  <div class="row" style="margin-bottom: 20px;">
+    <div class="col-6">
+      <ngx-dhis2-selection-filters (filterUpdate)="onFilterUpdateAction($event)" [selectionFilterConfig]="selectionFilterConfig"
+        [dataSelections]="currentVisualizationDataSelections$ | async">
+      </ngx-dhis2-selection-filters>
+    </div>
+    <div class="col-6">
+      <app-favorite-filter [currentUser]="currentUser$ | async" (addFavorite)="onAddFavoriteAction($event)" (createFavorite)="onCreateFavoriteAction()"></app-favorite-filter>
+    </div>
+  </div>
+  <!-- end of header section -->
+
+  <!-- visualization card section -->
+  <div class="row">
+    <div class="col-12" *ngIf="(currentVisualization$ | async) && (currentVisualization$ | async).layers.length > 0">
+      <ngx-dhis2-visualization [id]="(currentVisualization$ | async)?.id" [visualizationLayers]="(currentVisualization$ | async)?.layers"
+        [currentUser]="currentUser$ | async" [systemInfo]="systemInfo$ | async"></ngx-dhis2-visualization>
+    </div>
+  </div>
+  <!-- end of visualization card section -->
+
+  <!-- function operation section -->
+  <div class="row" style="margin-top: 20px;">
+    <div class="col-12">
+      <h5>
+        Functions
+      </h5>
+      <ul>
+        <li *ngFor="let functionObject of functionList$ | async">
+          <div class="{{functionObject.selected ? 'selected' : ''}}">
+            <b>Name: </b>{{functionObject.name}} - selected: {{functionObject.selected}}</div>
+          <h6>
+            <b>Rules</b>
+          </h6>
+          <ul>
+            <li *ngFor="let functionRule of functionObject.rules">
+              <div class="{{functionRule.selected ? 'selected' : ''}}">{{functionRule.name}} - selected: {{functionRule.selected}}</div>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- end of function operations section -->
+</div>
