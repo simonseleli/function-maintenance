@@ -24,7 +24,10 @@ import {
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/reducers/function-rule.reducer';
 
 import * as fromModels from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
-import { getFunctions } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors';
+import {
+  getFunctions,
+  getSelectedFunctions
+} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors';
 import { UpdateFunctionRule } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
 import { UpdateFunction } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
 
@@ -62,6 +65,23 @@ export class HomeComponent implements OnInit {
       new UpdateCurrentVisualizationWithDataSelectionsAction(dataSelections)
     );
 
+    this.store
+      .select(getSelectedFunctions)
+      .pipe(take(1))
+      .subscribe((selectedFunctions: any[]) => {
+        _.each(selectedFunctions, (selectedFunction: any) => {
+          this.store.dispatch(
+            new UpdateFunction(selectedFunction.id, { selected: false })
+          );
+          _.each(selectedFunction.rules, (selectedRule: any) => {
+            this.store.dispatch(
+              new UpdateFunctionRule(selectedRule.id, { selected: false })
+            );
+          });
+        });
+      });
+
+    // TODO move this logic to function effects
     const dxObject = _.find(dataSelections, ['dimension', 'dx']);
     const functionRuleList = _.filter(
       dxObject ? dxObject.items : [],

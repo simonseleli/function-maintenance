@@ -53,7 +53,8 @@ export const getSelectedFunctions = createSelector(
                         selectedFunction.rules || [],
                         ruleId => functionRuleEntities[ruleId]
                       ),
-                      functionRule => functionRule !== null
+                      functionRule =>
+                        functionRule !== null && functionRule.selected
                     )
                   }
                 : null;
