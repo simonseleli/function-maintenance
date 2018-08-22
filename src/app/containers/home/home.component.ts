@@ -78,6 +78,7 @@ export class HomeComponent implements OnInit {
     };
   }
 
+  selectedFunction;
   ngOnInit() {}
 
   onFilterUpdateAction(dataSelections: VisualizationDataSelection[]) {
