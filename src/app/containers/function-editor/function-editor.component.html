@@ -1,0 +1,148 @@
+<div class="row">
+  <div class="col-3">
+    <div class="card">
+      <div class="card-header">
+        Rules
+      </div>
+      <div class="card-body">
+        <ng-container *ngFor="let functionRule of func.rules">
+          <div (click)="editRule(functionRule)" class="{{functionRule.selected ? 'selected' : ''}}">{{functionRule.name}} - selected: {{functionRule.selected}}</div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div [ngClass]="{'col-sm-6':!functionLarge,'col-sm-9':functionLarge,'blur':!functionLarge}" (click)="functionLarge = true">
+    <div class="card panel-default">
+      <div class="card-body">
+        <div>
+          <tabset #staticTabs>
+            <tab id="tab1">
+              <ng-template tabHeading>
+                <span class="wrap" tooltip="{{func.name}}">{{func.name? func.name:"New Function"}}</span>.js
+              </ng-template>
+              <div class="row">
+                <div class="col-sm-12">
+                  <editor [mode]="'javascript'" [code]="func.function"
+                          [readonly]="operation == 'test'"
+                          [snippets]="snippets"
+                          (onCodeUpdate)="onChange($event)"></editor>
+                </div>
+              </div>
+            </tab>
+            <tab *ngFor="let ruleDetail of ruleDetails"[removable]="true">
+              <ng-template tabHeading>
+                <span class="wrap" tooltip="{{ruleDetail.name}}">{{ruleDetail.name == ""? "New Rule":ruleDetail.name}}</span>.json<span class="bs-remove-tab" (click)="removeRule(ruleDetail)"> ❌</span>
+              </ng-template>
+              <div class="row">
+                <div class="col-sm-6">
+                  <label>Name:</label>
+                  <input class="form-control" [(ngModel)]="ruleDetail.name"><br/>
+                </div>
+                <div class="col-sm-12">
+                  <label for="name">Description:</label>
+                  <textarea class="form-control" [(ngModel)]="ruleDetail.description"></textarea>
+                  <br/>
+                </div>
+                <div class="col-sm-12">
+                  <ng-template #popTemplate>
+                    <div class="card text-white bg-primary mb-3" style="min-width: 20rem;">
+                      <div class="card-body">
+                        <h5 class="card-title">Java Script Object Notation (JSON)</h5>
+                        <p  ng-non-bindable class="card-text">This is the json which will be used in the code as a data input.<br />
+                          Example:<br />{{ {"data":"OxYgdYZaBwS"} | json}}
+                        </p>
+                      </div>
+                    </div>
+                  </ng-template>
+                  <label for="name">JSON <i class="fa fa-info-circle" containerClass="tooltip-class" placement="right" [popover]="popTemplate"></i></label>
+                  <!--<ace-editor
+                    [(text)]="ruleDetail.json"
+                    [mode]="'javascript'"
+                    [readOnly]="false"
+                    [autoUpdateContent]="true"
+                    [durationBeforeCallback]="1000"
+                    (textChanged)="onRuleJSONChange($event,ruleDetail)"
+                    style="min-height: 200px; width:100%; overflow: auto;"></ace-editor>-->
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <editor [mode]="'javascript'" [readonly]="operation == 'test'" [code]="ruleDetail.json" (onCodeUpdate)="onRuleJSONChange($event,ruleDetail)"></editor>
+                    </div>
+                  </div>
+                  <br/>
+                </div>
+                <div class="col-sm-12">
+                  <button class="btn btn-default pull-right" (click)="removeRule(ruleDetail)">
+                    <span *ngIf="!savingRule">Cancel</span>
+                    <span *ngIf="savingRule">
+            <img width='20px' height='20px' src="assets/img/balls-3.svg" alt="">
+              </span>
+                  </button>
+                  <button class="btn btn-primary pull-right" (click)="saveRule(ruleDetail)">
+                    <span *ngIf="!savingRule && !ruleDetail.id">Add</span><span *ngIf="!savingRule && ruleDetail.id">Done</span>
+                    <span *ngIf="savingRule">
+            <img width='20px' height='20px' src="assets/img/balls-3.svg" alt="">
+              </span>
+                  </button>
+                  <br/>
+                </div>
+              </div>
+            </tab>
+          </tabset>
+        </div>
+      </div>
+    </div>
+    <div class="card-body" *ngIf="newRule">
+      <div>
+        <h5 class="card-title">Create Rule</h5>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="rulename">Name:</label>
+          <input id="rulename" class="form-control" [(ngModel)]="newRule.name"><br/>
+        </div>
+        <div class="col-sm-12">
+          <label for="name">Description:</label>
+          <textarea class="form-control" [(ngModel)]="newRule.description"></textarea>
+          <br/>
+        </div>
+        <div class="col-sm-12">
+          <ng-template #popTemplate>
+            <div class="card text-white bg-primary mb-3" style="min-width: 20rem;">
+              <div class="card-body">
+                <h5 class="card-title">Java Script Object Notation (JSON)</h5>
+                <p  ng-non-bindable class="card-text">This is the json which will be used in the code as a data input.<br />
+                  Example:<br />{{ {"data":"OxYgdYZaBwS"} | json}}
+                </p>
+              </div>
+            </div>
+          </ng-template>
+          <label for="name">JSON <i class="fa fa-info-circle" containerClass="tooltip-class" placement="right" [popover]="popTemplate"></i></label>
+          <!--<ace-editor
+            [(text)]="newRule.json"
+            [mode]="'javascript'"
+            [options]="options"
+            [readOnly]="false"
+            [autoUpdateContent]="true"
+            [durationBeforeCallback]="1000"
+            style="min-height: 200px; width:100%; overflow: auto;"></ace-editor>-->
+          <br/>
+        </div>
+        <div class="col-sm-12">
+          <button class="btn btn-default pull-right" (click)="newRule = undefined">
+            <span *ngIf="!savingRule && newRule.id">Cancel</span>
+            <span *ngIf="savingRule">
+            <img width='20px' height='20px' src="assets/img/balls-3.svg" alt="">
+              </span>
+          </button>
+          <button class="btn btn-primary pull-right" (click)="saveRule()">
+            <span *ngIf="!savingRule && !newRule.id">Add</span><span *ngIf="!savingRule && newRule.id">Done</span>
+            <span *ngIf="savingRule">
+            <img width='20px' height='20px' src="assets/img/balls-3.svg" alt="">
+              </span>
+          </button>
+          <br/>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

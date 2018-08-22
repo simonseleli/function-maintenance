@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { NgxDhis2MenuModule } from '@hisptz/ngx-dhis2-menu';
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { StoreModule } from '@ngrx/store';
@@ -22,18 +23,29 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { SharedModule } from './shared/shared.module';
+import { FunctionEditorComponent } from './containers/function-editor/function-editor.component';
+import { EditorComponent } from './containers/editor/editor.component';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { PopoverModule } from 'ngx-bootstrap/popover';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
-  declarations: [AppComponent, ...containers],
+  declarations: [AppComponent, ...containers, FunctionEditorComponent, EditorComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     CoreModule,
+    TooltipModule.forRoot(),
+    TabsModule.forRoot(),
+    PopoverModule.forRoot(),
+    CollapseModule.forRoot(),
     SharedModule,
+    FormsModule,
 
     /**
      * Translation module

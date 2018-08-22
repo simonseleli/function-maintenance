@@ -1,0 +1,18 @@
+#editor {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  min-height: 300px;
+}
+.ace-editor{
+  border:1px solid #C1C1C1;
+  position: relative !important;
+  right: -1.25rem;
+  padding: .75rem 1.25rem;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  min-height: 300px;
+}

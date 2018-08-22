@@ -54,6 +54,7 @@
     "lodash": "^4.17.10",
     "ng2-dnd": "^5.0.2",
     "ng2-dragula": "^2.0.2",
+    "ngx-bootstrap": "^3.0.1",
     "ngx-pagination": "^3.2.0",
     "polylabel": "^1.0.2",
     "rxjs": "^6.0.0",
