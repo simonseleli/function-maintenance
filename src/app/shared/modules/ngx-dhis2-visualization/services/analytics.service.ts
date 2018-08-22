@@ -93,7 +93,10 @@ export class AnalyticsService {
     const functionAnalyticsPromises = _.map(dxObject.items, (dxItem: any) => {
       let functionPromise = of(null);
       try {
-        const functionRuleJson = JSON.parse(dxItem.ruleDefinition.json);
+        const functionRuleJson =
+          typeof dxItem.ruleDefinition.json === 'string'
+            ? JSON.parse(dxItem.ruleDefinition.json)
+            : dxItem.ruleDefinition.json;
         functionPromise = this._runFunction(
           {
             pe: peValue,
@@ -103,7 +106,8 @@ export class AnalyticsService {
               json: functionRuleJson
             },
             success: result => {},
-            error: error => {}
+            error: error => {},
+            progress: progress => {}
           },
           dxItem.functionObject ? dxItem.functionObject.functionString : ''
         );
