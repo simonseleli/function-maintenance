@@ -24,23 +24,8 @@
   <!-- function operation section -->
   <div class="row" style="margin-top: 20px;">
     <div class="col-12">
-      <h5>
-        Functions
-      </h5>
-      <ul>
-        <li *ngFor="let functionObject of functionList$ | async">
-          <div class="{{functionObject.selected ? 'selected' : ''}}">
-            <b>Name: </b>{{functionObject.name}} - selected: {{functionObject.selected}}</div>
-          <h6>
-            <b>Rules</b>
-          </h6>
-          <ul>
-            <li *ngFor="let functionRule of functionObject.rules">
-              <div class="{{functionRule.selected ? 'selected' : ''}}">{{functionRule.name}} - selected: {{functionRule.selected}}</div>
-            </li>
-          </ul>
-        </li>
-      </ul>
+      <app-function-management [functionList]="functionList$ | async" [functionRules]="functionRules$ | async" (activeFunction)="onActivateFunctionObject($event)"
+        (activeFunctionRule)="onActivateFunctionRule($event)"></app-function-management>
     </div>
   </div>
   <!-- end of function operations section -->

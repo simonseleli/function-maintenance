@@ -12,14 +12,31 @@ export const getFunctionInitiatedStatus = createSelector(
   (functionState: fromFunction.State) => functionState.loadInitiated
 );
 
+export const getActiveFunctionId = createSelector(
+  fromFunction.getFunctionState,
+  (functionState: fromFunction.State) => functionState.activeFunctionId
+);
+export const getActiveFunction = createSelector(
+  fromFunction.getFunctionEntities,
+  getActiveFunctionId,
+  (functionEntities: any, activeFunctionId: string) =>
+    functionEntities[activeFunctionId]
+);
+
 export const getFunctions = createSelector(
   fromFunction.getAllFunctions,
   fromFunctionRuleReducer.getFunctionRuleEntities,
-  (functionList: fromModels.FunctionObject[], functionRuleEntities: any) =>
+  getActiveFunctionId,
+  (
+    functionList: fromModels.FunctionObject[],
+    functionRuleEntities: any,
+    activeFunctionId: string
+  ) =>
     _.map(functionList, (functionObject: fromModels.FunctionObject) => {
       return functionObject
         ? {
             ...functionObject,
+            active: functionObject.id === activeFunctionId,
             rules: _.filter(
               _.map(
                 functionObject.rules || [],

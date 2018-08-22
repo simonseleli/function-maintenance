@@ -10,7 +10,6 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { reducers, metaReducers, effects } from './store';
-import { containers } from './containers';
 import { AppRoutingModule } from './app-routing.module';
 import {
   StoreRouterConnectingModule,
@@ -22,13 +21,15 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { SharedModule } from './shared/shared.module';
+import { components } from './components';
+import { containers } from './containers';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
-  declarations: [AppComponent, ...containers],
+  declarations: [AppComponent, ...containers, ...components],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

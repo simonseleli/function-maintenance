@@ -14,10 +14,7 @@ import {
 import { CurrentVisualizationState } from '../../store/reducers/current-visualization.reducer';
 import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
 import { take } from 'rxjs/operators';
-import {
-  AddOrUpdateCurrentVisualizationAction,
-  UpdateCurrentVisualizationWithDataSelectionsAction
-} from '../../store/actions/current-visualization.actions';
+import { UpdateCurrentVisualizationWithDataSelectionsAction } from '../../store/actions/current-visualization.actions';
 import {
   getAllFunctionRules,
   getFunctionRuleEntities
@@ -26,10 +23,22 @@ import {
 import * as fromModels from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 import {
   getFunctions,
-  getSelectedFunctions
+  getSelectedFunctions,
+  getActiveFunctionId,
+  getFunctionRulesForActiveFunction
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors';
-import { UpdateFunctionRule } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
-import { UpdateFunction } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
+import {
+  UpdateFunctionRule,
+  SetActiveFunctionRule
+} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
+import {
+  UpdateFunction,
+  SetActiveFunction
+} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
+import {
+  FunctionObject,
+  FunctionRule
+} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 
 @Component({
   selector: 'app-home',
@@ -43,6 +52,7 @@ export class HomeComponent implements OnInit {
   currentVisualization$: Observable<CurrentVisualizationState>;
   currentVisualizationDataSelections$: Observable<VisualizationDataSelection[]>;
   functionList$: Observable<fromModels.FunctionObject[]>;
+  functionRules$: Observable<fromModels.FunctionRule[]>;
   constructor(private store: Store<AppState>) {
     this.currentUser$ = store.select(getCurrentUser);
     this.systemInfo$ = store.select(getSystemInfo);
@@ -52,6 +62,7 @@ export class HomeComponent implements OnInit {
     );
 
     this.functionList$ = store.select(getFunctions);
+    this.functionRules$ = store.select(getFunctionRulesForActiveFunction);
 
     this.selectionFilterConfig = {
       showLayout: false
@@ -103,4 +114,15 @@ export class HomeComponent implements OnInit {
   onAddFavoriteAction(favoriteDetails: any) {}
 
   onCreateFavoriteAction() {}
+
+  onActivateFunctionObject(functionObject: FunctionObject) {
+    this.store.dispatch(new SetActiveFunction(functionObject));
+    if (functionObject.rules && functionObject.rules[0]) {
+      this.store.dispatch(new SetActiveFunctionRule(functionObject.rules[0]));
+    }
+  }
+
+  onActivateFunctionRule(functionRule: FunctionRule) {
+    this.store.dispatch(new SetActiveFunctionRule(functionRule));
+  }
 }

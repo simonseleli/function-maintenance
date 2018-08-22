@@ -16,7 +16,7 @@ export enum FunctionActionTypes {
   DeleteFunction = '[Function] Delete Function',
   DeleteFunctions = '[Function] Delete Functions',
   ClearFunctions = '[Function] Clear Functions',
-  SetSelectedFunctions = '[Function] Set Selected Functions'
+  SetActiveFunction = '[Function] Set active Function'
 }
 
 export class LoadFunctionsInitiated implements Action {
@@ -91,9 +91,9 @@ export class ClearFunctions implements Action {
   readonly type = FunctionActionTypes.ClearFunctions;
 }
 
-export class SetSelectedFunctions implements Action {
-  readonly type = FunctionActionTypes.SetSelectedFunctions;
-  constructor(public selectedFunctionIds: string[]) {}
+export class SetActiveFunction implements Action {
+  readonly type = FunctionActionTypes.SetActiveFunction;
+  constructor(public functionObject: FunctionObject) {}
 }
 
 export type FunctionActions =
@@ -108,4 +108,5 @@ export type FunctionActions =
   | UpdateFunctions
   | DeleteFunction
   | DeleteFunctions
-  | ClearFunctions;
+  | ClearFunctions
+  | SetActiveFunction;

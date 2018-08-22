@@ -1,0 +1,23 @@
+<div class="row">
+  <!-- function list section -->
+  <div class="col-sm-3">
+    <app-function-list [functionList]="functionList" (activate)="onActivateFunctionObject($event)"></app-function-list>
+  </div>
+  <!-- end of function list section -->
+
+  <!-- function rule list -->
+  <div class="col-sm-3">
+    <app-function-rule-list [functionRules]="functionRules" (activate)="onActivateFunctionRule($event)"></app-function-rule-list>
+  </div>
+  <!-- end of function rule list -->
+
+  <!-- funnction editor -->
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <app-function-editor></app-function-editor>
+      </div>
+    </div>
+  </div>
+  <!-- end of function editor -->
+</div>

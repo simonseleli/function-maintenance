@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
 import { Update } from '@ngrx/entity';
 import { FunctionRule } from '../models/function-rule.model';
+import { FunctionObject } from '../models';
 
 export enum FunctionRuleActionTypes {
   LoadFunctionRules = '[FunctionRule] Load FunctionRules',
@@ -12,7 +13,8 @@ export enum FunctionRuleActionTypes {
   UpdateFunctionRules = '[FunctionRule] Update FunctionRules',
   DeleteFunctionRule = '[FunctionRule] Delete FunctionRule',
   DeleteFunctionRules = '[FunctionRule] Delete FunctionRules',
-  ClearFunctionRules = '[FunctionRule] Clear FunctionRules'
+  ClearFunctionRules = '[FunctionRule] Clear FunctionRules',
+  SetActiveFunctionRule = '[FunctionRule] Set active FunctionRule'
 }
 
 export class LoadFunctionRules implements Action {
@@ -73,6 +75,11 @@ export class ClearFunctionRules implements Action {
   readonly type = FunctionRuleActionTypes.ClearFunctionRules;
 }
 
+export class SetActiveFunctionRule implements Action {
+  readonly type = FunctionRuleActionTypes.SetActiveFunctionRule;
+  constructor(public functionRule: FunctionRule) {}
+}
+
 export type FunctionRuleActions =
   | LoadFunctionRules
   | AddFunctionRule
@@ -83,4 +90,5 @@ export type FunctionRuleActions =
   | UpdateFunctionRules
   | DeleteFunctionRule
   | DeleteFunctionRules
-  | ClearFunctionRules;
+  | ClearFunctionRules
+  | SetActiveFunctionRule;

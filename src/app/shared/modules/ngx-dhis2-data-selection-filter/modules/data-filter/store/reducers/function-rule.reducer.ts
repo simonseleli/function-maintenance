@@ -8,6 +8,7 @@ import { createSelector, createFeatureSelector } from '@ngrx/store';
 
 export interface State extends EntityState<FunctionRule> {
   // additional entities state properties
+  activeFunctionRuleId: string;
 }
 
 export const adapter: EntityAdapter<FunctionRule> = createEntityAdapter<
@@ -16,6 +17,7 @@ export const adapter: EntityAdapter<FunctionRule> = createEntityAdapter<
 
 export const initialState: State = adapter.getInitialState({
   // additional entity state properties
+  activeFunctionRuleId: ''
 });
 
 export function reducer(
@@ -32,7 +34,13 @@ export function reducer(
     }
 
     case FunctionRuleActionTypes.AddFunctionRules: {
-      return adapter.addMany(action.functionRules, state);
+      return adapter.addMany(action.functionRules, {
+        ...state,
+        activeFunctionRuleId:
+          action.functionRules && action.functionRules[0]
+            ? action.functionRules[0].id
+            : ''
+      });
     }
 
     case FunctionRuleActionTypes.UpsertFunctionRules: {
@@ -64,6 +72,12 @@ export function reducer(
 
     case FunctionRuleActionTypes.ClearFunctionRules: {
       return adapter.removeAll(state);
+    }
+
+    case FunctionRuleActionTypes.SetActiveFunctionRule: {
+      return action.functionRule
+        ? { ...state, activeFunctionRuleId: action.functionRule.id }
+        : state;
     }
 
     default: {
