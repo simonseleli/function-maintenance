@@ -1,0 +1,21 @@
+{
+ version: "2.0.0-alpha.1",
+ name: "Function Maintenance 2",
+ description: "Function Maintenance 2",
+ launch_path: "index.html",
+ icons: {
+  16: "assets/img/function.png",
+  48: "assets/img/function.png",
+  128: "assets/img/function.png",
+ },
+ developer: {
+ name: "HISPTZ",
+ url: "",
+ },
+ default_locale: "en",
+ activities: {
+  dhis: {
+   href: "/"
+  }
+ },
+}
