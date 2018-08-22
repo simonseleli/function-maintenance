@@ -25,6 +25,8 @@ export class NgxDhis2SelectionFiltersComponent implements OnInit {
   layout: any;
   @Input()
   selectionFilterConfig: SelectionFilterConfig;
+  @Input()
+  currentUser: any;
   @Output()
   filterUpdate: EventEmitter<any[]> = new EventEmitter<any[]>();
   showFilters: boolean;

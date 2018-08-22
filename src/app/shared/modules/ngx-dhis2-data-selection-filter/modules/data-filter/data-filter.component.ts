@@ -42,6 +42,8 @@ export class DataFilterComponent implements OnInit, OnDestroy {
   hiddenDataElements: any[] = [];
   @Input()
   singleSelection = false;
+  @Input()
+  currentUser: any;
   selectedGroupId: string;
 
   showGroupingPanel: boolean;
@@ -87,7 +89,6 @@ export class DataFilterComponent implements OnInit, OnDestroy {
     private dataFilterService: DataFilterService,
     private functionStore: Store<fromFunctionReducer.State>
   ) {
-    functionStore.dispatch(new fromFunctionActions.LoadFunctions());
     this.dataFilterOptions = DATA_FILTER_OPTIONS;
     this.showGroups = false;
     this.need_groups = true;
@@ -110,6 +111,11 @@ export class DataFilterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    if (this.currentUser) {
+      this.functionStore.dispatch(
+        new fromFunctionActions.LoadFunctions(this.currentUser)
+      );
+    }
     // set selected data group
     this.selectedGroupId = this.selectedGroups[0]
       ? this.selectedGroups[0].id

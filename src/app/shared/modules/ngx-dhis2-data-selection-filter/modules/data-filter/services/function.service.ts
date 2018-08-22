@@ -10,7 +10,7 @@ import { mergeMap, catchError } from 'rxjs/operators';
 export class FunctionService {
   constructor(private http: NgxDhis2HttpClientService) {}
 
-  loadAll(): Observable<any> {
+  loadAll(currentUser: any): Observable<any> {
     return this.http.get('dataStore/functions').pipe(
       mergeMap((functionIds: Array<string>) =>
         forkJoin(

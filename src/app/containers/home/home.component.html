@@ -3,7 +3,7 @@
   <div class="row" style="margin-bottom: 20px;" *ngIf="functionsLoaded$ | async">
     <div class="col-6">
       <ngx-dhis2-selection-filters (filterUpdate)="onFilterUpdateAction($event)" [selectionFilterConfig]="selectionFilterConfig"
-        [dataSelections]="currentVisualizationDataSelections$ | async">
+        [dataSelections]="currentVisualizationDataSelections$ | async" [currentUser]="currentUser$ | async">
       </ngx-dhis2-selection-filters>
     </div>
     <div class="col-6">
