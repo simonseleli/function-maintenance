@@ -151,13 +151,20 @@ export class HomeComponent implements OnInit {
     functionObject: FunctionObject;
     item: string;
   }) {
-    if (functionDetails.item === 'FUNCTION') {
+    if (functionDetails.item === 'FUNCTION' && functionDetails.functionObject) {
       this.store.dispatch(
         new UpdateFunction(functionDetails.functionObject.id, {
-          ...functionDetails.functionObject
+          ...functionDetails.functionObject,
+          rules: _.map(
+            functionDetails.functionObject.rules,
+            (rule: any) => rule.id
+          )
         })
       );
-    } else {
+    } else if (
+      functionDetails.item === 'FUNCTION_RULE' &&
+      functionDetails.functionRule
+    ) {
       this.store.dispatch(
         new UpdateFunctionRule(functionDetails.functionObject.id, {
           ...functionDetails.functionRule
