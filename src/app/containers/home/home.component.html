@@ -40,7 +40,7 @@
   <div class="row" style="margin-top: 20px;" *ngIf="functionsLoaded$ | async">
     <div class="col-12">
       <app-function-management [functionList]="functionList$ | async" [functionRules]="functionRules$ | async" (activateFunction)="onActivateFunctionObject($event)"
-        (activateFunctionRule)="onActivateFunctionRule($event)"></app-function-management>
+        (activateFunctionRule)="onActivateFunctionRule($event)" (simulate)="onSimulate($event)"></app-function-management>
     </div>
   </div>
   <!-- end of function operations section -->

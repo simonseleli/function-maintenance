@@ -34,6 +34,17 @@ export class FunctionManagementComponent implements OnInit {
     functionObject: FunctionObject;
   }>();
 
+  @Output()
+  simulate: EventEmitter<{
+    functionObject: FunctionObject;
+    functionRule: FunctionRule;
+    item: string;
+  }> = new EventEmitter<{
+    functionObject: FunctionObject;
+    functionRule: FunctionRule;
+    item: string;
+  }>();
+
   constructor() {
     this.activeEditor = 'FUNCTION';
   }
@@ -64,5 +75,21 @@ export class FunctionManagementComponent implements OnInit {
   onSetActiveEditor(e, editor: string) {
     e.stopPropagation();
     this.activeEditor = editor;
+  }
+
+  onSimulateFunction(functionObject: FunctionObject) {
+    this.simulate.emit({
+      functionObject,
+      functionRule: this.activeFunctionRule,
+      item: 'FUNCTION'
+    });
+  }
+
+  onSimulateFunctionRule(functionRule: FunctionRule) {
+    this.simulate.emit({
+      functionObject: this.activeFunction,
+      functionRule,
+      item: 'FUNCTION_RULE'
+    });
   }
 }

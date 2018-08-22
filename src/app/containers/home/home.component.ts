@@ -14,7 +14,10 @@ import {
 import { CurrentVisualizationState } from '../../store/reducers/current-visualization.reducer';
 import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
 import { take } from 'rxjs/operators';
-import { UpdateCurrentVisualizationWithDataSelectionsAction } from '../../store/actions/current-visualization.actions';
+import {
+  UpdateCurrentVisualizationWithDataSelectionsAction,
+  SimulateVisualizationAction
+} from '../../store/actions/current-visualization.actions';
 import {
   getAllFunctionRules,
   getFunctionRuleEntities
@@ -138,6 +141,34 @@ export class HomeComponent implements OnInit {
       new SetActiveFunctionRule(
         functionDetails.functionRule,
         functionDetails.functionObject
+      )
+    );
+  }
+
+  onSimulate(functionDetails: {
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+    item: string;
+  }) {
+    if (functionDetails.item === 'FUNCTION') {
+      this.store.dispatch(
+        new UpdateFunction(functionDetails.functionObject.id, {
+          ...functionDetails.functionObject
+        })
+      );
+    } else {
+      this.store.dispatch(
+        new UpdateFunctionRule(functionDetails.functionObject.id, {
+          ...functionDetails.functionRule
+        })
+      );
+    }
+
+    this.store.dispatch(
+      new SimulateVisualizationAction(
+        functionDetails.functionObject,
+        functionDetails.functionRule,
+        true
       )
     );
   }

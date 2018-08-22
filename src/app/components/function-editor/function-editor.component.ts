@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FunctionObject } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 
 @Component({
@@ -9,7 +9,15 @@ import { FunctionObject } from '../../shared/modules/ngx-dhis2-data-selection-fi
 export class FunctionEditorComponent implements OnInit {
   @Input()
   functionObject: FunctionObject;
+
+  @Output()
+  simulate: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
   constructor() {}
 
   ngOnInit() {}
+
+  onSimulate(e) {
+    e.stopPropagation();
+    this.simulate.emit(this.functionObject);
+  }
 }

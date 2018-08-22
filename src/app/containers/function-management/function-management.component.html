@@ -26,11 +26,11 @@
       <div class="tab-content">
         <div *ngIf="activeEditor === 'FUNCTION'" class="tab-pane fade {{activeEditor === 'FUNCTION' ? 'show active' : ''}}" role="tabpanel"
           aria-labelledby="function-tab">
-          <app-function-editor [functionObject]="activeFunction"></app-function-editor>
+          <app-function-editor [functionObject]="activeFunction" (simulate)="onSimulateFunction($event)"></app-function-editor>
         </div>
         <div class="tab-pane fade {{activeEditor === 'RULE' ? 'show active' : ''}}" *ngIf="activeEditor === 'RULE'" role="tabpanel"
           aria-labelledby="rule-tab">
-          <app-function-rule-editor [functionRule]="activeFunctionRule"></app-function-rule-editor>
+          <app-function-rule-editor [functionRule]="activeFunctionRule" (simulate)="onSimulateFunctionRule($event)"></app-function-rule-editor>
         </div>
       </div>
     </div>
