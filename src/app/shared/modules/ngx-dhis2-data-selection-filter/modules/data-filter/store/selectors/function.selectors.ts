@@ -12,6 +12,16 @@ export const getFunctionInitiatedStatus = createSelector(
   (functionState: fromFunction.State) => functionState.loadInitiated
 );
 
+export const getFunctionLoadingStatus = createSelector(
+  fromFunction.getFunctionState,
+  (functionState: fromFunction.State) => functionState.loading
+);
+
+export const getFunctionLoadedStatus = createSelector(
+  fromFunction.getFunctionState,
+  (functionState: fromFunction.State) => functionState.loaded
+);
+
 export const getActiveFunctionId = createSelector(
   fromFunction.getFunctionState,
   (functionState: fromFunction.State) => functionState.activeFunctionId

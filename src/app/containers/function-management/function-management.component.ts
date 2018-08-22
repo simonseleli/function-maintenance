@@ -4,6 +4,7 @@ import {
   FunctionObject,
   FunctionRule
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
+import { find } from 'rxjs/operators';
 
 @Component({
   selector: 'app-function-management',
@@ -17,25 +18,51 @@ export class FunctionManagementComponent implements OnInit {
   @Input()
   functionRules: FunctionRule[];
 
+  activeEditor: string;
+
   @Output()
-  activeFunction: EventEmitter<FunctionObject> = new EventEmitter<
+  activateFunction: EventEmitter<FunctionObject> = new EventEmitter<
     FunctionObject
   >();
 
   @Output()
-  activeFunctionRule: EventEmitter<FunctionRule> = new EventEmitter<
-    FunctionRule
-  >();
+  activateFunctionRule: EventEmitter<{
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }> = new EventEmitter<{
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }>();
 
-  constructor() {}
+  constructor() {
+    this.activeEditor = 'FUNCTION';
+  }
+
+  get activeFunction(): FunctionObject {
+    return _.find(this.functionList, ['active', true]);
+  }
+
+  get activeFunctionRule(): FunctionRule {
+    return _.find(this.functionRules, ['active', true]);
+  }
 
   ngOnInit() {}
 
   onActivateFunctionObject(functionObject: FunctionObject) {
-    this.activeFunction.emit(functionObject);
+    this.activeEditor = 'FUNCTION';
+    this.activateFunction.emit(functionObject);
   }
 
   onActivateFunctionRule(functionRule: FunctionRule) {
-    this.activeFunctionRule.emit(functionRule);
+    this.activeEditor = 'RULE';
+    this.activateFunctionRule.emit({
+      functionRule,
+      functionObject: this.activeFunction
+    });
+  }
+
+  onSetActiveEditor(e, editor: string) {
+    e.stopPropagation();
+    this.activeEditor = editor;
   }
 }

@@ -23,6 +23,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { SharedModule } from './shared/shared.module';
 import { components } from './components';
 import { containers } from './containers';
+import { FormsModule } from '@angular/forms';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -32,6 +33,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   declarations: [AppComponent, ...containers, ...components],
   imports: [
     BrowserModule,
+    FormsModule,
     BrowserAnimationsModule,
     CoreModule,
     SharedModule,

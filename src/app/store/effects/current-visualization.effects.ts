@@ -18,6 +18,11 @@ import { generateUid } from '../../shared/modules/ngx-dhis2-visualization/helper
 import { LoadVisualizationAnalyticsAction } from '../../shared/modules/ngx-dhis2-visualization/store';
 
 import * as fromFunctionSelectors from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors';
+import * as fromFunctionRuleActions from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
+import {
+  VisualizationDataSelection,
+  VisualizationLayer
+} from '../../shared/modules/ngx-dhis2-visualization/models';
 
 @Injectable()
 export class CurrentVisualizationEffects {
@@ -78,6 +83,83 @@ export class CurrentVisualizationEffects {
             };
           })
         )
+    )
+  );
+
+  @Effect({ dispatch: false })
+  setActiveFunction$: Observable<any> = this.actions$.pipe(
+    ofType(
+      fromFunctionRuleActions.FunctionRuleActionTypes.SetActiveFunctionRule
+    ),
+    withLatestFrom(this.store.select(getCurrentVisualization)),
+    tap(
+      ([action, currentVisualization]: [
+        fromFunctionRuleActions.SetActiveFunctionRule,
+        CurrentVisualizationState
+      ]) => {
+        const dataSelections: VisualizationDataSelection[] =
+          currentVisualization.layers && currentVisualization.layers[0]
+            ? currentVisualization.layers[0].dataSelections
+            : [];
+        const dxDataSelection: VisualizationDataSelection = _.find(
+          dataSelections,
+          ['dimension', 'dx']
+        );
+
+        const dxDataSelectionIndex = dataSelections.indexOf(dxDataSelection);
+
+        const newItem =
+          action.functionObject && action.functionRule
+            ? {
+                id: action.functionRule.id,
+                name: action.functionRule.name,
+                ruleDefinition: action.functionRule,
+                functionObject: {
+                  id: action.functionObject.id,
+                  functionString: action.functionObject.function
+                }
+              }
+            : null;
+
+        if (newItem && dxDataSelection) {
+          const dxItems = dxDataSelection.items || [];
+          const availableItem = _.find(dxItems, ['id', newItem.id]);
+          const availableItemIndex = dxItems.indexOf(availableItem);
+
+          const newDxItems =
+            availableItemIndex !== -1
+              ? [
+                  ..._.slice(dxItems, 0, availableItemIndex),
+                  newItem,
+                  ..._.slice(dxItems, availableItemIndex + 1)
+                ]
+              : [...dxItems, newItem];
+
+          const newDataSelections: VisualizationDataSelection[] = [
+            ..._.slice(dataSelections, 0, dxDataSelectionIndex),
+            {
+              ...dxDataSelection,
+              items: newDxItems
+            },
+            ..._.slice(dataSelections, dxDataSelectionIndex + 1)
+          ];
+
+          this.store.dispatch(
+            new AddOrUpdateCurrentVisualizationAction({
+              ...currentVisualization,
+              layers: _.map(
+                currentVisualization.layers,
+                (layer: VisualizationLayer) => {
+                  return {
+                    ...layer,
+                    dataSelections: newDataSelections
+                  };
+                }
+              )
+            })
+          );
+        }
+      }
     )
   );
 

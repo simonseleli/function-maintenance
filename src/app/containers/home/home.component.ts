@@ -25,7 +25,9 @@ import {
   getFunctions,
   getSelectedFunctions,
   getActiveFunctionId,
-  getFunctionRulesForActiveFunction
+  getFunctionRulesForActiveFunction,
+  getFunctionLoadingStatus,
+  getFunctionLoadedStatus
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors';
 import {
   UpdateFunctionRule,
@@ -53,6 +55,8 @@ export class HomeComponent implements OnInit {
   currentVisualizationDataSelections$: Observable<VisualizationDataSelection[]>;
   functionList$: Observable<fromModels.FunctionObject[]>;
   functionRules$: Observable<fromModels.FunctionRule[]>;
+  loadingFunctions$: Observable<boolean>;
+  functionsLoaded$: Observable<boolean>;
   constructor(private store: Store<AppState>) {
     this.currentUser$ = store.select(getCurrentUser);
     this.systemInfo$ = store.select(getSystemInfo);
@@ -63,6 +67,8 @@ export class HomeComponent implements OnInit {
 
     this.functionList$ = store.select(getFunctions);
     this.functionRules$ = store.select(getFunctionRulesForActiveFunction);
+    this.loadingFunctions$ = store.select(getFunctionLoadingStatus);
+    this.functionsLoaded$ = store.select(getFunctionLoadedStatus);
 
     this.selectionFilterConfig = {
       showLayout: false
@@ -118,11 +124,21 @@ export class HomeComponent implements OnInit {
   onActivateFunctionObject(functionObject: FunctionObject) {
     this.store.dispatch(new SetActiveFunction(functionObject));
     if (functionObject.rules && functionObject.rules[0]) {
-      this.store.dispatch(new SetActiveFunctionRule(functionObject.rules[0]));
+      this.store.dispatch(
+        new SetActiveFunctionRule(functionObject.rules[0], functionObject)
+      );
     }
   }
 
-  onActivateFunctionRule(functionRule: FunctionRule) {
-    this.store.dispatch(new SetActiveFunctionRule(functionRule));
+  onActivateFunctionRule(functionDetails: {
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }) {
+    this.store.dispatch(
+      new SetActiveFunctionRule(
+        functionDetails.functionRule,
+        functionDetails.functionObject
+      )
+    );
   }
 }

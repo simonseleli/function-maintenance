@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <!-- header section -->
-  <div class="row" style="margin-bottom: 20px;">
+  <div class="row" style="margin-bottom: 20px;" *ngIf="functionsLoaded$ | async">
     <div class="col-6">
       <ngx-dhis2-selection-filters (filterUpdate)="onFilterUpdateAction($event)" [selectionFilterConfig]="selectionFilterConfig"
         [dataSelections]="currentVisualizationDataSelections$ | async">
@@ -12,6 +12,21 @@
   </div>
   <!-- end of header section -->
 
+  <!-- function loading section -->
+  <div class="row" *ngIf="loadingFunctions$ | async">
+    <div class="col-12">
+      <div class="function-loading-placeholder">
+        <div class="text-center">
+          <img src="assets/icons/balls-3.svg" alt="">
+          <h4>
+            Discovering Functions..
+          </h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end of function loading section -->
+
   <!-- visualization card section -->
   <div class="row">
     <div class="col-12" *ngIf="(currentVisualization$ | async) && (currentVisualization$ | async).layers.length > 0">
@@ -22,10 +37,10 @@
   <!-- end of visualization card section -->
 
   <!-- function operation section -->
-  <div class="row" style="margin-top: 20px;">
+  <div class="row" style="margin-top: 20px;" *ngIf="functionsLoaded$ | async">
     <div class="col-12">
-      <app-function-management [functionList]="functionList$ | async" [functionRules]="functionRules$ | async" (activeFunction)="onActivateFunctionObject($event)"
-        (activeFunctionRule)="onActivateFunctionRule($event)"></app-function-management>
+      <app-function-management [functionList]="functionList$ | async" [functionRules]="functionRules$ | async" (activateFunction)="onActivateFunctionObject($event)"
+        (activateFunctionRule)="onActivateFunctionRule($event)"></app-function-management>
     </div>
   </div>
   <!-- end of function operations section -->

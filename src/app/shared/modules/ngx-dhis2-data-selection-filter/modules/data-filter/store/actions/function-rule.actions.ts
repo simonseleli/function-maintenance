@@ -77,7 +77,10 @@ export class ClearFunctionRules implements Action {
 
 export class SetActiveFunctionRule implements Action {
   readonly type = FunctionRuleActionTypes.SetActiveFunctionRule;
-  constructor(public functionRule: FunctionRule) {}
+  constructor(
+    public functionRule: FunctionRule,
+    public functionObject: FunctionObject
+  ) {}
 }
 
 export type FunctionRuleActions =
