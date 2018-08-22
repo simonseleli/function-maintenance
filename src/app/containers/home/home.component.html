@@ -19,25 +19,15 @@
         [currentUser]="currentUser$ | async" [systemInfo]="systemInfo$ | async"></ngx-dhis2-visualization>
     </div>
   </div>
+  <toaster-container></toaster-container>
   <!-- end of visualization card section -->
 
+  <app-function-editor></app-function-editor>
   <!-- function operation section -->
   <div class="row" style="margin-top: 20px;">
-    <div class="col-3">
-      <div class="card">
-        <div class="card-header">
-          Functions
-        </div>
-        <div class="card-body">
-          <ng-container *ngFor="let functionObject of functionList$ | async">
-            <div class="{{functionObject.selected ? 'selected' : ''}}" (click)="selectedFunction = functionObject">
-              {{functionObject.name}} - selected: {{functionObject.selected}}</div>
-          </ng-container>
-        </div>
-      </div>
-    </div>
+
     <div class="col-9">
-      <app-function-editor *ngIf="selectedFunction"  [func]="selectedFunction"></app-function-editor>
+
     </div>
     <!--<div class="col-3" *ngIf="selectedFunction">
       <div class="card">

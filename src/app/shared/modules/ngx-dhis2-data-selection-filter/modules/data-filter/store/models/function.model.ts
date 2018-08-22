@@ -1,5 +1,21 @@
+import { User } from '../../../../../../../core/models/user.model';
+
 export interface FunctionObject {
-  id: string;
   selected: boolean;
-  rules: string[];
+  id?:string;
+  name?:string;
+  displayName?:string;
+  function?:string;
+  rules?:Array<any>;
+  description?:string;
+  lastUpdated?:Date;
+  created?:Date;
+  externalAccess?:boolean;
+  userGroupAccesses?:Array<any>;
+  attributeValues?:Array<any>;
+  translations?:Array<any>;
+  userAccesses?:Array<any>;
+  publicAccess?:String;
+  href?:String;
+  user:User
 }

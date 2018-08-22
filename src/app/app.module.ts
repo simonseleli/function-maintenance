@@ -29,15 +29,21 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { PopoverModule } from 'ngx-bootstrap/popover';
+import { FunctionListComponent } from './containers/function-list/function-list.component';
+import { MomentModule } from 'angular2-moment';
+import {ToasterModule,ToasterService} from 'angular2-toaster';
+import {DataTableModule} from 'angular-6-datatable';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
-  declarations: [AppComponent, ...containers, FunctionEditorComponent, EditorComponent],
+  declarations: [AppComponent, ...containers, FunctionEditorComponent, EditorComponent, FunctionListComponent],
   imports: [
     BrowserModule,
+    MomentModule,
+    ToasterModule,
     BrowserAnimationsModule,
     CoreModule,
     TooltipModule.forRoot(),
@@ -46,6 +52,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     CollapseModule.forRoot(),
     SharedModule,
     FormsModule,
+    DataTableModule,
 
     /**
      * Translation module
@@ -70,7 +77,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot(effects)
   ],
-  providers: [{ provide: RouterStateSerializer, useClass: RouteSerializer }],
+  providers: [{ provide: RouterStateSerializer, useClass: RouteSerializer },ToasterService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

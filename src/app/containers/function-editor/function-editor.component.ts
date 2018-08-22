@@ -10,6 +10,8 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../store';
 import { take } from 'rxjs/operators';
 import * as _ from 'lodash';
+import { Observable } from 'rxjs/index';
+import * as fromModels from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 
 @Component({
   selector: 'app-function-editor',
@@ -28,7 +30,10 @@ export class FunctionEditorComponent implements OnInit {
     {name:"Multiple Promise", code:"function promisoryRequest() {\n    return new Promise(function(resolve, reject) {\n        $.ajax({\n            url: \"../../../api/26/analytics.json?dimension=pe:\" + parameters.pe + \"&dimension=ou:\" + parameters.ou + \"&hierarchyMeta=true\",\n            type: \"GET\",\n            success: function(analyticsResults) {\n                try {\n                    //Code goes here\n                    resolve(analyticsResults);\n                } catch (e) {\n                    reject(error);\n                }\n            },\n            error: function(error) {\n                reject(error);\n            }\n        });\n    })\n}\nfunction analyticsRequest() {\n    return new Promise(function(resolve, reject) {\n        var promises = [];\n        // List of promises to handle\n        var array = [\"element1\",\"element2\",\"element3\"];\n        array.forEach(function(){\n            // Add the promises \n            promises.push(promisoryRequest());\n        })\n        // Wait for the promises\n        Promise.all(promises).then(function(results){\n            resolve(results);\n        },function(error){\n            reject(error);\n        })\n    })\n}"}
   ];
   @ViewChild('staticTabs') staticTabs: TabsetComponent;
-  constructor(private store: Store<AppState>) { }
+  functionList$: Observable<fromModels.FunctionObject[]>;
+  constructor(private store: Store<AppState>) {
+    this.functionList$ = store.select(getFunctions);
+  }
 
   ngOnInit() {
   }
@@ -83,5 +88,10 @@ export class FunctionEditorComponent implements OnInit {
         }
       });
     });
+  }
+  showFunctions = true;
+  onFunctionSelected(func){
+    this.func = func;
+    this.showFunctions = false;
   }
 }

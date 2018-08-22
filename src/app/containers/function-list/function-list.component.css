@@ -1,0 +1,13 @@
+.selectedFunction{
+
+}
+.deleteFailed{
+  background-color:#f2dede;
+}
+.action-buttons .text{
+  display:none
+}
+
+.action-buttons button:hover .text{
+  display:inline-block;
+}

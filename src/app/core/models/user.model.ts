@@ -7,40 +7,40 @@ export interface User {
   /**
    * User full name
    */
-  name: string;
+  name?: string;
 
   /**
    * User full name for display
    */
-  displayName: string;
+  displayName?: string;
 
   /**
    * User email address
    */
-  email: string;
+  email?: string;
 
   /**
    * Date user was created
    */
-  created: string;
+  created?: string;
 
   /**
    * Date user information was last updated
    */
-  lastUpdated: string;
+  lastUpdated?: string;
 
   /**
    * Organisation Units the user is assigned to view reports and visualizations
    */
-  dataViewOrganisationUnits: any[];
+  dataViewOrganisationUnits?: any[];
 
   /**
    * Organisation Units user is assigned for data entry
    */
-  organisationUnits: any[];
+  organisationUnits?: any[];
 
   /**
    * User credential information
    */
-  userCredentials: any;
+  userCredentials?: any;
 }
