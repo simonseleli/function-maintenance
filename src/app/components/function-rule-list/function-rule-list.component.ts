@@ -21,7 +21,7 @@ export class FunctionRuleListComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    this.pager.total = this.functionList.length;
+    this.pager.total = this.functionRules.length;
     const possibleValues = [10, 25, 50, 100];
     this.pageClustering = [];
     for (let i = 0; i < possibleValues.length; i++) {
@@ -41,5 +41,12 @@ export class FunctionRuleListComponent implements OnInit {
     if (!functionRule.active) {
       this.activate.emit(functionRule);
     }
+  }
+
+  pageChanged(event) {
+    this.pager.page = event.page;
+  }
+  setPageSize(size) {
+    this.pager.pageSize = size;
   }
 }

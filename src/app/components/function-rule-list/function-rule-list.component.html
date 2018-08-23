@@ -1,6 +1,6 @@
 <div class="card">
   <div class="function-rule-list-title">
-    Rules <button class="btn btn-sm btn-primary float-right"><i class="fa fa-plus"></i> <span  style="margin-left: 10px;"> Add New</span></button>
+    Rules <button class="btn btn-sm btn-primary float-right"><i class="fa fa-plus"></i> <span class="new-button" style="margin-left: 10px;"> Add New</span></button>
   </div>
   <div class="table-responsive">
     <table class="table table-hover function-rule-list-table">
@@ -19,36 +19,32 @@
             </div>
           </td>
         </tr>
-        <tr>
-          <td>
-            <span>
+      </tbody>
+    </table>
+  </div>
+  <div class="card-footer">
+    <span>
               Showing {{(((pager.page?pager.page:1)-1) * pager.pageSize) + 1}} to {{((pager.page?pager.page:1) * pager.pageSize) > pager.total?pager.total:((pager.page?pager.page:1)
             * pager.pageSize)}} of {{pager.total}}
             </span>
-            <span style="display: inline-block;margin-left: 15px;">
+    <span style="display: inline-block;margin-left: 15px;">
               <pagination [totalItems]="pager.total" [(ngModel)]="pager.page" [itemsPerPage]="pager.pageSize" [maxSize]="5" class="pagination-sm"
                           [boundaryLinks]="true" [rotate]="false" (pageChanged)="pageChanged($event)"
                           previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"
               ></pagination>
             </span>
-          </td>
-          <td>
-            <div class="btn-group pull-right" dropdown>
-              <button type="button" class="btn btn-default btn-sm" disabled>Show</button>
-              <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split btn-sm" dropdownToggle>
-                <span>{{pager.pageSize}}</span>
-                <span class="caret"></span>
-                <span class="sr-only">Split button!</span>
-              </button>
-              <ul class="dropdown-menu dropdown-menu-right" *dropdownMenu role="menu" aria-labelledby="split-button">
-                <li role="menuitem" *ngFor="let selectedPageSize of pageClustering">
-                  <a class="dropdown-item pull-right" (click)="setPageSize(selectedPageSize.value)">{{selectedPageSize.name}}</a>
-                </li>
-              </ul>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <div class="btn-group pull-right" dropdown>
+        <button type="button" class="btn btn-default btn-sm" disabled>Show</button>
+        <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split btn-sm" dropdownToggle>
+          <span>{{pager.pageSize}}</span>
+          <span class="caret"></span>
+          <span class="sr-only">Split button!</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right" *dropdownMenu role="menu" aria-labelledby="split-button">
+          <li role="menuitem" *ngFor="let selectedPageSize of pageClustering">
+            <a class="dropdown-item pull-right" (click)="setPageSize(selectedPageSize.value)">{{selectedPageSize.name}}</a>
+          </li>
+        </ul>
+      </div>
   </div>
 </div>

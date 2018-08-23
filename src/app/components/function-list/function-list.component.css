@@ -6,10 +6,10 @@
   display: block;
   padding: 10px;
 }
-.function-list-title button span{
+.function-list-title button span.new-button{
   display:none;
 }
-.function-list-title button:hover span{
+.function-list-title button:hover span.new-button{
   display:inline-block;
 }
 .function-title {
