@@ -31,6 +31,7 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { ToasterModule } from 'angular2-toaster';
 import { PaginationModule, BsDropdownModule } from 'ngx-bootstrap';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { FilterPipeModule } from 'ngx-filter-pipe';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -53,6 +54,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     PaginationModule.forRoot(),
     SharedModule,
     FormsModule,
+    FilterPipeModule,
 
     /**
      * Translation module

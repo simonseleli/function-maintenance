@@ -18,6 +18,7 @@ export class FunctionListComponent implements OnInit {
     pageSize: 5
   };
   pageClustering;
+  functionFilter: any = { name: '' };
   constructor() {}
 
   ngOnInit() {
@@ -51,7 +52,7 @@ export class FunctionListComponent implements OnInit {
   }
 
   create(){
-    this.activate.emit({
+    /*this.activate.emit({
       id:"new",
       name:"New Function",
       function:"",
@@ -59,6 +60,6 @@ export class FunctionListComponent implements OnInit {
       description:"",
       lastUpdated:new Date(),
       created:new Date(),
-    })
+    })*/
   }
 }
