@@ -18,6 +18,7 @@ export class FunctionRuleListComponent implements OnInit {
     pageSize: 5
   };
   pageClustering;
+  ruleFilter: any = { name: '' };
   constructor() {}
 
   ngOnInit() {

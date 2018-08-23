@@ -1,11 +1,18 @@
 <div class="card">
   <div class="function-list-title">
-    Functions <button class="btn btn-sm btn-primary float-right"><i class="fa fa-plus"></i> <span class="new-button" style="margin-left: 10px;"> Add New</span></button>
+    Functions <button class="btn btn-sm btn-primary float-right" (click)="create()"><i class="fa fa-plus"></i> <span class="new-button" style="margin-left: 10px;"> Add New</span></button>
   </div>
   <div class="table-responsive">
     <table class="table table-hover function-list-table">
+      <thead>
+      <tr><td colspan="100%">
+        <div class="form-group">
+          <input type="text" class="form-control" [(ngModel)]="functionFilter.name" placeholder="Function Name">
+        </div>
+      </td></tr>
+      </thead>
       <tbody>
-        <tr *ngFor="let functionObject of functionList | paginate: { itemsPerPage: pager.pageSize, currentPage: pager.page }" [ngClass]="{'selected-function': functionObject.active}" (click)="onActivate($event, functionObject)">
+        <tr *ngFor="let functionObject of functionList | filterBy: functionFilter | paginate: { itemsPerPage: pager.pageSize, currentPage: pager.page }" [ngClass]="{'selected-function': functionObject.active}" (click)="onActivate($event, functionObject)">
           <td width="80%">
             <div class="function-title">
               {{functionObject.name}}
@@ -14,7 +21,6 @@
           <td width="20%">
             <div class="function-btns">
               <button class="btn btn-sm btn-primary"><i class="fa fa-check"></i></button>
-              <button class="btn btn-sm btn-secondary"><i class="fa fa-pencil"></i></button>
               <button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
             </div>
           </td>
@@ -24,11 +30,11 @@
   </div>
   <div class="card-footer">
     <span>
-              Showing {{(((pager.page?pager.page:1)-1) * pager.pageSize) + 1}} to {{((pager.page?pager.page:1) * pager.pageSize) > pager.total?pager.total:((pager.page?pager.page:1)
-            * pager.pageSize)}} of {{pager.total}}
+              Showing {{(((pager.page?pager.page:1)-1) * pager.pageSize) + 1}} to {{((pager.page?pager.page:1) * pager.pageSize) > (functionList | filterBy: functionFilter).length?(functionList | filterBy: functionFilter).length:((pager.page?pager.page:1)
+            * pager.pageSize)}} of {{(functionList | filterBy: functionFilter).length}}
             </span>
     <span style="display: inline-block;margin-left: 15px;">
-              <pagination [totalItems]="pager.total" [(ngModel)]="pager.page" [itemsPerPage]="pager.pageSize" [maxSize]="5" class="pagination-sm"
+              <pagination [totalItems]="(functionList | filterBy: functionFilter).length" [(ngModel)]="pager.page" [itemsPerPage]="pager.pageSize" [maxSize]="5" class="pagination-sm"
                           [boundaryLinks]="true" [rotate]="false" (pageChanged)="pageChanged($event)"
                           previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"
               ></pagination>
