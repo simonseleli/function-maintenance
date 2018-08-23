@@ -20,7 +20,11 @@
       </div>
       <div class="form-group function-form-buttons">
         <button class="btn btn-primary" (click)="onSimulate($event)"><i class="fa fa-eye"></i> Simulate</button>
-        <button class="btn btn-success"><i class="fa fa-save"></i> Save</button>
+        <button class="btn btn-success" (click)="onSave($event)">
+          <ng-container>
+            <i class="fa fa-save"></i> Save
+          </ng-container>
+        </button>
         <button class="btn btn-danger"><i class="fa fa-times"></i> Cancel</button>
       </div>
     </div>

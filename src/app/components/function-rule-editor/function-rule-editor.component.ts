@@ -12,11 +12,17 @@ export class FunctionRuleEditorComponent implements OnInit {
 
   @Output()
   simulate: EventEmitter<FunctionRule> = new EventEmitter<FunctionRule>();
+  @Output()
+  save: EventEmitter<FunctionRule> = new EventEmitter<FunctionRule>();
   constructor() {}
 
   ngOnInit() {}
 
   onSimulate(e) {
+    e.stopPropagation();
+    this.save.emit(this.functionRule);
+  }
+  onSave(e) {
     e.stopPropagation();
     this.simulate.emit(this.functionRule);
   }
