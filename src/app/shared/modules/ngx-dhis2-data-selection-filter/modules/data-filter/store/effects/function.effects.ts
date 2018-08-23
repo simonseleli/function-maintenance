@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { withLatestFrom, tap } from 'rxjs/operators';
+import { withLatestFrom, tap, map } from 'rxjs/operators';
 
 import * as fromFunctionReducer from '../reducers/function.reducer';
 
@@ -13,6 +13,7 @@ import * as fromHelpers from '../../helpers';
 import { FunctionService } from '../../services/function.service';
 import { FunctionObject } from '../models/function.model';
 import { flatten } from '@angular/core/src/render3/util';
+import { VisualizationLayerActionTypes } from '../../../../../ngx-dhis2-visualization/store';
 
 @Injectable()
 export class FunctionEffects {
@@ -51,6 +52,12 @@ export class FunctionEffects {
         }
       }
     )
+  );
+
+  @Effect()
+  visualizationAnalyticsLoaded$: Observable<any> = this.actions$.pipe(
+    ofType(VisualizationLayerActionTypes.LOAD_VISUALIZATION_ANALYTICS_SUCCESS),
+    map(() => new fromFunctionActions.UpdateActiveFunction())
   );
 
   constructor(

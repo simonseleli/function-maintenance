@@ -10,6 +10,7 @@ export enum FunctionRuleActionTypes {
   AddFunctionRules = '[FunctionRule] Add FunctionRules',
   UpsertFunctionRules = '[FunctionRule] Upsert FunctionRules',
   UpdateFunctionRule = '[FunctionRule] Update FunctionRule',
+  UpdateActiveFunctionRule = '[FunctionRule] Update active FunctionRule',
   UpdateFunctionRules = '[FunctionRule] Update FunctionRules',
   DeleteFunctionRule = '[FunctionRule] Delete FunctionRule',
   DeleteFunctionRules = '[FunctionRule] Delete FunctionRules',
@@ -83,6 +84,10 @@ export class SetActiveFunctionRule implements Action {
   ) {}
 }
 
+export class UpdateActiveFunctionRule implements Action {
+  readonly type = FunctionRuleActionTypes.UpdateActiveFunctionRule;
+}
+
 export type FunctionRuleActions =
   | LoadFunctionRules
   | AddFunctionRule
@@ -94,4 +99,5 @@ export type FunctionRuleActions =
   | DeleteFunctionRule
   | DeleteFunctionRules
   | ClearFunctionRules
-  | SetActiveFunctionRule;
+  | SetActiveFunctionRule
+  | UpdateActiveFunctionRule;
