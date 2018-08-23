@@ -12,8 +12,11 @@
       </div>
 
       <div class="form-group">
-        <label for="">Function Definition:</label>
-        <textarea name="" class="form-control" id="" cols="30" rows="10" [(ngModel)]="functionObject.function"></textarea>
+        <label for="">Function Definition</label>
+        <editor [mode]="'javascript'" [code]="functionObject.function"
+                [readonly]="operation == 'test'"
+                [snippets]="snippets"
+                (onCodeUpdate)="onChange($event)"></editor>
       </div>
       <div class="form-group function-form-buttons">
         <button class="btn btn-primary" (click)="onSimulate($event)"><i class="fa fa-eye"></i> Simulate</button>

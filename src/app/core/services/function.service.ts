@@ -3,7 +3,7 @@ import { NgxDhis2HttpClientService } from '@hisptz/ngx-dhis2-http-client';
 import * as fromModels from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 import { User } from '../models/user.model';
 import { UserService } from './user.service';
-import { Observable } from 'rxjs/index';
+import { Observable } from 'rxjs';
 import { forkJoin } from 'rxjs';  // change to new RxJS 6 import syntax
 
 @Injectable({
