@@ -9,6 +9,7 @@ import {
   UserActionTypes,
   LoadCurrentUser
 } from '../actions';
+import { LoadFunctions } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
 
 @Injectable()
 export class UserEffects {
@@ -23,5 +24,11 @@ export class UserEffects {
         catchError((error: any) => of(new LoadCurrentUserFail(error)))
       )
     )
+  );
+
+  @Effect()
+  addCurrentUser$: Observable<any> = this.actions$.pipe(
+    ofType(UserActionTypes.AddCurrentUser),
+    map((action: AddCurrentUser) => new LoadFunctions(action.currentUser))
   );
 }

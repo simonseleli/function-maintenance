@@ -1,0 +1,30 @@
+<div class="card">
+  <div class="function-rule-list-title">
+    Rules
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover function-rule-list-table">
+      <tbody>
+        <tr *ngFor="let functionRule of functionRules" [ngClass]="{'selected-function-rule': functionRule.active}" (click)="onActivate($event, functionRule)">
+          <td width="80%">
+            <div class="function-rule-title">
+              {{functionRule.name}}
+            </div>
+          </td>
+          <td width="20%">
+            <div class="function-rule-btns">
+              <button class="btn btn-sm btn-primary"><i class="fa fa-check"></i></button>
+              <button class="btn btn-sm btn-secondary"><i class="fa fa-pencil"></i></button>
+              <button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <button class="btn btn-sm btn-primary float-right"><i class="fa fa-plus"></i> Add new</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

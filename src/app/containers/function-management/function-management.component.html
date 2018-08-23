@@ -1,0 +1,39 @@
+<div class="row">
+  <!-- function list section -->
+  <div class="col-sm-3">
+    <app-function-list [functionList]="functionList" (activate)="onActivateFunctionObject($event)"></app-function-list>
+  </div>
+  <!-- end of function list section -->
+
+  <!-- function rule list -->
+  <div class="col-sm-3">
+    <app-function-rule-list [functionRules]="functionRules" (activate)="onActivateFunctionRule($event)"></app-function-rule-list>
+  </div>
+  <!-- end of function rule list -->
+
+  <!-- funnction editor -->
+  <div class="col-sm-6">
+    <div class="card">
+      <ul class="nav nav-tabs function-management-tabs" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link {{activeEditor === 'FUNCTION' ? 'active' : ''}}" role="tab" aria-controls="function" aria-selected="true"
+            (click)="onSetActiveEditor($event, 'FUNCTION')">Function</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{activeEditor === 'RULE' ? 'active' : ''}}" role="tab" aria-controls="rule" aria-selected="false" (click)="onSetActiveEditor($event, 'RULE')">Rule</a>
+        </li>
+      </ul>
+      <div class="tab-content">
+        <div *ngIf="activeEditor === 'FUNCTION'" class="tab-pane fade {{activeEditor === 'FUNCTION' ? 'show active' : ''}}" role="tabpanel"
+          aria-labelledby="function-tab">
+          <app-function-editor [functionObject]="activeFunction" (simulate)="onSimulateFunction($event)"></app-function-editor>
+        </div>
+        <div class="tab-pane fade {{activeEditor === 'RULE' ? 'show active' : ''}}" *ngIf="activeEditor === 'RULE'" role="tabpanel"
+          aria-labelledby="rule-tab">
+          <app-function-rule-editor [functionRule]="activeFunctionRule" (simulate)="onSimulateFunctionRule($event)"></app-function-rule-editor>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end of function editor -->
+</div>

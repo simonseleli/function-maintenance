@@ -1,0 +1,30 @@
+<div class="card">
+  <div class="function-list-title">
+    Functions
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover function-list-table">
+      <tbody>
+        <tr *ngFor="let functionObject of functionList" [ngClass]="{'selected-function': functionObject.active}" (click)="onActivate($event, functionObject)">
+          <td width="80%">
+            <div class="function-title">
+              {{functionObject.name}}
+            </div>
+          </td>
+          <td width="20%">
+            <div class="function-btns">
+              <button class="btn btn-sm btn-primary"><i class="fa fa-check"></i></button>
+              <button class="btn btn-sm btn-secondary"><i class="fa fa-pencil"></i></button>
+              <button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <button class="btn btn-sm btn-primary float-right"><i class="fa fa-plus"></i> Add new</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

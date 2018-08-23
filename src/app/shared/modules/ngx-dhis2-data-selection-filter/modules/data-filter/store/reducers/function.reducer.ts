@@ -13,6 +13,7 @@ export interface State extends EntityState<FunctionObject> {
   hasError: boolean;
   error: any;
   loadInitiated: boolean;
+  activeFunctionId: string;
 }
 
 export const adapter: EntityAdapter<FunctionObject> = createEntityAdapter<
@@ -25,7 +26,8 @@ export const initialState: State = adapter.getInitialState({
   loaded: false,
   loadInitiated: false,
   hasError: false,
-  error: null
+  error: null,
+  activeFunctionId: ''
 });
 
 export function reducer(state = initialState, action: FunctionActions): State {
@@ -45,7 +47,9 @@ export function reducer(state = initialState, action: FunctionActions): State {
       return adapter.addMany(action.functions, {
         ...state,
         loaded: true,
-        loading: false
+        loading: false,
+        activeFunctionId:
+          action.functions && action.functions[0] ? action.functions[0].id : ''
       });
     }
 
@@ -86,6 +90,12 @@ export function reducer(state = initialState, action: FunctionActions): State {
       return adapter.removeAll(state);
     }
 
+    case FunctionActionTypes.SetActiveFunction: {
+      return {
+        ...state,
+        activeFunctionId: action.functionObject.id
+      };
+    }
     default: {
       return state;
     }

@@ -35,7 +35,8 @@ export function getDefaultVisualizationLayer(
             functionObject: {
               id: selectedFunction.id,
               functionString: selectedFunction.function
-            }
+            },
+            type: 'FUNCTION_RULE'
           }
         : null;
     }),

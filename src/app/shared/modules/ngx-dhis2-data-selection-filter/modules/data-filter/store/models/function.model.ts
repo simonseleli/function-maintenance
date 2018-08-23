@@ -1,7 +1,8 @@
 import { User } from '../../../../../../../core/models/user.model';
 
 export interface FunctionObject {
-  selected: boolean;
+  selected?: boolean;
+  active?: boolean;
   id?:string;
   name?:string;
   displayName?:string;

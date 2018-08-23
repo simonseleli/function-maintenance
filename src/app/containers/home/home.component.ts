@@ -15,8 +15,8 @@ import { CurrentVisualizationState } from '../../store/reducers/current-visualiz
 import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
 import { take } from 'rxjs/operators';
 import {
-  AddOrUpdateCurrentVisualizationAction,
-  UpdateCurrentVisualizationWithDataSelectionsAction
+  UpdateCurrentVisualizationWithDataSelectionsAction,
+  SimulateVisualizationAction
 } from '../../store/actions/current-visualization.actions';
 import {
   getAllFunctionRules,
@@ -26,10 +26,24 @@ import {
 import * as fromModels from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 import {
   getFunctions,
-  getSelectedFunctions
+  getSelectedFunctions,
+  getActiveFunctionId,
+  getFunctionRulesForActiveFunction,
+  getFunctionLoadingStatus,
+  getFunctionLoadedStatus
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors';
-import { UpdateFunctionRule } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
-import { UpdateFunction } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
+import {
+  UpdateFunctionRule,
+  SetActiveFunctionRule
+} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
+import {
+  UpdateFunction,
+  SetActiveFunction
+} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
+import {
+  FunctionObject,
+  FunctionRule
+} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 
 @Component({
   selector: 'app-home',
@@ -43,6 +57,9 @@ export class HomeComponent implements OnInit {
   currentVisualization$: Observable<CurrentVisualizationState>;
   currentVisualizationDataSelections$: Observable<VisualizationDataSelection[]>;
   functionList$: Observable<fromModels.FunctionObject[]>;
+  functionRules$: Observable<fromModels.FunctionRule[]>;
+  loadingFunctions$: Observable<boolean>;
+  functionsLoaded$: Observable<boolean>;
   constructor(private store: Store<AppState>) {
     this.currentUser$ = store.select(getCurrentUser);
     this.systemInfo$ = store.select(getSystemInfo);
@@ -52,6 +69,9 @@ export class HomeComponent implements OnInit {
     );
 
     this.functionList$ = store.select(getFunctions);
+    this.functionRules$ = store.select(getFunctionRulesForActiveFunction);
+    this.loadingFunctions$ = store.select(getFunctionLoadingStatus);
+    this.functionsLoaded$ = store.select(getFunctionLoadedStatus);
 
     this.selectionFilterConfig = {
       showLayout: false
@@ -104,4 +124,60 @@ export class HomeComponent implements OnInit {
   onAddFavoriteAction(favoriteDetails: any) {}
 
   onCreateFavoriteAction() {}
+
+  onActivateFunctionObject(functionObject: FunctionObject) {
+    this.store.dispatch(new SetActiveFunction(functionObject));
+    if (functionObject.rules && functionObject.rules[0]) {
+      this.store.dispatch(
+        new SetActiveFunctionRule(functionObject.rules[0], functionObject)
+      );
+    }
+  }
+
+  onActivateFunctionRule(functionDetails: {
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }) {
+    this.store.dispatch(
+      new SetActiveFunctionRule(
+        functionDetails.functionRule,
+        functionDetails.functionObject
+      )
+    );
+  }
+
+  onSimulate(functionDetails: {
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+    item: string;
+  }) {
+    if (functionDetails.item === 'FUNCTION' && functionDetails.functionObject) {
+      this.store.dispatch(
+        new UpdateFunction(functionDetails.functionObject.id, {
+          ...functionDetails.functionObject,
+          rules: _.map(
+            functionDetails.functionObject.rules,
+            (rule: any) => rule.id
+          )
+        })
+      );
+    } else if (
+      functionDetails.item === 'FUNCTION_RULE' &&
+      functionDetails.functionRule
+    ) {
+      this.store.dispatch(
+        new UpdateFunctionRule(functionDetails.functionObject.id, {
+          ...functionDetails.functionRule
+        })
+      );
+    }
+
+    this.store.dispatch(
+      new SimulateVisualizationAction(
+        functionDetails.functionObject,
+        functionDetails.functionRule,
+        true
+      )
+    );
+  }
 }

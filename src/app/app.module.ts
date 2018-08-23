@@ -11,7 +11,6 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { reducers, metaReducers, effects } from './store';
-import { containers } from './containers';
 import { AppRoutingModule } from './app-routing.module';
 import {
   StoreRouterConnectingModule,
@@ -23,27 +22,22 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { SharedModule } from './shared/shared.module';
-import { FunctionEditorComponent } from './containers/function-editor/function-editor.component';
-import { EditorComponent } from './containers/editor/editor.component';
+import { components } from './components';
+import { containers } from './containers';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { PopoverModule } from 'ngx-bootstrap/popover';
-import { FunctionListComponent } from './containers/function-list/function-list.component';
-import { MomentModule } from 'angular2-moment';
-import {ToasterModule,ToasterService} from 'angular2-toaster';
-import {DataTableModule} from 'angular-6-datatable';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
-  declarations: [AppComponent, ...containers, FunctionEditorComponent, EditorComponent, FunctionListComponent],
+  declarations: [AppComponent, ...containers, ...components],
   imports: [
     BrowserModule,
-    MomentModule,
-    ToasterModule,
+    FormsModule,
     BrowserAnimationsModule,
     CoreModule,
     TooltipModule.forRoot(),
@@ -52,7 +46,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     CollapseModule.forRoot(),
     SharedModule,
     FormsModule,
-    DataTableModule,
 
     /**
      * Translation module
@@ -77,7 +70,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot(effects)
   ],
-  providers: [{ provide: RouterStateSerializer, useClass: RouteSerializer },ToasterService],
+  providers: [{ provide: RouterStateSerializer, useClass: RouteSerializer }],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -1,0 +1,27 @@
+.function-rule-list-table {
+  margin-bottom: 0;
+}
+
+.function-rule-list-title {
+  display: block;
+  padding: 10px;
+}
+
+.function-rule-title {
+  padding-top: 2px;
+}
+
+.function-rule-btns {
+  display: flex;
+}
+
+.function-rule-btns > button {
+  margin-left: 3px;
+  font-size: 11px;
+}
+
+.selected-function-rule {
+  color: #31708f;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+}

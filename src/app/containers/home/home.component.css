@@ -3,3 +3,10 @@
   background-color: burlywood;
   display: inline;
 }
+
+.function-loading-placeholder {
+  display: flex;
+  height: 90vh;
+  justify-content: center;
+  align-items: center;
+}

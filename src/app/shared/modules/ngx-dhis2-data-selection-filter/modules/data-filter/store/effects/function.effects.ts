@@ -24,14 +24,14 @@ export class FunctionEffects {
     ),
     tap(
       ([action, functionInitiated]: [
-        fromFunctionActions.LoadFunctionsInitiated,
+        fromFunctionActions.LoadFunctions,
         boolean
       ]) => {
         if (!functionInitiated) {
           this.functionStore.dispatch(
             new fromFunctionActions.LoadFunctionsInitiated()
           );
-          this.functionService.loadAll().subscribe(
+          this.functionService.loadAll(action.currentUser).subscribe(
             (functions: FunctionObject[]) => {
               this.functionStore.dispatch(
                 new fromFunctionActions.AddFunctions(
