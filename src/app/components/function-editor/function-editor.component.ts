@@ -7,6 +7,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 import { FunctionObject } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
+import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
 
 @Component({
   selector: 'app-function-editor',
@@ -16,6 +17,9 @@ import { FunctionObject } from '../../shared/modules/ngx-dhis2-data-selection-fi
 export class FunctionEditorComponent implements OnInit {
   @Input()
   functionObject: FunctionObject;
+
+  @Input()
+  currentVisualizationDataSelections: VisualizationDataSelection[];
 
   showEditor = true;
 
@@ -52,7 +56,9 @@ export class FunctionEditorComponent implements OnInit {
   ];
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.currentVisualizationDataSelections);
+  }
 
   onSimulate(e) {
     e.stopPropagation();
