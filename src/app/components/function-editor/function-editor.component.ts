@@ -33,7 +33,7 @@ export class FunctionEditorComponent implements OnInit {
   showEditor = true;
   ngOnChanges(changes: SimpleChanges) {
     console.log("Change:",changes);
-    if(changes.functionObject.previousValue){
+    if(changes.functionObject.currentValue && changes.functionObject.previousValue){
       if(changes.functionObject.currentValue.id !== changes.functionObject.previousValue.id){
         this.showEditor = false;
         setTimeout(()=>{

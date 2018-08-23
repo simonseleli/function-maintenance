@@ -49,4 +49,16 @@ export class FunctionListComponent implements OnInit {
   setPageSize(size) {
     this.pager.pageSize = size;
   }
+
+  create(){
+    this.activate.emit({
+      id:"new",
+      name:"New Function",
+      function:"",
+      rules:[],
+      description:"",
+      lastUpdated:new Date(),
+      created:new Date(),
+    })
+  }
 }

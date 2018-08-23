@@ -1,6 +1,6 @@
 <div class="card">
   <div class="function-list-title">
-    Functions <button class="btn btn-sm btn-primary float-right"><i class="fa fa-plus"></i> <span class="new-button" style="margin-left: 10px;"> Add New</span></button>
+    Functions <button class="btn btn-sm btn-primary float-right" (click)="create()"><i class="fa fa-plus"></i> <span class="new-button" style="margin-left: 10px;"> Add New</span></button>
   </div>
   <div class="table-responsive">
     <table class="table table-hover function-list-table">
@@ -14,7 +14,6 @@
           <td width="20%">
             <div class="function-btns">
               <button class="btn btn-sm btn-primary"><i class="fa fa-check"></i></button>
-              <button class="btn btn-sm btn-secondary"><i class="fa fa-pencil"></i></button>
               <button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
             </div>
           </td>
