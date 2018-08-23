@@ -62,7 +62,7 @@ export class DataFilterComponent implements OnInit, OnDestroy {
     programs: [],
     programIndicators: [],
     dataSetGroups: [
-      { id: '', name: 'Reporting Rate' },
+      { id: '.REPORTING_RATE', name: 'Reporting Rate' },
       { id: '.REPORTING_RATE_ON_TIME', name: 'Reporting Rate on time' },
       { id: '.ACTUAL_REPORTS', name: 'Actual Reports Submitted' },
       { id: '.ACTUAL_REPORTS_ON_TIME', name: 'Reports Submitted on time' },
