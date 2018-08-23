@@ -44,6 +44,8 @@ import {
   FunctionObject,
   FunctionRule
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
+import { FunctionService } from '../../core/services/function.service';
+import {ToasterService} from 'angular2-toaster';
 
 @Component({
   selector: 'app-home',
@@ -60,7 +62,7 @@ export class HomeComponent implements OnInit {
   functionRules$: Observable<fromModels.FunctionRule[]>;
   loadingFunctions$: Observable<boolean>;
   functionsLoaded$: Observable<boolean>;
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>,private functionService:FunctionService,private toasterService: ToasterService,) {
     this.currentUser$ = store.select(getCurrentUser);
     this.systemInfo$ = store.select(getSystemInfo);
     this.currentVisualization$ = store.select(getCurrentVisualization);
@@ -79,7 +81,13 @@ export class HomeComponent implements OnInit {
   }
 
   selectedFunction;
-  ngOnInit() {}
+  ngOnInit() {
+    let testFunction = {
+      rules:[]
+    }
+    this.upsert(testFunction.rules,'id',{id:1,value:"value"});
+    console.log("testFunction:",testFunction)
+  }
 
   onFilterUpdateAction(dataSelections: VisualizationDataSelection[]) {
     this.store.dispatch(
@@ -179,5 +187,60 @@ export class HomeComponent implements OnInit {
         true
       )
     );
+  }
+
+  loadingSave;
+  loadingSaveError;
+  onSave(functionDetails: {
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+    item: string;
+  }) {
+    if (functionDetails.item === 'FUNCTION' && functionDetails.functionObject) {
+      this.store.dispatch(
+        new UpdateFunction(functionDetails.functionObject.id, {
+          ...functionDetails.functionObject,
+          rules: _.map(
+            functionDetails.functionObject.rules,
+            (rule: any) => rule.id
+          )
+        })
+      );
+    } else if (
+      functionDetails.item === 'FUNCTION_RULE' &&
+      functionDetails.functionRule
+    ) {
+      this.store.dispatch(
+        new UpdateFunctionRule(functionDetails.functionObject.id, {
+          ...functionDetails.functionRule
+        })
+      );
+    }
+    this.loadingSave = true;
+    this.loadingSaveError = false;
+    if(functionDetails.functionObject.name && functionDetails.functionObject.name != ""){
+      this.upsert(functionDetails.functionObject.rules,"id",functionDetails.functionRule)
+      this.functionService.save(functionDetails.functionObject).subscribe((results)=>{
+        this.loadingSave = false;
+        this.onSimulate(functionDetails)
+        this.toasterService.pop('success', 'Success', 'Function saved successfully.');
+
+      },(error)=>{
+        this.loadingSave = false;
+        this.loadingSaveError = error;
+        this.toasterService.pop('error', 'Saving Error', error.message);
+      })
+    }else{
+      this.toasterService.pop('error', 'Saving Error', "Please write name of function");
+    }
+  }
+  upsert(arr, key, newval) {
+    let match = _.find(arr, key);
+    if(match){
+      let index = _.indexOf(arr, _.find(arr, key));
+      arr.splice(index, 1, newval);
+    } else {
+      arr.push(newval);
+    }
   }
 }

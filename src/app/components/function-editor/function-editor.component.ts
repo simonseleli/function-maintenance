@@ -12,6 +12,8 @@ export class FunctionEditorComponent implements OnInit {
 
   @Output()
   simulate: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
+  @Output()
+  save: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
   snippets = [
     {name:"Aggregate Analytics",code:"function analyticsRequest() {\n    return new Promise(function(resolve, reject) {\n        $.ajax({\n            url: \"../../../api/26/analytics.json?dimension=pe:\" + parameters.pe + \"&dimension=ou:\" + parameters.ou + \"&hierarchyMeta=true&skipData=true\",\n            type: \"GET\",\n            success: function(analyticsResults) {\n                try {\n                    //Code goes here\n                    analyticsResults.headers = [{\"name\":\"dx\",\"column\":\"Data\",\"type\":\"java.lang.String\",\"hidden\":false,\"meta\":true},{\"name\":\"pe\",\"column\":\"Period\",\"type\":\"java.lang.String\",\"hidden\":false,\"meta\":true},{\"name\":\"ou\",\"column\":\"Organisation Unit\",\"type\":\"java.lang.String\",\"hidden\":false,\"meta\":true},{\"name\":\"value\",\"column\":\"Value\",\"type\":\"java.lang.Double\",\"hidden\":false,\"meta\":false}];\n                    analyticsResults.metaData.names[parameters.rule.id] = parameters.rule.name;\n                    analyticsResults.metaData.dx = [parameters.rule.id];\n                    resolve(analyticsResults);\n                } catch (e) {\n                    reject(error);\n                }\n            },\n            error: function(error) {\n                reject(error);\n            }\n        });\n    })\n}"},
     {name:"Organisation Unit",code:"function organisationUnitsRequest() {\n    return new Promise(function(resolve, reject) {\n        $.ajax({\n            url: \"../../../api/26/organisationUnits.json\",\n            type: \"GET\",\n            success: function(organisatioUnitsResults) {\n                try {\n                    //Code goes here\n                    resolve(organisatioUnitsResults);\n                } catch (e) {\n                    reject(error);\n                }\n            },\n            error: function(error) {\n                reject(error);\n            }\n        });\n    })\n}"},
@@ -39,12 +41,13 @@ export class FunctionEditorComponent implements OnInit {
         })
       }
     }
-    //this.doSomething(changes.categoryId.currentValue);
-    // You can also use categoryId.previousValue and
-    // categoryId.firstChange for comparing old and new values
 
   }
   onChange(event){
     this.functionObject.function = event;
+  }
+  onSave(e){
+    e.stopPropagation();
+    this.save.emit(this.functionObject);
   }
 }

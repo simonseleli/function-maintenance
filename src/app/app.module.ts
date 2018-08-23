@@ -28,6 +28,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { PopoverModule } from 'ngx-bootstrap/popover';
+import { ToasterModule } from 'angular2-toaster';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -44,6 +45,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     TabsModule.forRoot(),
     PopoverModule.forRoot(),
     CollapseModule.forRoot(),
+    ToasterModule.forRoot(),
     SharedModule,
     FormsModule,
 
