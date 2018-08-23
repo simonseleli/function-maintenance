@@ -29,6 +29,8 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { ToasterModule } from 'angular2-toaster';
+import { PaginationModule, BsDropdownModule } from 'ngx-bootstrap';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -40,12 +42,15 @@ export function HttpLoaderFactory(http: HttpClient) {
     BrowserModule,
     FormsModule,
     BrowserAnimationsModule,
+    NgxPaginationModule,
     CoreModule,
     TooltipModule.forRoot(),
+    BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
     PopoverModule.forRoot(),
     CollapseModule.forRoot(),
     ToasterModule.forRoot(),
+    PaginationModule.forRoot(),
     SharedModule,
     FormsModule,
 

@@ -81,13 +81,7 @@ export class HomeComponent implements OnInit {
   }
 
   selectedFunction;
-  ngOnInit() {
-    let testFunction = {
-      rules:[]
-    }
-    this.upsert(testFunction.rules,'id',{id:1,value:"value"});
-    console.log("testFunction:",testFunction)
-  }
+  ngOnInit() {}
 
   onFilterUpdateAction(dataSelections: VisualizationDataSelection[]) {
     this.store.dispatch(

@@ -12,14 +12,41 @@ export class FunctionListComponent implements OnInit {
 
   @Output()
   activate: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
+
+  pager: any = {
+    page: 1,
+    pageSize: 5
+  };
+  pageClustering;
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.pager.total = this.functionList.length;
+    const possibleValues = [10, 25, 50, 100];
+    this.pageClustering = [];
+    for (let i = 0; i < possibleValues.length; i++) {
+      /*if (this.organisationUnit.children.length > possibleValues[i]) {
+      this.pageClustering.push({name: possibleValues[i], value: possibleValues[i]})
+    }*/
+      this.pageClustering.push({
+        name: possibleValues[i],
+        value: possibleValues[i]
+      });
+    }
+    this.pageClustering.push({ name: 'All', value: this.pager.total });
+  }
 
   onActivate(e, functionObject: FunctionObject) {
     e.stopPropagation();
     if (!functionObject.active) {
       this.activate.emit(functionObject);
     }
+  }
+
+  pageChanged(event) {
+    this.pager.page = event.page;
+  }
+  setPageSize(size) {
+    this.pager.pageSize = size;
   }
 }

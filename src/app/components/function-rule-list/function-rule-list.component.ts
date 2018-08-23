@@ -12,9 +12,29 @@ export class FunctionRuleListComponent implements OnInit {
 
   @Output()
   activate: EventEmitter<FunctionRule> = new EventEmitter<FunctionRule>();
+
+  pager: any = {
+    page: 1,
+    pageSize: 5
+  };
+  pageClustering;
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.pager.total = this.functionList.length;
+    const possibleValues = [10, 25, 50, 100];
+    this.pageClustering = [];
+    for (let i = 0; i < possibleValues.length; i++) {
+      /*if (this.organisationUnit.children.length > possibleValues[i]) {
+      this.pageClustering.push({name: possibleValues[i], value: possibleValues[i]})
+    }*/
+      this.pageClustering.push({
+        name: possibleValues[i],
+        value: possibleValues[i]
+      });
+    }
+    this.pageClustering.push({ name: 'All', value: this.pager.total });
+  }
 
   onActivate(e, functionRule: FunctionRule) {
     e.stopPropagation();
