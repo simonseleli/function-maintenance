@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FunctionRule } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 
 @Component({
@@ -19,5 +19,24 @@ export class FunctionRuleEditorComponent implements OnInit {
   onSimulate(e) {
     e.stopPropagation();
     this.simulate.emit(this.functionRule);
+  }
+  showEditor = true;
+  ngOnChanges(changes: SimpleChanges) {
+    console.log("Change:",changes);
+    if(changes.functionRule.previousValue){
+      if(changes.functionRule.currentValue.id !== changes.functionRule.previousValue.id){
+        this.showEditor = false;
+        setTimeout(()=>{
+          this.showEditor = true;
+        })
+      }
+    }
+    //this.doSomething(changes.categoryId.currentValue);
+    // You can also use categoryId.previousValue and
+    // categoryId.firstChange for comparing old and new values
+
+  }
+  onChange(event){
+
   }
 }

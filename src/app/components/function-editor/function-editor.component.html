@@ -13,7 +13,7 @@
 
       <div class="form-group">
         <label for="">Function Definition</label>
-        <editor [mode]="'javascript'" [code]="functionObject.function"
+        <editor *ngIf="showEditor" [mode]="'javascript'" [code]="functionObject.function"
                 [readonly]="operation == 'test'"
                 [snippets]="snippets"
                 (onCodeUpdate)="onChange($event)"></editor>

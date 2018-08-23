@@ -30,7 +30,7 @@ export class EditorComponent implements OnInit {
 
   expanded(event: any): void {
   }
-  ngOnChanges(changes: SimpleChanges) {
+  /*ngOnChanges(changes: SimpleChanges) {
 
     console.log(changes);
     this.ngOnInit();
@@ -38,7 +38,7 @@ export class EditorComponent implements OnInit {
     // You can also use categoryId.previousValue and
     // categoryId.firstChange for comparing old and new values
 
-  }
+  }*/
   modes = {
     "javascript":"ace/mode/javascript",
     "json":"ace/mode/json"
@@ -47,12 +47,17 @@ export class EditorComponent implements OnInit {
 
   id
   ngOnInit() {
+    this.selectedTheme = this.themeGroups[0].themes[0];
     setTimeout(()=>{
       this.editor = ace.edit("editor" + this.id);
       this.editor.session.setMode(this.modes[this.mode]);
-      this.editor.setReadOnly(this.readonly)
-      this.editor.setValue(this.code);
-      this.editor.setHe
+      this.editor.setReadOnly(this.readonly);
+      console.log(typeof this.code);
+      if(typeof this.code === "object"){
+        this.editor.setValue(JSON.stringify(this.code));
+      }else{
+        this.editor.setValue(this.code);
+      }
       this.setTheme(this.themeGroups[0].themes[0])
       this.setFontSize(this.fontSize);
       this.editor.getSession().on('change', (e)=> {

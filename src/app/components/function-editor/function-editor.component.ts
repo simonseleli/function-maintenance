@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FunctionObject } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 
 @Component({
@@ -27,7 +27,24 @@ export class FunctionEditorComponent implements OnInit {
     e.stopPropagation();
     this.simulate.emit(this.functionObject);
   }
+
+  showEditor = true;
+  ngOnChanges(changes: SimpleChanges) {
+    console.log("Change:",changes);
+    if(changes.functionObject.previousValue){
+      if(changes.functionObject.currentValue.id !== changes.functionObject.previousValue.id){
+        this.showEditor = false;
+        setTimeout(()=>{
+          this.showEditor = true;
+        })
+      }
+    }
+    //this.doSomething(changes.categoryId.currentValue);
+    // You can also use categoryId.previousValue and
+    // categoryId.firstChange for comparing old and new values
+
+  }
   onChange(event){
-    //this.latestCode = event;
+    this.functionObject.function = event;
   }
 }
