@@ -22,10 +22,10 @@ export function getChartConfiguration(
       : '',
     hideTitle: visualizationSettings.hasOwnProperty('hideTitle')
       ? visualizationSettings.hideTitle
-      : true,
+      : false,
     hideSubtitle: visualizationSettings.hasOwnProperty('hideSubtitle')
       ? visualizationSettings.hideSubtitle
-      : true,
+      : false,
     showData: visualizationSettings.hasOwnProperty('showData')
       ? visualizationSettings.showData
       : true,
@@ -34,7 +34,7 @@ export function getChartConfiguration(
       : true,
     hideLegend: visualizationSettings.hasOwnProperty('hideLegend')
       ? visualizationSettings.hideLegend
-      : true,
+      : false,
     cumulativeValues: visualizationSettings.hasOwnProperty('cumulativeValues')
       ? visualizationSettings.cumulativeValues
       : false,
