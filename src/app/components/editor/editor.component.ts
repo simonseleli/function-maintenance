@@ -52,7 +52,6 @@ export class EditorComponent implements OnInit {
       this.editor = ace.edit("editor" + this.id);
       this.editor.session.setMode(this.modes[this.mode]);
       this.editor.setReadOnly(this.readonly);
-      console.log(typeof this.code);
       if(typeof this.code === "object"){
         this.editor.setValue(JSON.stringify(this.code));
       }else{
