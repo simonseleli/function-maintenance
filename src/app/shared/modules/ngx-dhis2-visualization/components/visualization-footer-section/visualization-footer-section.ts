@@ -27,6 +27,8 @@ export class VisualizationFooterSectionComponent {
   hideTypeButtons: boolean;
   @Input()
   hideManagementBlock: boolean;
+  @Input()
+  hideDeleteButton: boolean;
 
   @Output()
   visualizationTypeChange: EventEmitter<{

@@ -18,6 +18,10 @@ export class VisualizationManagementSectionComponent implements OnInit {
 
   @Input()
   hideManagementBlock: boolean;
+
+  @Input()
+  hideDeleteButton: boolean;
+
   @Output()
   save: EventEmitter<any> = new EventEmitter<any>();
 

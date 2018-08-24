@@ -30,7 +30,7 @@
         <img [ngClass]="{'arrow-up': !showManagementPanel}" src="assets/icons/arrow-down.png" alt="">
       </a>
     </button>
-    <button class="visualization-footer-btn visualization-delete-btn" title="Remove this item" (click)="onRemove($event)">
+    <button *ngIf="hideDeleteButton" class="visualization-footer-btn visualization-delete-btn" title="Remove this item" (click)="onRemove($event)">
       <img src="assets/icons/trash.png" alt="">
       <span>Delete</span>
     </button>

@@ -22,7 +22,7 @@
     "@angular/pwa": "^0.7.3",
     "@angular/router": "^6.1.0",
     "@hisptz/ngx-dhis2-dictionary": "^1.0.1",
-    "@hisptz/ngx-dhis2-http-client": "^1.0.3",
+    "@hisptz/ngx-dhis2-http-client": "^1.0.4",
     "@hisptz/ngx-dhis2-menu": "^1.0.3",
     "@hisptz/ngx-dhis2-table": "^1.0.0",
     "@mapbox/geojson-area": "^0.2.2",
