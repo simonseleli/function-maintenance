@@ -35,6 +35,11 @@ export class FunctionManagementComponent implements OnInit {
     >();
 
   @Output()
+  newFunctionRule: EventEmitter<FunctionRule> = new EventEmitter<
+    FunctionRule
+    >();
+
+  @Output()
   activateFunctionRule: EventEmitter<{
     functionRule: FunctionRule;
     functionObject: FunctionObject;
@@ -82,6 +87,10 @@ export class FunctionManagementComponent implements OnInit {
   onNewFunctionObject(functionObject: FunctionObject) {
     this.activeEditor = 'FUNCTION';
     this.newFunction.emit(functionObject);
+  }
+  onNewFunctionRule(functionRule: FunctionRule) {
+    this.activeEditor = 'RULE';
+    this.newFunctionRule.emit(functionRule);
   }
   onActivateFunctionObject(functionObject: FunctionObject) {
     this.activeEditor = 'FUNCTION';

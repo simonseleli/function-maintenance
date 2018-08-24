@@ -1,5 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FunctionRule } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
+import { AddFunctionRule } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
+import { FunctionService } from '../../core/services/function.service';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../store/reducers/index';
+import { ToasterService } from 'angular2-toaster';
 
 @Component({
   selector: 'app-function-rule-list',
@@ -13,13 +18,17 @@ export class FunctionRuleListComponent implements OnInit {
   @Output()
   activate: EventEmitter<FunctionRule> = new EventEmitter<FunctionRule>();
 
+  @Output()
+  newFunctionRule: EventEmitter<FunctionRule> = new EventEmitter<FunctionRule>();
+
+
   pager: any = {
     page: 1,
     pageSize: 5
   };
   pageClustering;
   ruleFilter: any = { name: '' };
-  constructor() {}
+  constructor(private functionService: FunctionService, private store: Store<AppState>, private toasterService: ToasterService) {}
 
   ngOnInit() {
     this.pager.total = this.functionRules.length;
@@ -49,5 +58,33 @@ export class FunctionRuleListComponent implements OnInit {
   }
   setPageSize(size) {
     this.pager.pageSize = size;
+  }
+  newLoading
+  create(){
+    this.newLoading = true;
+    this.functionService.createRule().subscribe((functionRule:any)=> {
+      this.store.dispatch(
+        new AddFunctionRule({
+          functionRule:{
+            ...functionRule,
+            saving: true,
+          }
+        })
+      );
+      this.newFunctionRule.emit(functionRule);
+      this.newLoading = false;
+    },(error)=>{
+      this.toasterService.pop('error', 'Error', error.message);
+    })
+  }
+  order(functionOne, functionTwo){
+    if(typeof true === 'boolean'){
+      if(functionOne){
+        return 1;
+      }else{
+        return -1;
+      }
+    }
+    return functionOne > functionTwo ? 1 : -1;
   }
 }

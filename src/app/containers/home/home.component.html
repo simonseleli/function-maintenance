@@ -42,7 +42,7 @@
     <div [ngStyle]="{'display': loadingSave?'none':'block'}" class="col-12">
       <app-function-management [functionList]="functionList$ | async" [functionRules]="functionRules$ | async" [currentVisualizationDataSelections]="currentVisualizationDataSelections$ | async"
         (activateFunction)="onActivateFunctionObject($event)" (activateFunctionRule)="onActivateFunctionRule($event)" (simulate)="onSimulate($event)"
-                               (newFunction)="onNewFunctionObject($event)"
+                               (newFunction)="onNewFunctionObject($event)" (newFunctionRule)="onNewFunctionRule($event)"
         (save)="onSave($event)"></app-function-management>
     </div>
     <div [ngStyle]="{'display': loadingSave?'block':'none'}" class="col-12">

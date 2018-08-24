@@ -73,6 +73,7 @@ export class FunctionService {
         this.httpClient.get("dataElements.json?pageSize=1").subscribe((dataElementResults:any)=>{
           let functionObject ={
             id: results.codes[0],
+            name: "New Function",
             function:'//Example of function implementation\n' +
             'parameters.progress(50);\n' +
             '$.ajax({\n' +
@@ -97,6 +98,29 @@ export class FunctionService {
             ]
           };
           observable.next(functionObject);
+          observable.complete();
+        },(error)=>{
+          observable.error(error.json());
+          observable.complete();
+        })
+      },(error)=>{
+        observable.error(error.json());
+        observable.complete();
+      })
+    })
+  }
+  createRule(){
+    return new Observable((observable) => {
+      this.getId().subscribe((results:any)=> {
+        this.httpClient.get("dataElements.json?pageSize=1").subscribe((dataElementResults:any)=>{
+          let functionRule = {
+            id: results.codes[0],
+            name: "New Rule",
+            isDefault:true,
+            description: "This is the default rule. Using the data element '" + dataElementResults.dataElements[0].displayName+ "'.",
+            json: JSON.stringify({"data": dataElementResults.dataElements[0].id})
+          };
+          observable.next(functionRule);
           observable.complete();
         },(error)=>{
           observable.error(error.json());

@@ -1,6 +1,14 @@
 <div class="card">
   <div class="function-rule-list-title">
-    Rules <button class="btn btn-sm btn-primary float-right"><i class="fa fa-plus"></i> <span class="new-button" style="margin-left: 10px;"> Add New</span></button>
+    Rules
+    <button [disabled]="newLoading" class="btn btn-sm btn-primary float-right" (click)="create()">
+    <ng-container *ngIf="!newLoading">
+      <i class="fa fa-plus"></i> <span class="new-button" style="margin-left: 10px;"> Add New</span>
+    </ng-container>
+    <ng-container *ngIf="newLoading">
+      <img src="assets/img/balls-3.svg" height="20px"/>
+    </ng-container>
+  </button>
   </div>
   <div class="table-responsive">
     <table class="table table-hover function-rule-list-table">
@@ -15,12 +23,11 @@
         <tr *ngFor="let functionRule of functionRules | filterBy: ruleFilter | paginate: { itemsPerPage: pager.pageSize, currentPage: pager.page }" [ngClass]="{'selected-function-rule': functionRule.active}" (click)="onActivate($event, functionRule)">
           <td width="80%">
             <div class="function-rule-title">
-              {{functionRule.name}}
+              {{functionRule.name}} <span *ngIf="functionRule.selected" class="badge badge-secondary pull-right">Selected</span>
             </div>
           </td>
           <td width="20%">
             <div class="function-rule-btns">
-              <button class="btn btn-sm btn-primary"><i class="fa fa-check"></i></button>
               <button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
             </div>
           </td>
@@ -29,7 +36,7 @@
     </table>
   </div>
   <div class="card-footer">
-    <span>
+    <span *ngIf="(functionRules | filterBy: ruleFilter).length > 0" style="font-size: 14px;">
               Showing {{(((pager.page?pager.page:1)-1) * pager.pageSize) + 1}} to {{((pager.page?pager.page:1) * pager.pageSize) > (functionRules | filterBy: ruleFilter).length?(functionRules | filterBy: ruleFilter).length:((pager.page?pager.page:1)
             * pager.pageSize)}} of {{(functionRules | filterBy: ruleFilter).length}}
             </span>

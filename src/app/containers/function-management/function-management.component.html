@@ -7,7 +7,7 @@
 
   <!-- function rule list -->
   <div class="col-sm-3">
-    <app-function-rule-list [functionRules]="functionRules" (activate)="onActivateFunctionRule($event)"></app-function-rule-list>
+    <app-function-rule-list [functionRules]="functionRules" (activate)="onActivateFunctionRule($event)"  (newFunctionRule)="onNewFunctionRule($event)"></app-function-rule-list>
   </div>
   <!-- end of function rule list -->
 

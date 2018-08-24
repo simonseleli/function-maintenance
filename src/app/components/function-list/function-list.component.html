@@ -20,15 +20,14 @@
       </td></tr>
       </thead>
       <tbody>
-        <tr *ngFor="let functionObject of functionList | filterBy: functionFilter | paginate: { itemsPerPage: pager.pageSize, currentPage: pager.page }" [ngClass]="{'selected-function': functionObject.active}" (click)="onActivate($event, functionObject)">
+        <tr *ngFor="let functionObject of functionList | filterBy: functionFilter | orderBy: ['active','selected','name']:true:false:order | paginate: { itemsPerPage: pager.pageSize, currentPage: pager.page }" [ngClass]="{'selected-function': functionObject.active}" (click)="onActivate($event, functionObject)">
           <td width="80%">
-            <div class="function-title">
-              {{functionObject.name}}
+            <div class="function-title" style="font-size: 14px;">
+              {{functionObject.name}} <span *ngIf="functionObject.selected" class="badge badge-secondary pull-right">Selected</span>
             </div>
           </td>
           <td width="20%">
             <div class="function-btns">
-              <button class="btn btn-sm btn-primary"><i class="fa fa-check"></i></button>
               <button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
             </div>
           </td>

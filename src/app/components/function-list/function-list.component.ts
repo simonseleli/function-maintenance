@@ -67,7 +67,6 @@ export class FunctionListComponent implements OnInit {
         new AddFunction({
           function:{
             ...functionObject,
-            saving: true,
             rules: _.map(
               functionObject.rules,
               (rule: any) => rule.id
@@ -80,5 +79,15 @@ export class FunctionListComponent implements OnInit {
     },(error)=>{
       this.toasterService.pop('error', 'Error', error.message);
     })
+  }
+  order(functionOne, functionTwo){
+    if(typeof true === 'boolean'){
+      if(functionOne){
+        return 1;
+      }else{
+        return -1;
+      }
+    }
+    return functionOne > functionTwo ? 1 : -1;
   }
 }

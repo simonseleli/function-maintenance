@@ -34,7 +34,7 @@ import {
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors';
 import {
   UpdateFunctionRule,
-  SetActiveFunctionRule
+  SetActiveFunctionRule, AddFunctionRule
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
 import {
   UpdateFunction,
@@ -136,7 +136,16 @@ export class HomeComponent implements OnInit {
     this.store.dispatch(new AddFunction({
       function:functionObject
     }));
+    this.store.dispatch(new AddFunctionRule({
+      functionRule:functionObject.rules[0]
+    }));
     this.onActivateFunctionObject(functionObject);
+  }
+  onNewFunctionRule(functionRule: FunctionRule) {
+    this.store.dispatch(new AddFunctionRule({
+      functionRule: functionRule
+    }));
+    this.onActivateFunctionObject(functionRule);
   }
   onActivateFunctionObject(functionObject: FunctionObject) {
     this.store.dispatch(new SetActiveFunction(functionObject));
