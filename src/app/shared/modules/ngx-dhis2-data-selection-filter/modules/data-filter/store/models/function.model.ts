@@ -20,5 +20,7 @@ export interface FunctionObject {
   href?: String;
   user?: User;
   saving?: boolean;
+  unSaved?: boolean;
+  isNew?: boolean;
   simulating?: boolean;
 }

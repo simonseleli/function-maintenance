@@ -34,11 +34,13 @@ import {
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors';
 import {
   UpdateFunctionRule,
-  SetActiveFunctionRule, AddFunctionRule
+  SetActiveFunctionRule,
+  AddFunctionRule
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
 import {
   UpdateFunction,
-  SetActiveFunction, AddFunction
+  SetActiveFunction,
+  AddFunction
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
 import {
   FunctionObject,
@@ -132,19 +134,24 @@ export class HomeComponent implements OnInit {
   onCreateFavoriteAction() {}
 
   onNewFunctionObject(functionObject: FunctionObject) {
-    console.log("functionObject:",functionObject);
-    this.store.dispatch(new AddFunction({
-      function:functionObject
-    }));
-    this.store.dispatch(new AddFunctionRule({
-      functionRule:functionObject.rules[0]
-    }));
+    this.store.dispatch(
+      new AddFunction({
+        function: functionObject
+      })
+    );
+    this.store.dispatch(
+      new AddFunctionRule({
+        functionRule: functionObject.rules[0]
+      })
+    );
     this.onActivateFunctionObject(functionObject);
   }
   onNewFunctionRule(functionRule: FunctionRule) {
-    this.store.dispatch(new AddFunctionRule({
-      functionRule: functionRule
-    }));
+    this.store.dispatch(
+      new AddFunctionRule({
+        functionRule: functionRule
+      })
+    );
     this.onActivateFunctionObject(functionRule);
   }
   onActivateFunctionObject(functionObject: FunctionObject) {
@@ -253,7 +260,8 @@ export class HomeComponent implements OnInit {
             'saving',
             'simulating',
             'selected',
-            'active'
+            'active',
+            'unSaved'
           ])
         )
         .subscribe(
@@ -262,7 +270,9 @@ export class HomeComponent implements OnInit {
               ...functionDetails,
               functionObject: {
                 ...functionDetails.functionObject,
-                saving: false
+                saving: false,
+                isNew: false,
+                unSaved: false
               },
               functionRule: { ...functionDetails.functionRule, saving: false }
             });
