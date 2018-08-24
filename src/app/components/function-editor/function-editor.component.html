@@ -13,19 +13,16 @@
 
       <div class="form-group">
         <label for="">Function Definition</label>
-        <editor *ngIf="showEditor" [mode]="'javascript'" [code]="functionObject.function"
-                [readonly]="operation == 'test'"
-                [snippets]="snippets"
-                (onCodeUpdate)="onChange($event)"></editor>
+        <editor *ngIf="showEditor" [mode]="'javascript'" [code]="functionObject.function" [readonly]="operation == 'test'" [snippets]="snippets"
+          (onCodeUpdate)="onChange($event)"></editor>
       </div>
       <div class="form-group function-form-buttons">
-        <button class="btn btn-primary" (click)="onSimulate($event)"><i class="fa fa-eye"></i> Simulate</button>
-        <button class="btn btn-success" (click)="onSave($event)">
-          <ng-container>
-            <i class="fa fa-save"></i> Save
-          </ng-container>
+        <button class="btn btn-primary" (click)="onSimulate($event)" [disabled]="functionObject.simulating"><i class="fa fa-eye"></i>
+          {{functionObject.simulating ? 'Simulating...' : 'Simulate'}}</button>
+        <button class="btn btn-success" (click)="onSave($event)" [disabled]="functionObject.saving">
+          <i class="fa fa-save"></i> {{functionObject.saving ? 'Saving...' : 'Save'}}
         </button>
-        <button class="btn btn-danger"><i class="fa fa-times"></i> Cancel</button>
+        <button class="btn btn-danger"><i class="fa fa-trash"></i> Delete</button>
       </div>
     </div>
   </div>

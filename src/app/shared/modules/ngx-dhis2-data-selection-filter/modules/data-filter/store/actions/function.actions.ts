@@ -12,6 +12,7 @@ export enum FunctionActionTypes {
   AddFunctions = '[Function] Add Functions',
   UpsertFunctions = '[Function] Upsert Functions',
   UpdateFunction = '[Function] Update Function',
+  UpdateActiveFunction = '[Function] Update active Function',
   UpdateFunctions = '[Function] Update Functions',
   DeleteFunction = '[Function] Delete Function',
   DeleteFunctions = '[Function] Delete Functions',
@@ -96,6 +97,10 @@ export class SetActiveFunction implements Action {
   constructor(public functionObject: FunctionObject) {}
 }
 
+export class UpdateActiveFunction implements Action {
+  readonly type = FunctionActionTypes.UpdateActiveFunction;
+}
+
 export type FunctionActions =
   | LoadFunctionsInitiated
   | LoadFunctions
@@ -109,4 +114,5 @@ export type FunctionActions =
   | DeleteFunction
   | DeleteFunctions
   | ClearFunctions
-  | SetActiveFunction;
+  | SetActiveFunction
+  | UpdateActiveFunction;

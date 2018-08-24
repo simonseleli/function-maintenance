@@ -45,7 +45,7 @@ import {
   FunctionRule
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 import { FunctionService } from '../../core/services/function.service';
-import {ToasterService} from 'angular2-toaster';
+import { ToasterService } from 'angular2-toaster';
 
 @Component({
   selector: 'app-home',
@@ -62,7 +62,11 @@ export class HomeComponent implements OnInit {
   functionRules$: Observable<fromModels.FunctionRule[]>;
   loadingFunctions$: Observable<boolean>;
   functionsLoaded$: Observable<boolean>;
-  constructor(private store: Store<AppState>,private functionService:FunctionService,private toasterService: ToasterService,) {
+  constructor(
+    private store: Store<AppState>,
+    private functionService: FunctionService,
+    private toasterService: ToasterService
+  ) {
     this.currentUser$ = store.select(getCurrentUser);
     this.systemInfo$ = store.select(getSystemInfo);
     this.currentVisualization$ = store.select(getCurrentVisualization);
@@ -157,6 +161,7 @@ export class HomeComponent implements OnInit {
       this.store.dispatch(
         new UpdateFunction(functionDetails.functionObject.id, {
           ...functionDetails.functionObject,
+          simulating: true,
           rules: _.map(
             functionDetails.functionObject.rules,
             (rule: any) => rule.id
@@ -168,8 +173,9 @@ export class HomeComponent implements OnInit {
       functionDetails.functionRule
     ) {
       this.store.dispatch(
-        new UpdateFunctionRule(functionDetails.functionObject.id, {
-          ...functionDetails.functionRule
+        new UpdateFunctionRule(functionDetails.functionRule.id, {
+          ...functionDetails.functionRule,
+          simulating: true
         })
       );
     }
@@ -183,8 +189,6 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  loadingSave;
-  loadingSaveError;
   onSave(functionDetails: {
     functionRule: FunctionRule;
     functionObject: FunctionObject;
@@ -194,6 +198,7 @@ export class HomeComponent implements OnInit {
       this.store.dispatch(
         new UpdateFunction(functionDetails.functionObject.id, {
           ...functionDetails.functionObject,
+          saving: true,
           rules: _.map(
             functionDetails.functionObject.rules,
             (rule: any) => rule.id
@@ -205,33 +210,68 @@ export class HomeComponent implements OnInit {
       functionDetails.functionRule
     ) {
       this.store.dispatch(
-        new UpdateFunctionRule(functionDetails.functionObject.id, {
-          ...functionDetails.functionRule
+        new UpdateFunctionRule(functionDetails.functionRule.id, {
+          ...functionDetails.functionRule,
+          saving: true
         })
       );
     }
-    this.loadingSave = true;
-    this.loadingSaveError = false;
-    if(functionDetails.functionObject.name && functionDetails.functionObject.name != ""){
-      this.upsert(functionDetails.functionObject.rules,"id",functionDetails.functionRule)
-      this.functionService.save(functionDetails.functionObject).subscribe((results)=>{
-        this.loadingSave = false;
-        this.onSimulate(functionDetails)
-        this.toasterService.pop('success', 'Success', 'Function saved successfully.');
 
-      },(error)=>{
-        this.loadingSave = false;
-        this.loadingSaveError = error;
-        this.toasterService.pop('error', 'Saving Error', error.message);
-      })
-    }else{
-      this.toasterService.pop('error', 'Saving Error', "Please write name of function");
+    if (
+      functionDetails.functionObject.name &&
+      functionDetails.functionObject.name !== ''
+    ) {
+      this.upsert(
+        functionDetails.functionObject.rules,
+        'id',
+        _.omit(functionDetails.functionRule, [
+          'saving',
+          'simulating',
+          'selected',
+          'active'
+        ])
+      );
+      this.functionService
+        .save(
+          _.omit(functionDetails.functionObject, [
+            'saving',
+            'simulating',
+            'selected',
+            'active'
+          ])
+        )
+        .subscribe(
+          results => {
+            this.onSimulate({
+              ...functionDetails,
+              functionObject: {
+                ...functionDetails.functionObject,
+                saving: false
+              },
+              functionRule: { ...functionDetails.functionRule, saving: false }
+            });
+            this.toasterService.pop(
+              'success',
+              'Success',
+              'Function saved successfully.'
+            );
+          },
+          error => {
+            this.toasterService.pop('error', 'Saving Error', error.message);
+          }
+        );
+    } else {
+      this.toasterService.pop(
+        'error',
+        'Saving Error',
+        'Please write name of function'
+      );
     }
   }
   upsert(arr, key, newval) {
-    let match = _.find(arr, key);
-    if(match){
-      let index = _.indexOf(arr, _.find(arr, key));
+    const match = _.find(arr, key);
+    if (match) {
+      const index = _.indexOf(arr, _.find(arr, key));
       arr.splice(index, 1, newval);
     } else {
       arr.push(newval);

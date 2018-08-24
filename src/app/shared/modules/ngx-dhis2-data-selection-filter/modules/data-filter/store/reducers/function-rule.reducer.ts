@@ -80,6 +80,16 @@ export function reducer(
         : state;
     }
 
+    case FunctionRuleActionTypes.UpdateActiveFunctionRule: {
+      const activeFunctionRuleId = state.activeFunctionRuleId;
+      return activeFunctionRuleId !== ''
+        ? adapter.updateOne(
+            { id: activeFunctionRuleId, changes: { simulating: false } },
+            state
+          )
+        : state;
+    }
+
     default: {
       return state;
     }

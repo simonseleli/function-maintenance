@@ -4,4 +4,6 @@ export interface FunctionRule {
   description: string;
   selected: boolean;
   active?: boolean;
+  simulating?: boolean;
+  saving?: boolean;
 }

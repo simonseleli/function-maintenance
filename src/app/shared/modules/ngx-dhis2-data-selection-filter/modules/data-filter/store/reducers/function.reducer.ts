@@ -96,6 +96,16 @@ export function reducer(state = initialState, action: FunctionActions): State {
         activeFunctionId: action.functionObject.id
       };
     }
+
+    case FunctionActionTypes.UpdateActiveFunction: {
+      const activeFunctionId = state.activeFunctionId;
+      return activeFunctionId !== ''
+        ? adapter.updateOne(
+            { id: activeFunctionId, changes: { simulating: false } },
+            state
+          )
+        : state;
+    }
     default: {
       return state;
     }

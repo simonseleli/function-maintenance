@@ -5,6 +5,7 @@ import {
   FunctionRule
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 import { find } from 'rxjs/operators';
+import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
 
 @Component({
   selector: 'app-function-management',
@@ -17,6 +18,9 @@ export class FunctionManagementComponent implements OnInit {
 
   @Input()
   functionRules: FunctionRule[];
+
+  @Input()
+  currentVisualizationDataSelections: VisualizationDataSelection[];
 
   activeEditor: string;
 
