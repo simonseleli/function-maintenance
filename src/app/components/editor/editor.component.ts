@@ -30,14 +30,14 @@ export class EditorComponent implements OnInit {
 
   expanded(event: any): void {
   }
-  ngOnChanges(changes: SimpleChanges) {
+  /*ngOnChanges(changes: SimpleChanges) {
     if(changes.code){
       if(changes.code.currentValue && this.editor){
         //console.log("Calling here");
         this.setNewCode(changes.code.currentValue);
       }
     }
-  }
+  }*/
   modes = {
     "javascript":"ace/mode/javascript",
     "json":"ace/mode/json"

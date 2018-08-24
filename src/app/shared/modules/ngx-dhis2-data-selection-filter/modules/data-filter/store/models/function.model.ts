@@ -2,6 +2,7 @@ import { User } from '../../../../../../../core/models/user.model';
 
 export interface FunctionObject {
   selected?: boolean;
+  unsaved?: boolean;
   active?: boolean;
   id?: string;
   name?: string;
@@ -20,7 +21,6 @@ export interface FunctionObject {
   href?: String;
   user?: User;
   saving?: boolean;
-  unSaved?: boolean;
   isNew?: boolean;
   simulating?: boolean;
 }

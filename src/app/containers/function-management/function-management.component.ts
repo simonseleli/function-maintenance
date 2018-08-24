@@ -32,12 +32,12 @@ export class FunctionManagementComponent implements OnInit {
   @Output()
   newFunction: EventEmitter<FunctionObject> = new EventEmitter<
     FunctionObject
-    >();
+  >();
 
   @Output()
   newFunctionRule: EventEmitter<FunctionRule> = new EventEmitter<
     FunctionRule
-    >();
+  >();
 
   @Output()
   activateFunctionRule: EventEmitter<{
@@ -61,6 +61,17 @@ export class FunctionManagementComponent implements OnInit {
 
   @Output()
   save: EventEmitter<{
+    functionObject: FunctionObject;
+    functionRule: FunctionRule;
+    item: string;
+  }> = new EventEmitter<{
+    functionObject: FunctionObject;
+    functionRule: FunctionRule;
+    item: string;
+  }>();
+
+  @Output()
+  delete: EventEmitter<{
     functionObject: FunctionObject;
     functionRule: FunctionRule;
     item: string;
@@ -138,6 +149,13 @@ export class FunctionManagementComponent implements OnInit {
       functionObject: this.activeFunction,
       functionRule,
       item: 'FUNCTION_RULE'
+    });
+  }
+  onDeleteFunction(functionObject) {
+    this.delete.emit({
+      functionObject: functionObject,
+      functionRule: this.activeFunctionRule,
+      item: 'FUNCTION'
     });
   }
 }

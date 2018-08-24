@@ -25,8 +25,13 @@ export class FunctionEditorComponent implements OnInit {
 
   @Output()
   simulate: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
+
   @Output()
   save: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
+
+  @Output()
+  delete: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
+
   snippets = [
     {
       name: 'Aggregate Analytics',
@@ -54,6 +59,7 @@ export class FunctionEditorComponent implements OnInit {
         'function promisoryRequest() {\n    return new Promise(function(resolve, reject) {\n        $.ajax({\n            url: "../../../api/26/analytics.json?dimension=pe:" + parameters.pe + "&dimension=ou:" + parameters.ou + "&hierarchyMeta=true",\n            type: "GET",\n            success: function(analyticsResults) {\n                try {\n                    //Code goes here\n                    resolve(analyticsResults);\n                } catch (e) {\n                    reject(error);\n                }\n            },\n            error: function(error) {\n                reject(error);\n            }\n        });\n    })\n}\nfunction analyticsRequest() {\n    return new Promise(function(resolve, reject) {\n        var promises = [];\n        // List of promises to handle\n        var array = ["element1","element2","element3"];\n        array.forEach(function(){\n            // Add the promises \n            promises.push(promisoryRequest());\n        })\n        // Wait for the promises\n        Promise.all(promises).then(function(results){\n            resolve(results);\n        },function(error){\n            reject(error);\n        })\n    })\n}'
     }
   ];
+  deleteFuntion = false;
   constructor() {}
 
   ngOnInit() {
@@ -64,12 +70,32 @@ export class FunctionEditorComponent implements OnInit {
     e.stopPropagation();
     this.simulate.emit(this.functionObject);
   }
-
   onChange(event) {
+    if(!this.functionObject.unsaved){
+      this.functionObject.unsaved = true;
+    }
+  }
+  onFunctionEdited(event) {
     this.functionObject.function = event;
+    if(!this.functionObject.unsaved){
+      this.functionObject.unsaved = true;
+    }
   }
   onSave(e) {
     e.stopPropagation();
     this.save.emit(this.functionObject);
+  }
+  onDelete(){
+    this.delete.emit(this.functionObject);
+  }
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes.functionObject.currentValue && changes.functionObject.previousValue){
+      if(changes.functionObject.currentValue.id !== changes.functionObject.previousValue.id){
+        this.showEditor = false;
+        setTimeout(()=>{
+          this.showEditor = true;
+        })
+      }
+    }
   }
 }
