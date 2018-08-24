@@ -27,8 +27,12 @@ export class FunctionService {
   load(id: string) {
     return this.http.get('dataStore/functions/' + id);
   }
-  private _save(sFunction:FunctionObject,method){
-    return method("dataStore/functions/" + sFunction.id,sFunction);
+  private _save(sFunction:FunctionObject, method){
+    if(method === "POST"){
+      return this.http.post("dataStore/functions/" + sFunction.id,sFunction);
+    }else if(method === "PUT"){
+      return this.http.put("dataStore/functions/" + sFunction.id,sFunction);
+    }
   }
   save(sFunction:FunctionObject){
     return new Observable((observable)=>{
@@ -40,14 +44,23 @@ export class FunctionService {
         sFunction.displayName = sFunction.name;
         this.http.get("system/info").subscribe((results:any)=>{
           sFunction.href = results.contextPath +"?api/dataStore/functions/" + sFunction.id;
-          this._save(sFunction, this.http.post).subscribe((results)=>{
+          this._save(sFunction, "PUT").subscribe((results)=>{
             observable.next(sFunction);
             observable.complete();
           },(error) => {
-            console.log("Error:",error);
-            observable.error(error);
-            observable.complete();
-          })
+            if(error.status === 404){
+              this._save(sFunction, "POST").subscribe((results)=>{
+                observable.next(sFunction);
+                observable.complete();
+              },(error) => {
+                observable.error(error);
+                observable.complete();
+              })
+            }else{
+              observable.error(error);
+              observable.complete();
+            }
+          });
         },(error)=>{
           observable.error(error);
           observable.complete();
