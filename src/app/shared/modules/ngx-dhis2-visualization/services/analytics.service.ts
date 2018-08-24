@@ -84,6 +84,11 @@ export class AnalyticsService {
       ? _.join(_.map(peObject.items, item => item.id), ';')
       : '';
 
+    const dynamicDimensions = _.filter(
+      dataSelections,
+      (dataSelection: any) =>
+        ['pe', 'dx', 'ou'].indexOf(dataSelection.dimension) === -1
+    );
     const dxObject = _.find(dataSelections, ['dimension', 'dx']);
 
     if (!dxObject || dxObject.items.length === 0) {
@@ -101,6 +106,7 @@ export class AnalyticsService {
           {
             pe: peValue,
             ou: ouValue,
+            dynamicDimensions,
             rule: {
               ...dxItem.ruleDefinition,
               json: functionRuleJson
