@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FunctionRule } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 import { AddFunctionRule } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
-import { FunctionService } from '../../core/services/function.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../store/reducers/index';
 import { ToasterService } from 'angular2-toaster';
+import { FunctionService } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/services/function.service';
 
 @Component({
   selector: 'app-function-rule-list',

@@ -30,15 +30,14 @@ export class EditorComponent implements OnInit {
 
   expanded(event: any): void {
   }
-  /*ngOnChanges(changes: SimpleChanges) {
-
-    console.log(changes);
-    this.ngOnInit();
-    //this.doSomething(changes.categoryId.currentValue);
-    // You can also use categoryId.previousValue and
-    // categoryId.firstChange for comparing old and new values
-
-  }*/
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes.code){
+      if(changes.code.currentValue && this.editor){
+        //console.log("Calling here");
+        this.setNewCode(changes.code.currentValue);
+      }
+    }
+  }
   modes = {
     "javascript":"ace/mode/javascript",
     "json":"ace/mode/json"
@@ -52,11 +51,7 @@ export class EditorComponent implements OnInit {
       this.editor = ace.edit("editor" + this.id);
       this.editor.session.setMode(this.modes[this.mode]);
       this.editor.setReadOnly(this.readonly);
-      if(typeof this.code === "object"){
-        this.editor.setValue(JSON.stringify(this.code));
-      }else{
-        this.editor.setValue(this.code);
-      }
+      this.setNewCode(this.code);
       this.setTheme(this.themeGroups[0].themes[0])
       this.setFontSize(this.fontSize);
       this.editor.getSession().on('change', (e)=> {
@@ -171,6 +166,13 @@ export class EditorComponent implements OnInit {
     //this.editor.session.insert(this.editor.getCursorPosition() , code);
     this.editor.setValue(js_beautify(this.editor.getValue()));
     this.isCollapsed[i] = false
+  }
+  setNewCode(code){
+    if(typeof code === "object"){
+      this.editor.setValue(JSON.stringify(code));
+    }else{
+      this.editor.setValue(code);
+    }
   }
   format(){
     this.editor.setValue(js_beautify(this.editor.getValue()));

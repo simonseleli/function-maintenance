@@ -4,8 +4,8 @@ import { AddFunction } from '../../shared/modules/ngx-dhis2-data-selection-filte
 import * as _ from 'lodash';
 import { AppState } from '../../store/reducers/index';
 import { Store } from '@ngrx/store';
-import { FunctionService } from '../../core/services/function.service';
 import { ToasterService } from 'angular2-toaster';
+import { FunctionService } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/services/function.service';
 
 @Component({
   selector: 'app-function-list',

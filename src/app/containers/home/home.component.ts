@@ -44,8 +44,8 @@ import {
   FunctionObject,
   FunctionRule
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
-import { FunctionService } from '../../core/services/function.service';
 import { ToasterService } from 'angular2-toaster';
+import { FunctionService } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/services/function.service';
 
 @Component({
   selector: 'app-home',
