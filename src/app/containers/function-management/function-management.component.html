@@ -1,13 +1,22 @@
 <div class="row">
   <!-- function list section -->
   <div class="col-sm-3">
-    <app-function-list [functionList]="functionList" (activate)="onActivateFunctionObject($event)" (newFunction)="onNewFunctionObject($event)"></app-function-list>
+    <app-function-list [functionList]="functionList"
+                       (delete)="onDeleteFunction($event)"
+                       (save)="onSaveFunction($event)"
+                       (activate)="onActivateFunctionObject($event)"
+                       (newFunction)="onNewFunctionObject($event)"></app-function-list>
   </div>
   <!-- end of function list section -->
 
   <!-- function rule list -->
   <div class="col-sm-3">
-    <app-function-rule-list [functionRules]="functionRules" (activate)="onActivateFunctionRule($event)"  (newFunctionRule)="onNewFunctionRule($event)"></app-function-rule-list>
+    <app-function-rule-list
+      [functionRules]="functionRules"
+      (activate)="onActivateFunctionRule($event)"
+      (newFunctionRule)="onNewFunctionRule($event)">
+
+    </app-function-rule-list>
   </div>
   <!-- end of function rule list -->
 
@@ -27,7 +36,7 @@
         <div *ngIf="activeEditor === 'FUNCTION'" class="tab-pane fade {{activeEditor === 'FUNCTION' ? 'show active' : ''}}" role="tabpanel"
           aria-labelledby="function-tab">
           <app-function-editor [functionObject]="activeFunction" [currentVisualizationDataSelections]="currentVisualizationDataSelections"
-            (simulate)="onSimulateFunction($event)" (save)="onSaveFunction($event)"></app-function-editor>
+            (simulate)="onSimulateFunction($event)" (delete)="onDeleteFunction($event)" (save)="onSaveFunction($event)"></app-function-editor>
         </div>
         <div class="tab-pane fade {{activeEditor === 'RULE' ? 'show active' : ''}}" *ngIf="activeEditor === 'RULE'" role="tabpanel"
           aria-labelledby="rule-tab">

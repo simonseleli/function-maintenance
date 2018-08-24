@@ -1,6 +1,9 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FunctionObject } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
-import { AddFunction } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
+import {
+  AddFunction,
+  DeleteFunction
+} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
 import * as _ from 'lodash';
 import { AppState } from '../../store/reducers/index';
 import { Store } from '@ngrx/store';
@@ -22,12 +25,19 @@ export class FunctionListComponent implements OnInit {
   @Output()
   newFunction: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
 
+  @Output()
+  save: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
+
+  @Output()
+  delete: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
+
   pager: any = {
     page: 1,
     pageSize: 5
   };
   pageClustering;
   functionFilter: any = { name: '' };
+  deleteFunction;
   constructor(private functionService: FunctionService, private store: Store<AppState>, private toasterService: ToasterService) {}
 
   ngOnInit() {
@@ -45,7 +55,9 @@ export class FunctionListComponent implements OnInit {
     }
     this.pageClustering.push({ name: 'All', value: this.pager.total });
   }
-
+  deleteFunctionObject(functionObject){
+    this.delete.emit(functionObject);
+  }
   onActivate(e, functionObject: FunctionObject) {
     e.stopPropagation();
     if (!functionObject.active) {
@@ -89,5 +101,8 @@ export class FunctionListComponent implements OnInit {
       }
     }
     return functionOne > functionTwo ? 1 : -1;
+  }
+  onSave(functionObject) {
+    this.save.emit(functionObject);
   }
 }

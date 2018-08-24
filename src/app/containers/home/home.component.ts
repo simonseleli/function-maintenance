@@ -38,7 +38,7 @@ import {
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
 import {
   UpdateFunction,
-  SetActiveFunction, AddFunction
+  SetActiveFunction, AddFunction, DeleteFunction
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
 import {
   FunctionObject,
@@ -242,6 +242,7 @@ export class HomeComponent implements OnInit {
         'id',
         _.omit(functionDetails.functionRule, [
           'saving',
+          'unsaved',
           'simulating',
           'selected',
           'active'
@@ -251,6 +252,7 @@ export class HomeComponent implements OnInit {
         .save(
           _.omit(functionDetails.functionObject, [
             'saving',
+            'unsaved',
             'simulating',
             'selected',
             'active'
@@ -262,7 +264,8 @@ export class HomeComponent implements OnInit {
               ...functionDetails,
               functionObject: {
                 ...functionDetails.functionObject,
-                saving: false
+                saving: false,
+                unsaved: false
               },
               functionRule: { ...functionDetails.functionRule, saving: false }
             });
@@ -292,5 +295,20 @@ export class HomeComponent implements OnInit {
     } else {
       arr.push(newval);
     }
+  }
+  onDelete(functionDetails){
+    functionDetails.functionObject.deleting = true;
+    console.log(functionDetails.functionObject);
+    this.functionService.delete(functionDetails.functionObject).subscribe((results:any)=> {
+      functionDetails.functionObject.deleting = false;
+      this.store.dispatch(
+        new DeleteFunction({
+          id: functionDetails.functionObject.id
+        })
+      );
+    },(error)=>{
+      functionObject.deleting = false;
+      this.toasterService.pop('error', 'Error', error.message);
+    })
   }
 }

@@ -14,14 +14,15 @@ export class FunctionService {
   constructor(private http: NgxDhis2HttpClientService, private userService:UserService) {}
 
   loadAll(currentUser: any): Observable<any> {
-    return this.http.get('dataStore/functions').pipe(
+    /*return this.http.get('dataStore/functions').pipe(
       mergeMap((functionIds: Array<string>) =>
         forkJoin(
           _.map(functionIds, (functionId: string) => this.load(functionId))
         ).pipe(catchError(() => of([])))
       ),
       catchError(() => of([]))
-    );
+    );*/
+    return this.getAll();
   }
 
   load(id: string) {
