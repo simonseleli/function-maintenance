@@ -1,5 +1,11 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FunctionObject } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
+import { AddFunction } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
+import * as _ from 'lodash';
+import { AppState } from '../../store/reducers/index';
+import { Store } from '@ngrx/store';
+import { FunctionService } from '../../core/services/function.service';
+import { ToasterService } from 'angular2-toaster';
 
 @Component({
   selector: 'app-function-list',
@@ -13,13 +19,16 @@ export class FunctionListComponent implements OnInit {
   @Output()
   activate: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
 
+  @Output()
+  newFunction: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
+
   pager: any = {
     page: 1,
     pageSize: 5
   };
   pageClustering;
   functionFilter: any = { name: '' };
-  constructor() {}
+  constructor(private functionService: FunctionService, private store: Store<AppState>, private toasterService: ToasterService) {}
 
   ngOnInit() {
     this.pager.total = this.functionList.length;
@@ -50,16 +59,26 @@ export class FunctionListComponent implements OnInit {
   setPageSize(size) {
     this.pager.pageSize = size;
   }
-
+  newLoading;
   create(){
-    /*this.activate.emit({
-      id:"new",
-      name:"New Function",
-      function:"",
-      rules:[],
-      description:"",
-      lastUpdated:new Date(),
-      created:new Date(),
-    })*/
+    this.newLoading = true;
+    this.functionService.create().subscribe((functionObject:any)=> {
+      this.store.dispatch(
+        new AddFunction({
+          function:{
+            ...functionObject,
+            saving: true,
+            rules: _.map(
+              functionObject.rules,
+              (rule: any) => rule.id
+            )
+          }
+        })
+      );
+      this.newFunction.emit(functionObject);
+      this.newLoading = false;
+    },(error)=>{
+      this.toasterService.pop('error', 'Error', error.message);
+    })
   }
 }

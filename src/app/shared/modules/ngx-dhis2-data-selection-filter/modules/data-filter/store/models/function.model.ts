@@ -18,7 +18,7 @@ export interface FunctionObject {
   userAccesses?: Array<any>;
   publicAccess?: String;
   href?: String;
-  user: User;
+  user?: User;
   saving?: boolean;
   simulating?: boolean;
 }

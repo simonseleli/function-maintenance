@@ -1,6 +1,14 @@
 <div class="card">
   <div class="function-list-title">
-    Functions <button class="btn btn-sm btn-primary float-right" (click)="create()"><i class="fa fa-plus"></i> <span class="new-button" style="margin-left: 10px;"> Add New</span></button>
+    Functions
+    <button [disabled]="newLoading" class="btn btn-sm btn-primary float-right" (click)="create()">
+      <ng-container *ngIf="!newLoading">
+        <i class="fa fa-plus"></i> <span class="new-button" style="margin-left: 10px;"> Add New</span>
+      </ng-container>
+      <ng-container *ngIf="newLoading">
+        <img src="assets/img/balls-3.svg" height="20px"/>
+      </ng-container>
+    </button>
   </div>
   <div class="table-responsive">
     <table class="table table-hover function-list-table">
@@ -29,7 +37,7 @@
     </table>
   </div>
   <div class="card-footer">
-    <span>
+    <span *ngIf="(functionList | filterBy: functionFilter).length > 0">
               Showing {{(((pager.page?pager.page:1)-1) * pager.pageSize) + 1}} to {{((pager.page?pager.page:1) * pager.pageSize) > (functionList | filterBy: functionFilter).length?(functionList | filterBy: functionFilter).length:((pager.page?pager.page:1)
             * pager.pageSize)}} of {{(functionList | filterBy: functionFilter).length}}
             </span>

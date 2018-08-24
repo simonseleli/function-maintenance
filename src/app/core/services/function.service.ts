@@ -67,6 +67,47 @@ export class FunctionService {
     }
     return this.httpClient.get(url);
   }
+  create(){
+    return new Observable((observable) => {
+      this.getId(2).subscribe((results:any)=> {
+        this.httpClient.get("dataElements.json?pageSize=1").subscribe((dataElementResults:any)=>{
+          let functionObject ={
+            id: results.codes[0],
+            function:'//Example of function implementation\n' +
+            'parameters.progress(50);\n' +
+            '$.ajax({\n' +
+            '\turl: "../../../api/26/analytics.json?dimension=dx:" + parameters.rule.json.data + "&dimension=pe:" + parameters.pe + "&dimension=ou:" + parameters.ou,\n' +
+            '\ttype: "GET",\n' +
+            '\tsuccess: function(analyticsResults) {\n' +
+            '\t\t  parameters.success(analyticsResults);\n' +
+
+            '\t},\n' +
+            '\terror:function(error){\n' +
+            '\t\t  parameters.error(error);\n' +
+            '\t}\n' +
+            '});',
+            rules:[
+              {
+                id: results.codes[1],
+                name: "Default",
+                isDefault:true,
+                description: "This is the default rule. Using the data element '" + dataElementResults.dataElements[0].displayName+ "'.",
+                json: JSON.stringify({"data": dataElementResults.dataElements[0].id})
+              }
+            ]
+          };
+          observable.next(functionObject);
+          observable.complete();
+        },(error)=>{
+          observable.error(error.json());
+          observable.complete();
+        })
+      },(error)=>{
+        observable.error(error.json());
+        observable.complete();
+      })
+    })
+  }
   delete(sFunction:fromModels.FunctionObject){
     return new Observable((observable)=>{
 

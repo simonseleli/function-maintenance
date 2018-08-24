@@ -30,6 +30,11 @@ export class FunctionManagementComponent implements OnInit {
   >();
 
   @Output()
+  newFunction: EventEmitter<FunctionObject> = new EventEmitter<
+    FunctionObject
+    >();
+
+  @Output()
   activateFunctionRule: EventEmitter<{
     functionRule: FunctionRule;
     functionObject: FunctionObject;
@@ -74,6 +79,10 @@ export class FunctionManagementComponent implements OnInit {
 
   ngOnInit() {}
 
+  onNewFunctionObject(functionObject: FunctionObject) {
+    this.activeEditor = 'FUNCTION';
+    this.newFunction.emit(functionObject);
+  }
   onActivateFunctionObject(functionObject: FunctionObject) {
     this.activeEditor = 'FUNCTION';
     this.activateFunction.emit(functionObject);

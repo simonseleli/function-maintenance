@@ -1,7 +1,7 @@
 <div class="row">
   <!-- function list section -->
   <div class="col-sm-3">
-    <app-function-list [functionList]="functionList" (activate)="onActivateFunctionObject($event)"></app-function-list>
+    <app-function-list [functionList]="functionList" (activate)="onActivateFunctionObject($event)" (newFunction)="onNewFunctionObject($event)"></app-function-list>
   </div>
   <!-- end of function list section -->
 
