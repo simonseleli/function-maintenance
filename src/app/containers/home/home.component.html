@@ -31,7 +31,7 @@
   <!-- visualization card section -->
   <div class="row">
     <div class="col-12" *ngIf="(currentVisualization$ | async) && (currentVisualization$ | async).layers.length > 0">
-      <ngx-dhis2-visualization [id]="(currentVisualization$ | async)?.id" [visualizationLayers]="(currentVisualization$ | async)?.layers"
+      <ngx-dhis2-visualization [id]="(currentVisualization$ | async)?.id" [type]="(currentVisualization$ | async)?.type" [visualizationLayers]="(currentVisualization$ | async)?.layers"
         [currentUser]="currentUser$ | async" [systemInfo]="systemInfo$ | async"></ngx-dhis2-visualization>
     </div>
   </div>
@@ -42,9 +42,7 @@
     <div [ngStyle]="{'display': loadingSave?'none':'block'}" class="col-12">
       <app-function-management [functionList]="functionList$ | async" [functionRules]="functionRules$ | async" [currentVisualizationDataSelections]="currentVisualizationDataSelections$ | async"
         (activateFunction)="onActivateFunctionObject($event)" (activateFunctionRule)="onActivateFunctionRule($event)" (simulate)="onSimulate($event)"
-                               (newFunction)="onNewFunctionObject($event)" (newFunctionRule)="onNewFunctionRule($event)"
-        (save)="onSave($event)"
-                               (delete)="onDelete($event)"></app-function-management>
+        (newFunction)="onNewFunctionObject($event)" (newFunctionRule)="onNewFunctionRule($event)" (save)="onSave($event)" (delete)="onDelete($event)"></app-function-management>
     </div>
     <div [ngStyle]="{'display': loadingSave?'block':'none'}" class="col-12">
       <img src="assets/img/balls-3.svg" /> Saving...

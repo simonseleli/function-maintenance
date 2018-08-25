@@ -11,6 +11,7 @@ import { FunctionObject } from '../store/models/function.model';
   providedIn: 'root'
 })
 export class FunctionService {
+  apiVersion = '';
   constructor(
     private http: NgxDhis2HttpClientService,
     private userService: UserService
@@ -160,14 +161,14 @@ export class FunctionService {
         (results: any) => {
           this.http.get('dataElements.json?pageSize=1').subscribe(
             (dataElementResults: any) => {
-              let functionRule = {
+              const functionRule = {
                 id: results.codes[0],
                 name: 'New Rule',
                 isDefault: true,
                 description:
-                  "This is the default rule. Using the data element '" +
+                  'This is the default rule. Using the data element "' +
                   dataElementResults.dataElements[0].displayName +
-                  "'.",
+                  '".',
                 json: JSON.stringify({
                   data: dataElementResults.dataElements[0].id
                 })
@@ -202,19 +203,19 @@ export class FunctionService {
       );
     });
   }
-  apiVersion = '';
+
   getAll() {
     return new Observable(observ => {
       this.http.get('dataStore/functions').subscribe(
         (results: any) => {
-          let observable = [];
+          const observable = [];
           if (results.length > 0) {
             results.forEach(id => {
               observable.push(this.http.get('dataStore/functions/' + id));
             });
             forkJoin(observable).subscribe(
               (responses: any) => {
-                let functions = [];
+                const functions = [];
                 responses.forEach((response, index) => {
                   functions.push(response);
                 });
@@ -253,8 +254,8 @@ export class FunctionService {
           }
         },
         error => {
-          if (error.status == 404) {
-            let observable = [];
+          if (error.status === 404) {
+            const observable = [];
             this.http.get('system/info').subscribe((response: any) => {
               if (parseFloat(response.version) > 2.24) {
                 this.apiVersion = '/24';
@@ -287,7 +288,7 @@ export class FunctionService {
     });
   }
   creationOfNewFunctionObseravble() {
-    let observable = [];
+    const observable = [];
     observable.push(this.predictor());
     observable.push(this.createCompletenessFunctions());
     observable.push(this.createEarlyCompletenessFunctions());
@@ -298,13 +299,29 @@ export class FunctionService {
   }
   createStockOutFunctions() {
     return new Observable(observable => {
-      let stockout: any = {
+      const stockout: any = {
         function:
-          '//Example of function implementation\nparameters.progress(50);\nfunction calculatePercentageForOU(ou){\n    return new Promise(function(resolve,reject){\n      $.ajax({\n                    \turl: "../../../api' +
+          '//Example of function implementation\nparameters.progress(50);\nfunction calculatePercentageForOU(ou){\n' +
+          'return new Promise(function(resolve,reject){\n$.ajax({\n\turl: "../../../api' +
           this.apiVersion +
-          '/analytics.json?dimension=dx:" + parameters.rule.json.data + "&dimension=pe:" + parameters.pe + "&dimension=ou:LEVEL-4;" + ou + "&hierarchyMeta=true",\n                    \ttype: "GET",\n                    \tsuccess: function(analyticsResults) {\n                    \t    var orgUnits = [];\n                    \t    analyticsResults.rows.forEach(function(row){\n                    \t        var orgUnitId = row[1] + \'.\' + row[2]\n                    \t        if(orgUnits.indexOf(orgUnitId) == -1){\n                    \t            orgUnits.push(orgUnitId);\n                    \t        }\n                    \t    })\n                    \t    analyticsResults.metaData.dx = [parameters.rule.id];\n                    \t    analyticsResults.metaData.names[parameters.rule.id] = parameters.rule.name;\n                    \t    analyticsResults.rows = [];\n                    \t    analyticsResults.metaData.pe.forEach(function(pe){\n                    \t        var currentPeOrgUnits = [];\n                    \t        orgUnits.forEach(function(orgUnit) {\n                    \t            if (orgUnit.split(\'.\')[0] === pe) {\n                    \t               currentPeOrgUnits.push(orgUnit)\n                    \t            }\n                    \t        });\n                    \t        \n                    \t        if (currentPeOrgUnits.length > 0) {\n                    \t            analyticsResults.rows.push([parameters.rule.id,pe,ou,"" + (currentPeOrgUnits.length * 100 / analyticsResults.metaData.ou.length).toFixed(2)])\n                    \t        }\n                    \t    });\n                    \t\tanalyticsResults.metaData.ou = [ou];\n                    \t\tresolve(analyticsResults);\n                    \t},\n                    \terror:function(error){\n                    \t\t  reject(error);\n                    \t}\n                    });  \n    })\n}\n$.ajax({\n    url: "../../../api' +
+          '/analytics.json?dimension=dx:" + parameters.rule.json.data + "&dimension=pe:" + parameters.pe + "&dimension=ou:' +
+          'LEVEL-4;" + ou + "&hierarchyMeta=true",\n\ttype: "GET",\n\tsuccess: function(analyticsResults) {\n\tvar orgUnits = ' +
+          '[];\n\tanalyticsResults.rows.forEach(function(row){\n\tvar orgUnitId = row[1] + "." + row[2]\n\tif(orgUnits.indexOf' +
+          '(orgUnitId) == -1){\n\torgUnits.push(orgUnitId);\n\t}\n\t})\n\tanalyticsResults.metaData.dx = [parameters.rule.id];\n\t' +
+          'analyticsResults.metaData.names[parameters.rule.id] = parameters.rule.name;\n\tanalyticsResults.rows = [];\n\t' +
+          'analyticsResults.metaData.pe.forEach(function(pe){\n\tvar currentPeOrgUnits = [];\n\torgUnits.forEach(function(orgUnit)' +
+          '{\n\tif (orgUnit.split(".")[0] === pe) {\n\tcurrentPeOrgUnits.push(orgUnit)\n\t}\n\t});\n\t\n\tif (currentPeOrgUnits.' +
+          'length > 0) {\n\tanalyticsResults.rows.push([parameters.rule.id,pe,ou,"" + (currentPeOrgUnits.length * 100 / analyticsResults' +
+          '.metaData.ou.length).toFixed(2)])\n\t}\n\t});\n\t\tanalyticsResults.metaData.ou = [ou];\n\t\tresolve(analyticsResults);\n\t},' +
+          '\n\terror:function(error){\n\t\treject(error);\n\t}\n});\n})\n}\n$.ajax({\nurl: "../../../api' +
           this.apiVersion +
-          '/analytics.json?dimension=pe:" + parameters.pe + "&dimension=ou:" + parameters.ou + "&skipData=true",\n    type: "GET",\n    success: function(dummyAnalyticsResults) {\n        var promises = [];\n        var analytics;\n        dummyAnalyticsResults.metaData.ou.forEach(function(ou){\n            promises.push(calculatePercentageForOU(ou).then(function(analyticsResults){\n                if(!analytics){\n                    analytics = analyticsResults;\n                }else{\n                   analytics.metaData.ou = analytics.metaData.ou.concat(analyticsResults.metaData.ou);\n                   analyticsResults.metaData.ou.forEach(function(ouid){\n                       analytics.metaData.names[ouid] = analyticsResults.metaData.names[ouid];\n                   })\n                    analytics.rows = analytics.rows.concat(analyticsResults.rows);\n                }\n            }));\n        })\n        \n        Promise.all(promises).then(function(){\n            parameters.success(analytics);\n        },function(error){\n            parameters.error(error);\n        })\n},error:function(error){\n    reject(error);\n}\n});',
+          '/analytics.json?dimension=pe:" + parameters.pe + "&dimension=ou:" + parameters.ou + "&skipData=true",\ntype:"GET",\nsuccess:' +
+          'function(dummyAnalyticsResults) {\nvar promises = [];\nvar analytics;\ndummyAnalyticsResults.metaData.ou.forEach(function(ou)' +
+          '{\npromises.push(calculatePercentageForOU(ou).then(function(analyticsResults){\nif(!analytics){\nanalytics = analyticsResults' +
+          ';\n}else{\nanalytics.metaData.ou = analytics.metaData.ou.concat(analyticsResults.metaData.ou);\nanalyticsResults.metaData.ou.' +
+          'forEach(function(ouid){\nanalytics.metaData.names[ouid] = analyticsResults.metaData.names[ouid];\n})\nanalytics.rows = ' +
+          'analytics.rows.concat(analyticsResults.rows);\n}\n}));\n})\n\nPromise.all(promises).then(function(){\nparameters.success' +
+          '(analytics);\n},function(error){\nparameters.error(error);\n})\n},error:function(error){\nreject(error);\n}\n});',
         rules: [],
         name: 'Facilities With Stockout',
         description: 'Number of facilities with stockout'
@@ -315,7 +332,7 @@ export class FunctionService {
         )
         .subscribe(
           (dataElementResults: any) => {
-            if (dataElementResults.dataElements.length == 0) {
+            if (dataElementResults.dataElements.length === 0) {
               //TODO add a provision if the dhis server has no stockout data elements
             } else {
               this.getId(dataElementResults.dataElements.length).subscribe(
@@ -326,30 +343,30 @@ export class FunctionService {
                         .toLowerCase()
                         .indexOf('stockout') >= -1
                     ) {
-                      let rule: any = {
+                      const rule: any = {
                         id: codeResults.codes[0],
                         name: dataElement.displayName,
                         description:
-                          "This is the rule. Using the data set '" +
+                          'This is the rule. Using the data set "' +
                           dataElement.displayName +
-                          "'.",
+                          '".',
                         json: { data: dataElement.id }
                       };
-                      if (stockout.rules.length == 0) {
+                      if (stockout.rules.length === 0) {
                         rule.isDefault = true;
                       }
                       stockout.rules.push(rule);
                     }
                   });
-                  if (stockout.rules.length == 0) {
+                  if (stockout.rules.length === 0) {
                     stockout.rules.push({
                       id: codeResults.codes[0],
                       name: dataElementResults.dataElements[0].displayName,
                       isDefault: true,
                       description:
-                        "This is the rule. Using the data element '" +
+                        'This is the rule. Using the data element "' +
                         dataElementResults.dataElements[0].displayName +
-                        "'.",
+                        '".',
                       json: { data: dataElementResults.dataElements[0].id }
                     });
                   }
@@ -380,7 +397,7 @@ export class FunctionService {
   }
   createPredictors() {
     return new Observable(observable => {
-      let stockout: any = {
+      const stockout: any = {
         function:
           '//Example of function implementation\nparameters.progress(50);\nfunction calculatePercentageForOU(ou){\n    return new Promise(function(resolve,reject){\n      $.ajax({\n                    \turl: "../../../api' +
           this.apiVersion +
@@ -397,8 +414,8 @@ export class FunctionService {
         )
         .subscribe(
           (dataElementResults: any) => {
-            if (dataElementResults.dataElements.length == 0) {
-              //TODO add a provision if the dhis server has no stockout data elements
+            if (dataElementResults.dataElements.length === 0) {
+              // TODO add a provision if the dhis server has no stockout data elements
             } else {
               this.getId(dataElementResults.dataElements.length).subscribe(
                 (codeResults: any) => {
@@ -408,7 +425,7 @@ export class FunctionService {
                         .toLowerCase()
                         .indexOf('stockout') >= -1
                     ) {
-                      let rule: any = {
+                      const rule: any = {
                         id: codeResults.codes[0],
                         name: dataElement.displayName,
                         description:
@@ -417,13 +434,13 @@ export class FunctionService {
                           "'.",
                         json: { data: dataElement.id }
                       };
-                      if (stockout.rules.length == 0) {
+                      if (stockout.rules.length === 0) {
                         rule.isDefault = true;
                       }
                       stockout.rules.push(rule);
                     }
                   });
-                  if (stockout.rules.length == 0) {
+                  if (stockout.rules.length === 0) {
                     stockout.rules.push({
                       id: codeResults.codes[0],
                       name: dataElementResults.dataElements[0].displayName,
@@ -466,7 +483,12 @@ export class FunctionService {
         function:
           '//Example of function implementation\n$.ajax({\n\turl: "../../../api' +
           this.apiVersion +
-          '/analytics.json?dimension=dx:" + parameters.rule.json.data + ".REPORTING_RATE&dimension=pe:" + parameters.pe + "&dimension=ou:" + parameters.ou,\n\ttype: "GET",\n\tsuccess: function(analyticsResults) {\n\t    var rows = [];\n\t    analyticsResults.rows.forEach(function(row){\n\t        if(parseFloat(row[3]) > 100){\n\t            row[3] = "100";\n\t        }\n\t        rows.push(row);\n\t    })\n\t    analyticsResults.rows = rows;\n\t\tparameters.success(analyticsResults);\n\t},\n\terror:function(error){\n\t\t  parameters.error(error);\n\t}\n});',
+          '/analytics.json?dimension=dx:" + parameters.rule.json.data + ".REPORTING_RATE&' +
+          'dimension=pe:" + parameters.pe + "&dimension=ou:" + parameters.ou,\n\ttype: "GET",\n\t' +
+          'success: function(analyticsResults) {\n\t    var rows = [];\n\t    analyticsResults.rows.' +
+          'forEach(function(row){\n\tif(parseFloat(row[3]) > 100){\n\trow[3] = "100";\n\t}\n\trows.push' +
+          '(row);\n\t    })\n\t    analyticsResults.rows = rows;\n\t\tparameters.success(analyticsResults)' +
+          ';\n\t},\n\terror:function(error){\n\t\t  parameters.error(error);\n\t}\n});',
         rules: [],
         name: 'Limit Reporting Rate to Maximum of 100%',
         description:
@@ -477,7 +499,7 @@ export class FunctionService {
           this.getId(dataSetResults.dataSets.length + 1).subscribe(
             (codeResults: any) => {
               dataSetResults.dataSets.forEach((dataSet, index) => {
-                let rule: any = {
+                const rule: any = {
                   id: codeResults.codes[index],
                   name: dataSet.displayName + ' Completeness',
                   description:
@@ -486,7 +508,7 @@ export class FunctionService {
                     "'.",
                   json: { data: dataSet.id }
                 };
-                if (index == 0) {
+                if (index === 0) {
                   rule.isDefault = true;
                 }
                 completeness.rules.push(rule);
@@ -530,7 +552,7 @@ export class FunctionService {
           this.getId(dataSetResults.dataSets.length + 1).subscribe(
             (codeResults: any) => {
               dataSetResults.dataSets.forEach((dataSet, index) => {
-                let rule: any = {
+                const rule: any = {
                   id: codeResults.codes[index],
                   name: dataSet.displayName + ' Early Completeness',
                   description:
@@ -539,7 +561,7 @@ export class FunctionService {
                     "'.",
                   json: { data: dataSet.id }
                 };
-                if (index == 0) {
+                if (index === 0) {
                   rule.isDefault = true;
                 }
                 completeness.rules.push(rule);
@@ -583,7 +605,7 @@ export class FunctionService {
           this.getId(dataSetResults.dataSets.length + 1).subscribe(
             (codeResults: any) => {
               dataSetResults.dataSets.forEach((dataSet, index) => {
-                let rule: any = {
+                const rule: any = {
                   id: codeResults.codes[index],
                   name: dataSet.displayName + ' Reporting Rate by filled data',
                   description:
@@ -592,7 +614,7 @@ export class FunctionService {
                     "'.",
                   json: { data: dataSet.id }
                 };
-                if (index == 0) {
+                if (index === 0) {
                   rule.isDefault = true;
                 }
                 completeness.rules.push(rule);
@@ -636,7 +658,7 @@ export class FunctionService {
           this.getId(dataSetResults.dataSets.length + 1).subscribe(
             (codeResults: any) => {
               dataSetResults.dataSets.forEach((dataSet, index) => {
-                let rule: any = {
+                const rule: any = {
                   id: codeResults.codes[index],
                   name: dataSet.displayName + ' Reporting Rate by filled data',
                   description:
@@ -645,7 +667,7 @@ export class FunctionService {
                     "'.",
                   json: { data: dataSet.id }
                 };
-                if (index == 0) {
+                if (index === 0) {
                   rule.isDefault = true;
                 }
                 completeness.rules.push(rule);
@@ -688,7 +710,7 @@ export class FunctionService {
           this.getId(dataElementResults.dataElements.length + 1).subscribe(
             (codeResults: any) => {
               dataElementResults.dataElements.forEach((dataElement, index) => {
-                let rule: any = {
+                const rule: any = {
                   id: codeResults.codes[index],
                   name: dataElement.displayName + ' Prediction',
                   description:
@@ -712,7 +734,7 @@ export class FunctionService {
                     }
                   }
                 };
-                if (index == 0) {
+                if (index === 0) {
                   rule.isDefault = true;
                 }
                 completeness.rules.push(rule);
@@ -769,7 +791,7 @@ export class FunctionService {
                   if (dataSet.organisationUnits.length > 0) {
                     level = dataSet.organisationUnits[0].level;
                   }
-                  let rule: any = {
+                  const rule: any = {
                     id: codeResults.codes[index],
                     name:
                       dataSet.displayName + ' Reporting Rate by filled data',
@@ -779,7 +801,7 @@ export class FunctionService {
                       "'.",
                     json: { data: dataSet.id, level: level }
                   };
-                  if (index == 0) {
+                  if (index === 0) {
                     rule.isDefault = true;
                   }
                   completeness.rules.push(rule);
@@ -823,23 +845,23 @@ export class FunctionService {
     });
   }
   isError(code) {
-    var successError = false;
-    var errorError = false;
-    var progressError = false;
-    let value = code
+    let successError = false;
+    let errorError = false;
+    let progressError = false;
+    const value = code
       .split(' ')
       .join('')
       .split('\n')
       .join('')
       .split('\t')
       .join('');
-    if (value.indexOf('parameters.success(') == -1) {
+    if (value.indexOf('parameters.success(') === -1) {
       successError = true;
     }
-    if (value.indexOf('parameters.error(') == -1) {
+    if (value.indexOf('parameters.error(') === -1) {
       errorError = true;
     }
-    if (value.indexOf('parameters.progress(') == -1) {
+    if (value.indexOf('parameters.progress(') === -1) {
       progressError = true;
     }
     return successError || errorError;

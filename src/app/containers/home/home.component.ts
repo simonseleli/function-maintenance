@@ -4,7 +4,7 @@ import { SelectionFilterConfig } from '../../shared/modules/ngx-dhis2-data-selec
 import { Store } from '@ngrx/store';
 import { AppState } from '../../store';
 import { Observable } from 'rxjs';
-import { User, SystemInfo } from '../../core';
+import { User, SystemInfo, generateUid } from '../../core';
 import {
   getCurrentUser,
   getSystemInfo,
@@ -16,7 +16,9 @@ import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visua
 import { take } from 'rxjs/operators';
 import {
   UpdateCurrentVisualizationWithDataSelectionsAction,
-  SimulateVisualizationAction
+  SimulateVisualizationAction,
+  AddOrUpdateCurrentVisualizationAction,
+  AddVisualizationItemAction
 } from '../../store/actions/current-visualization.actions';
 import {
   getAllFunctionRules,
@@ -49,6 +51,14 @@ import {
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 import { ToasterService } from 'angular2-toaster';
 import { FunctionService } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/services/function.service';
+import {
+  AddVisualizationObjectAction,
+  AddVisualizationUiConfigurationAction
+} from '../../shared/modules/ngx-dhis2-visualization/store';
+import {
+  getStandardizedVisualizationObject,
+  getStandardizedVisualizationUiConfig
+} from '../../shared/modules/ngx-dhis2-visualization/helpers';
 
 @Component({
   selector: 'app-home',
@@ -130,7 +140,26 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  onAddFavoriteAction(favoriteDetails: any) {}
+  onAddFavoriteAction(favorite: any) {
+    const dashboardItem = {
+      id: generateUid(),
+      type: favorite.dashboardTypeDetails.type,
+      [_.camelCase(favorite.dashboardTypeDetails.type)]: favorite
+        .dashboardTypeDetails.isArray
+        ? [
+            {
+              id: favorite.id,
+              name: favorite.name
+            }
+          ]
+        : {
+            id: favorite.id,
+            name: favorite.name
+          }
+    };
+
+    this.store.dispatch(new AddVisualizationItemAction(dashboardItem));
+  }
 
   onCreateFavoriteAction() {}
 

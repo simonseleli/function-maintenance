@@ -3,7 +3,14 @@ import * as _ from 'lodash';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { UserActionTypes, AddCurrentUser } from '../actions';
-import { map, withLatestFrom, first, take, tap } from 'rxjs/operators';
+import {
+  map,
+  withLatestFrom,
+  first,
+  take,
+  tap,
+  switchMap
+} from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { AppState } from '../reducers';
 import { getCurrentVisualization } from '../selectors';
@@ -13,9 +20,14 @@ import {
   AddOrUpdateCurrentVisualizationAction,
   CurrentVisualizationActionTypes,
   UpdateCurrentVisualizationWithDataSelectionsAction,
-  SimulateVisualizationAction
+  SimulateVisualizationAction,
+  AddVisualizationItemAction
 } from '../actions/current-visualization.actions';
-import { generateUid } from '../../shared/modules/ngx-dhis2-visualization/helpers';
+import {
+  generateUid,
+  getSelectionDimensionsFromFavorite,
+  getVisualizationLayerType
+} from '../../shared/modules/ngx-dhis2-visualization/helpers';
 import { LoadVisualizationAnalyticsAction } from '../../shared/modules/ngx-dhis2-visualization/store';
 
 import * as fromFunctionSelectors from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors';
@@ -24,6 +36,7 @@ import {
   VisualizationDataSelection,
   VisualizationLayer
 } from '../../shared/modules/ngx-dhis2-visualization/models';
+import { FavoriteService } from '../../shared/modules/ngx-dhis2-visualization/services';
 
 @Injectable()
 export class CurrentVisualizationEffects {
@@ -174,5 +187,57 @@ export class CurrentVisualizationEffects {
     })
   );
 
-  constructor(private actions$: Actions, private store: Store<AppState>) {}
+  @Effect({ dispatch: false })
+  addVisualizationItem$: Observable<any> = this.actions$.pipe(
+    ofType(CurrentVisualizationActionTypes.AddVisualizationItem),
+    tap((action: AddVisualizationItemAction) => {
+      const favorite =
+        action.visualizationItem[_.camelCase(action.visualizationItem.type)];
+
+      if (favorite) {
+        this.favoriteService
+          .getFavorite({
+            type: _.camelCase(action.visualizationItem.type),
+            id: favorite.id,
+            useTypeAsBase: true
+          })
+          .subscribe((favoriteObject: any) => {
+            const visualizationLayers: VisualizationLayer[] = _.map(
+              favoriteObject.mapViews || [favoriteObject],
+              (favoriteLayer: any) => {
+                const dataSelections = getSelectionDimensionsFromFavorite(
+                  favoriteLayer
+                );
+                return {
+                  id: favoriteLayer.id,
+                  dataSelections,
+                  layerType: getVisualizationLayerType(
+                    favorite.type,
+                    favoriteLayer
+                  ),
+                  analytics: null,
+                  config: {
+                    ...favoriteLayer,
+                    type: favoriteLayer.type ? favoriteLayer.type : 'COLUMN',
+                    visualizationType: action.visualizationItem.type
+                  }
+                };
+              }
+            );
+            this.store.dispatch(
+              new AddOrUpdateCurrentVisualizationAction({
+                id: action.visualizationItem.id,
+                type: action.visualizationItem.type,
+                layers: visualizationLayers
+              })
+            );
+          });
+      }
+    })
+  );
+  constructor(
+    private actions$: Actions,
+    private store: Store<AppState>,
+    private favoriteService: FavoriteService
+  ) {}
 }
