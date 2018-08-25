@@ -111,6 +111,7 @@ export class AnalyticsService {
               ...dxItem.ruleDefinition,
               json: functionRuleJson
             },
+            dataSelections,
             success: result => {},
             error: error => {},
             progress: progress => {}
