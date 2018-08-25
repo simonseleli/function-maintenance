@@ -217,28 +217,25 @@ export class HomeComponent implements OnInit {
     functionObject: FunctionObject;
     item: string;
   }) {
-    if (functionDetails.item === 'FUNCTION' && functionDetails.functionObject) {
-      this.store.dispatch(
-        new UpdateFunction(functionDetails.functionObject.id, {
-          ...functionDetails.functionObject,
-          simulating: true,
-          rules: _.map(
-            functionDetails.functionObject.rules,
-            (rule: any) => rule.id
-          )
-        })
-      );
-    } else if (
-      functionDetails.item === 'FUNCTION_RULE' &&
-      functionDetails.functionRule
-    ) {
-      this.store.dispatch(
-        new UpdateFunctionRule(functionDetails.functionRule.id, {
-          ...functionDetails.functionRule,
-          simulating: true
-        })
-      );
-    }
+    this.store.dispatch(
+      new UpdateFunction(functionDetails.functionObject.id, {
+        ...functionDetails.functionObject,
+        simulating: true,
+        selected: true,
+        rules: _.map(
+          functionDetails.functionObject.rules,
+          (rule: any) => rule.id
+        )
+      })
+    );
+
+    this.store.dispatch(
+      new UpdateFunctionRule(functionDetails.functionRule.id, {
+        ...functionDetails.functionRule,
+        simulating: true,
+        selected: true
+      })
+    );
 
     this.store.dispatch(
       new SimulateVisualizationAction(
