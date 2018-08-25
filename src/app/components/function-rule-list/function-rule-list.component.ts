@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../store/reducers/index';
 import { ToasterService } from 'angular2-toaster';
 import { FunctionService } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/services/function.service';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-function-rule-list',
@@ -21,6 +22,7 @@ export class FunctionRuleListComponent implements OnInit {
   @Output()
   newFunctionRule: EventEmitter<FunctionRule> = new EventEmitter<FunctionRule>();
 
+  lodash = _;
 
   pager: any = {
     page: 1,
@@ -86,5 +88,10 @@ export class FunctionRuleListComponent implements OnInit {
       }
     }
     return functionOne > functionTwo ? 1 : -1;
+  }
+  filter(field){
+    return (o)=>{
+      return o[field];
+    }
   }
 }
