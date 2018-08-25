@@ -181,6 +181,7 @@ export class HomeComponent implements OnInit {
     );
     this.onActivateFunctionObject(functionObject);
   }
+
   onNewFunctionRule(functionRule: FunctionRule) {
     this.store.dispatch(
       new AddFunctionRule({
@@ -189,6 +190,7 @@ export class HomeComponent implements OnInit {
     );
     this.onActivateFunctionObject(functionRule);
   }
+
   onActivateFunctionObject(functionObject: FunctionObject) {
     this.store.dispatch(new SetActiveFunction(functionObject));
     if (functionObject.rules && functionObject.rules[0]) {
