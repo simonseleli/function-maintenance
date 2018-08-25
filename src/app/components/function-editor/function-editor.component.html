@@ -13,6 +13,8 @@
 
       <div class="form-group">
         <label for="">Function Definition</label>
+        <ngx-json-viewer [json]="parameters" [expanded]="false"></ngx-json-viewer>
+
         <editor *ngIf="showEditor" [mode]="'javascript'" [code]="functionObject.function" [readonly]="operation == 'test'" [snippets]="snippets"
           (onCodeUpdate)="onFunctionEdited($event)"></editor>
       </div>

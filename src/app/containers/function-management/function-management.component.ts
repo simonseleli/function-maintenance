@@ -154,6 +154,7 @@ export class FunctionManagementComponent implements OnInit {
   onDeleteFunction(functionObject){
     this.delete.emit({
       functionObject:functionObject,
+      functionRule:null,
       item: 'FUNCTION'
     });
   }

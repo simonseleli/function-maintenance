@@ -33,6 +33,7 @@ import { PaginationModule, BsDropdownModule } from 'ngx-bootstrap';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FilterPipeModule } from 'ngx-filter-pipe';
 import { OrderModule } from 'ngx-order-pipe';
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -57,6 +58,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     FormsModule,
     FilterPipeModule,
     OrderModule,
+    NgxJsonViewerModule,
 
     /**
      * Translation module

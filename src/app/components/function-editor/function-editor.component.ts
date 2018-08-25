@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { FunctionObject } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-function-editor',
@@ -62,8 +63,23 @@ export class FunctionEditorComponent implements OnInit {
   deleteFuntion = false;
   constructor() {}
 
+  parameters = {
+    ou:"",
+    pe:"",
+    rule:{}
+  };
   ngOnInit() {
     console.log(this.currentVisualizationDataSelections);
+    console.log("Current Visualization:",_.find(this.currentVisualizationDataSelections, function (obj) { return obj.dimension === "dx"; }));
+    this.parameters.ou = _.find(this.currentVisualizationDataSelections, function (obj) { return obj.dimension === "ou"; });
+    this.parameters.ou = _.map(this.parameters.ou.items, "id").join(";");
+    this.parameters.pe = _.find(this.currentVisualizationDataSelections, function (obj) { return obj.dimension === "pe"; });
+    this.parameters.pe = _.map(this.parameters.pe.items, "id").join(";");
+    this.parameters.rule = _.find(this.currentVisualizationDataSelections, function (obj) { return obj.dimension === "dx"; });
+    this.parameters.rule = _.map(this.parameters.rule.items, "ruleDefinition");
+    console.log(this.parameters.rule);
+    this.parameters.rule = this.parameters.rule[0];
+    this.parameters.rule.json = JSON.parse(this.parameters.rule.json);
   }
 
   onSimulate(e) {
