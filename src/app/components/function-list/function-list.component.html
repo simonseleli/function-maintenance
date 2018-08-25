@@ -16,11 +16,17 @@
       <tr><td colspan="100%">
         <div class="form-group">
           <input type="text" class="form-control" [(ngModel)]="functionFilter.name" placeholder="Function Name">
+          <span class="badge badge-primary">
+            {{lodash.filter((functionList | filterBy: functionFilter),filter("selected")).length}}
+            Selected</span>
+          <span class="badge badge-danger">
+            {{lodash.filter((functionList | filterBy: functionFilter),filter("unsaved")).length}}
+            Unsaved</span>
         </div>
       </td></tr>
       </thead>
       <tbody>
-        <tr *ngFor="let functionObject of functionList | filterBy: functionFilter | orderBy: ['unsave','selected','name']:true:false:order | paginate: { itemsPerPage: pager.pageSize, currentPage: pager.page }" [ngClass]="{'selected-function': functionObject.active}" (click)="onActivate($event, functionObject)">
+        <tr *ngFor="let functionObject of functionList | filterBy: functionFilter | orderBy: ['unsave']:true:false:order | paginate: { itemsPerPage: pager.pageSize, currentPage: pager.page }" [ngClass]="{'selected-function': functionObject.active}" (click)="onActivate($event, functionObject)">
           <ng-container *ngIf="!functionObject.deleting && deleteFunction !==functionObject.id">
             <td width="80%">
               <div class="function-title" style="font-size: 14px;">

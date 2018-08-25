@@ -148,6 +148,7 @@ export class HomeComponent implements OnInit {
     this.onActivateFunctionObject(functionRule);
   }
   onActivateFunctionObject(functionObject: FunctionObject) {
+    functionObject.selected = true;
     this.store.dispatch(new SetActiveFunction(functionObject));
     if (functionObject.rules && functionObject.rules[0]) {
       this.store.dispatch(
@@ -307,7 +308,7 @@ export class HomeComponent implements OnInit {
         })
       );
     },(error)=>{
-      functionObject.deleting = false;
+      functionDetails.functionObject.deleting = false;
       this.toasterService.pop('error', 'Error', error.message);
     })
   }

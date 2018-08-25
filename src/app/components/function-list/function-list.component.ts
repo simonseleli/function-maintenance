@@ -4,11 +4,11 @@ import {
   AddFunction,
   DeleteFunction
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
-import * as _ from 'lodash';
 import { AppState } from '../../store/reducers/index';
 import { Store } from '@ngrx/store';
 import { ToasterService } from 'angular2-toaster';
 import { FunctionService } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/services/function.service';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-function-list',
@@ -31,6 +31,7 @@ export class FunctionListComponent implements OnInit {
   @Output()
   delete: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
 
+  lodash = _;
   pager: any = {
     page: 1,
     pageSize: 5
@@ -104,5 +105,10 @@ export class FunctionListComponent implements OnInit {
   }
   onSave(functionObject) {
     this.save.emit(functionObject);
+  }
+  filter(field){
+    return (o)=>{
+      return o[field];
+    }
   }
 }

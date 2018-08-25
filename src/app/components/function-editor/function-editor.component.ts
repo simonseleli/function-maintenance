@@ -9,7 +9,9 @@ import {
 import { FunctionObject } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
 import * as _ from 'lodash';
-
+import { UpsertFunction } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
+import { AppState } from '../../store/reducers/index';
+import { Store } from '@ngrx/store';
 @Component({
   selector: 'app-function-editor',
   templateUrl: './function-editor.component.html',
@@ -61,12 +63,10 @@ export class FunctionEditorComponent implements OnInit {
     }
   ];
   deleteFuntion = false;
-  constructor() {}
+  constructor(private store: Store<AppState>) {}
 
-  parameters = {
-    ou:"",
-    pe:"",
-    rule:{}
+  parameters:any = {
+
   };
   ngOnInit() {
     console.log(this.currentVisualizationDataSelections);
@@ -79,7 +79,9 @@ export class FunctionEditorComponent implements OnInit {
     this.parameters.rule = _.map(this.parameters.rule.items, "ruleDefinition");
     console.log(this.parameters.rule);
     this.parameters.rule = this.parameters.rule[0];
-    this.parameters.rule.json = JSON.parse(this.parameters.rule.json);
+    if(typeof this.parameters.rule.json === "string"){
+      this.parameters.rule.json = JSON.parse(this.parameters.rule.json);
+    }
   }
 
   onSimulate(e) {
@@ -87,15 +89,18 @@ export class FunctionEditorComponent implements OnInit {
     this.simulate.emit(this.functionObject);
   }
   onChange(event) {
-    if(!this.functionObject.unsaved){
-      this.functionObject.unsaved = true;
-    }
+    this.upsertFunction();
   }
   onFunctionEdited(event) {
     this.functionObject.function = event;
+    this.upsertFunction();
+  }
+  upsertFunction(){
     if(!this.functionObject.unsaved){
       this.functionObject.unsaved = true;
     }
+    console.log("this.functionObject:",this.functionObject);
+    this.store.dispatch(new UpsertFunction({function: this.functionObject}));
   }
   onSave(e) {
     e.stopPropagation();
