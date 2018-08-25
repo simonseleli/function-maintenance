@@ -105,21 +105,7 @@ export class HomeComponent implements OnInit {
       new UpdateCurrentVisualizationWithDataSelectionsAction(dataSelections)
     );
 
-    this.store
-      .select(getSelectedFunctions)
-      .pipe(take(1))
-      .subscribe((selectedFunctions: any[]) => {
-        _.each(selectedFunctions, (selectedFunction: any) => {
-          this.store.dispatch(
-            new UpdateFunction(selectedFunction.id, { selected: false })
-          );
-          _.each(selectedFunction.rules, (selectedRule: any) => {
-            this.store.dispatch(
-              new UpdateFunctionRule(selectedRule.id, { selected: false })
-            );
-          });
-        });
-      });
+    this.unSelectFunctionAndRules();
 
     // TODO move this logic to function effects
     const dxObject = _.find(dataSelections, ['dimension', 'dx']);
@@ -140,7 +126,26 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  unSelectFunctionAndRules() {
+    this.store
+      .select(getSelectedFunctions)
+      .pipe(take(1))
+      .subscribe((selectedFunctions: any[]) => {
+        _.each(selectedFunctions, (selectedFunction: any) => {
+          this.store.dispatch(
+            new UpdateFunction(selectedFunction.id, { selected: false })
+          );
+          _.each(selectedFunction.rules, (selectedRule: any) => {
+            this.store.dispatch(
+              new UpdateFunctionRule(selectedRule.id, { selected: false })
+            );
+          });
+        });
+      });
+  }
+
   onAddFavoriteAction(favorite: any) {
+    this.unSelectFunctionAndRules();
     const dashboardItem = {
       id: generateUid(),
       type: favorite.dashboardTypeDetails.type,

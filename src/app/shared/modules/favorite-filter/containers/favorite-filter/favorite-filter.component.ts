@@ -137,6 +137,7 @@ export class FavoriteFilterComponent implements OnInit {
 
   onAddFavorite(favoriteFilter, e) {
     e.stopPropagation();
+    this.showBody = false;
     const dashboardTypeDetails = DASHBOARD_TYPES[favoriteFilter.type];
     this.addFavorite.emit({
       id: favoriteFilter.id || favoriteFilter.key,

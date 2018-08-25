@@ -101,9 +101,7 @@ export class CurrentVisualizationEffects {
   );
 
   @Effect({ dispatch: false })
-  setActiveFunctionOrSimulateVisualization$: Observable<
-    any
-  > = this.actions$.pipe(
+  setActiveFunctionOrSimulateFunction$: Observable<any> = this.actions$.pipe(
     ofType(
       fromFunctionRuleActions.FunctionRuleActionTypes.SetActiveFunctionRule,
       CurrentVisualizationActionTypes.SimulateVisualization
