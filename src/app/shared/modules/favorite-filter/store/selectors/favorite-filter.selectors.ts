@@ -2,10 +2,6 @@ import { createSelector } from '@ngrx/store';
 import * as _ from 'lodash';
 
 const FILTER_HEADER = {
-  users: {
-    title: 'Users',
-    icon: 'assets/icons/users.png'
-  },
   charts: {
     title: 'Charts',
     icon: 'assets/icons/column.png'
@@ -25,18 +21,6 @@ const FILTER_HEADER = {
   maps: {
     title: 'Maps',
     icon: 'assets/icons/map.png'
-  },
-  apps: {
-    title: 'Apps',
-    icon: 'assets/icons/app.png'
-  },
-  reports: {
-    title: 'Reports',
-    icon: 'assets/icons/reports.png'
-  },
-  resources: {
-    title: 'Resources',
-    icon: 'assets/icons/documents.png'
   }
 };
 import {
@@ -82,14 +66,21 @@ export const getFavoriteFiltersBasedType = createSelector(
     currentUser: User
   ) => {
     return _.filter(
-      _.map(favoriteFilters, favoriteFilter => {
-        const favoriteHeader = FILTER_HEADER[favoriteFilter.type];
-        return {
-          ...favoriteFilter,
-          headerName: favoriteHeader ? favoriteHeader.title : '',
-          icon: favoriteHeader ? favoriteHeader.icon : ''
-        };
-      }),
+      _.map(
+        _.filter(
+          favoriteFilters,
+          (favoriteFilter: any) =>
+            FILTER_HEADER[favoriteFilter.type] !== undefined
+        ),
+        favoriteFilter => {
+          const favoriteHeader = FILTER_HEADER[favoriteFilter.type];
+          return {
+            ...favoriteFilter,
+            headerName: favoriteHeader ? favoriteHeader.title : '',
+            icon: favoriteHeader ? favoriteHeader.icon : ''
+          };
+        }
+      ),
       favoriteFilter =>
         _.some(
           selectedFilterHeaders,
