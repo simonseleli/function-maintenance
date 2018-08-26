@@ -15,6 +15,7 @@ import { LIST_ICON, ARROW_LEFT_ICON, ARROW_RIGHT_ICON } from './icons';
 import { Store } from '@ngrx/store';
 import * as fromFunctionActions from './store/actions/function.actions';
 import * as fromFunctionReducer from './store/reducers/function.reducer';
+import { routerNgProbeToken } from '@angular/router/src/router_module';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -44,6 +45,8 @@ export class DataFilterComponent implements OnInit, OnDestroy {
   singleSelection = false;
   @Input()
   currentUser: any;
+  @Input()
+  routeParams: any;
   selectedGroupId: string;
 
   showGroupingPanel: boolean;
@@ -113,7 +116,10 @@ export class DataFilterComponent implements OnInit, OnDestroy {
   ngOnInit() {
     if (this.currentUser) {
       this.functionStore.dispatch(
-        new fromFunctionActions.LoadFunctions(this.currentUser)
+        new fromFunctionActions.LoadFunctions(
+          this.currentUser,
+          this.routeParams
+        )
       );
     }
     // set selected data group

@@ -2,17 +2,17 @@ import * as _ from 'lodash';
 import { FunctionRule } from '../store/models/function-rule.model';
 
 export function getStandardizedFunctionRulesFromFunctionList(
-  functionList
+  functionList,
+  ruleId: string = ''
 ): FunctionRule[] {
-  return _.map(
-    _.flatten(
-      _.map(functionList || [], (functionObject: any) => functionObject.rules)
-    ),
-    (functionRule: any, functionRuleIndex: number) => {
-      return {
-        ...functionRule,
-        selected: functionRuleIndex === 0
-      };
-    }
+  const functionRules = _.flatten(
+    _.map(functionList || [], (functionObject: any) => functionObject.rules)
   );
+  const selectedRule = _.find(functionRules, ['id', ruleId]);
+  return _.map(functionRules, (functionRule: any) => {
+    return {
+      ...functionRule,
+      selected: selectedRule && selectedRule.id === functionRule.id
+    };
+  });
 }

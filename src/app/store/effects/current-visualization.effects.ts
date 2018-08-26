@@ -37,6 +37,8 @@ import {
   VisualizationLayer
 } from '../../shared/modules/ngx-dhis2-visualization/models';
 import { FavoriteService } from '../../shared/modules/ngx-dhis2-visualization/services';
+import { ROUTER_NAVIGATION, RouterNavigationAction } from '@ngrx/router-store';
+import { SetActiveFunction } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
 
 @Injectable()
 export class CurrentVisualizationEffects {
@@ -255,6 +257,37 @@ export class CurrentVisualizationEffects {
             }
           );
       }
+    })
+  );
+
+  @Effect({ dispatch: false })
+  routerNavigation$: Observable<any> = this.actions$.pipe(
+    ofType(ROUTER_NAVIGATION),
+    tap((action: any) => {
+      const queryParams: any =
+        action.payload.routerState && action.payload.routerState.queryParams
+          ? action.payload.routerState.queryParams
+          : null;
+      // if (queryParams) {
+      //   if (queryParams.function) {
+      //     this.store.dispatch(
+      //       new SetActiveFunction({ id: queryParams.function })
+      //     );
+      //   }
+
+      //   if (queryParams.rule) {
+      //     this.store.dispatch(
+      //       new fromFunctionRuleActions.SetActiveFunctionRule(
+      //         {
+      //           id: queryParams.rule
+      //         },
+      //         {
+      //           id: queryParams.function
+      //         }
+      //       )
+      //     );
+      //   }
+      // }
     })
   );
   constructor(

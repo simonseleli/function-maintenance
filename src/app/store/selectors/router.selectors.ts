@@ -12,3 +12,9 @@ export const getRouteUrl = createSelector(
   (routeState: RouterReducerState) =>
     routeState && routeState.state ? routeState.state.url : ''
 );
+
+export const getQueryParams = createSelector(
+  getRouteState,
+  (routeState: any) =>
+    routeState && routeState.state ? routeState.state.queryParams : null
+);

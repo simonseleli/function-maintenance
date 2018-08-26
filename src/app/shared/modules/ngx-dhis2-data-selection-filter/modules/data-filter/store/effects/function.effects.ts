@@ -36,9 +36,13 @@ export class FunctionEffects {
             (functions: FunctionObject[]) => {
               this.functionStore.dispatch(
                 new fromFunctionActions.AddFunctions(
-                  fromHelpers.getStandardizedFunctions(functions),
+                  fromHelpers.getStandardizedFunctions(
+                    functions,
+                    action.routeParams ? action.routeParams.function || '' : ''
+                  ),
                   fromHelpers.getStandardizedFunctionRulesFromFunctionList(
-                    functions
+                    functions,
+                    action.routeParams ? action.routeParams.rule || '' : ''
                   )
                 )
               );

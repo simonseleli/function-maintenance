@@ -28,7 +28,7 @@ export class LoadFunctionsInitiated implements Action {
 export class LoadFunctions implements Action {
   readonly type = FunctionActionTypes.LoadFunctions;
 
-  constructor(public currentUser: any) {}
+  constructor(public currentUser: any, public routeParams?: any) {}
 }
 
 export class LoadFunctionsFail implements Action {
