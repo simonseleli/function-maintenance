@@ -1,4 +1,5 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
+import * as _ from 'lodash';
 import { FunctionObject } from '../models/function.model';
 import {
   FunctionActions,
@@ -44,12 +45,16 @@ export function reducer(state = initialState, action: FunctionActions): State {
     }
 
     case FunctionActionTypes.AddFunctions: {
+      const selectedFunction = _.find(action.functions, ['selected', true]);
       return adapter.addMany(action.functions, {
         ...state,
         loaded: true,
         loading: false,
-        activeFunctionId:
-          action.functions && action.functions[0] ? action.functions[0].id : ''
+        activeFunctionId: selectedFunction
+          ? selectedFunction.id
+          : action.functions && action.functions[0]
+            ? action.functions[0].id
+            : ''
       });
     }
 
@@ -91,13 +96,16 @@ export function reducer(state = initialState, action: FunctionActions): State {
     }
 
     case FunctionActionTypes.SetActiveFunction: {
-      return adapter.updateOne(
-        { id: action.functionObject.id, changes: { selected: true } },
-        {
-          ...state,
-          activeFunctionId: action.functionObject.id
-        }
-      );
+      const activeFunction = state.entities[action.functionObject.id];
+      return activeFunction
+        ? adapter.updateOne(
+            { id: action.functionObject.id, changes: { selected: true } },
+            {
+              ...state,
+              activeFunctionId: action.functionObject.id
+            }
+          )
+        : state;
     }
 
     case FunctionActionTypes.UpdateActiveFunction: {

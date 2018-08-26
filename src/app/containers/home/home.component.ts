@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { SelectionFilterConfig } from '../../shared/modules/ngx-dhis2-data-selection-filter/models/selected-filter-config.model';
 import { Store } from '@ngrx/store';
-import { AppState } from '../../store';
+import { AppState, Go } from '../../store';
 import { Observable } from 'rxjs';
 import { User, SystemInfo, generateUid } from '../../core';
 import {
@@ -192,11 +192,20 @@ export class HomeComponent implements OnInit {
   }
 
   onActivateFunctionObject(functionObject: FunctionObject) {
-    functionObject.selected = true;
     this.store.dispatch(new SetActiveFunction(functionObject));
     if (functionObject.rules && functionObject.rules[0]) {
       this.store.dispatch(
         new SetActiveFunctionRule(functionObject.rules[0], functionObject)
+      );
+
+      this.store.dispatch(
+        new Go({
+          path: ['/'],
+          query: {
+            function: functionObject.id,
+            rule: functionObject.rules[0].id
+          }
+        })
       );
     }
   }

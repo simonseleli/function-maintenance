@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs';
-import { UserActionTypes, AddCurrentUser } from '../actions';
+import { UserActionTypes, AddCurrentUser, Go } from '../actions';
 import {
   map,
   withLatestFrom,
@@ -13,7 +13,7 @@ import {
 } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { AppState } from '../reducers';
-import { getCurrentVisualization } from '../selectors';
+import { getCurrentVisualization, getQueryParams } from '../selectors';
 import { CurrentVisualizationState } from '../reducers/current-visualization.reducer';
 import { getDefaultVisualizationLayer } from '../../shared/modules/ngx-dhis2-visualization/helpers/get-default-visualization-layer.helper';
 import {
@@ -37,6 +37,12 @@ import {
   VisualizationLayer
 } from '../../shared/modules/ngx-dhis2-visualization/models';
 import { FavoriteService } from '../../shared/modules/ngx-dhis2-visualization/services';
+import { ROUTER_NAVIGATION, RouterNavigationAction } from '@ngrx/router-store';
+import {
+  SetActiveFunction,
+  FunctionActionTypes,
+  AddFunctions
+} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
 
 @Injectable()
 export class CurrentVisualizationEffects {
@@ -254,6 +260,62 @@ export class CurrentVisualizationEffects {
               );
             }
           );
+      }
+    })
+  );
+
+  @Effect({ dispatch: false })
+  routerNavigation$: Observable<any> = this.actions$.pipe(
+    ofType(ROUTER_NAVIGATION),
+    take(1),
+    tap((action: any) => {
+      const queryParams: any =
+        action.payload.routerState && action.payload.routerState.queryParams
+          ? action.payload.routerState.queryParams
+          : null;
+      if (queryParams) {
+        if (queryParams.function) {
+          this.store.dispatch(
+            new SetActiveFunction({ id: queryParams.function })
+          );
+        }
+
+        if (queryParams.rule) {
+          this.store.dispatch(
+            new fromFunctionRuleActions.SetActiveFunctionRule(
+              {
+                id: queryParams.rule
+              },
+              {
+                id: queryParams.function
+              }
+            )
+          );
+        }
+      }
+    })
+  );
+
+  @Effect({ dispatch: false })
+  addFunctions$: Observable<any> = this.actions$.pipe(
+    ofType(FunctionActionTypes.AddFunctions),
+    withLatestFrom(this.store.select(getQueryParams)),
+    map(([action, routeQueryParams]: [AddFunctions, any]) => {
+      const selectedFunction = _.find(action.functions, ['selected', true]);
+      const selectedFunctionRule = _.find(action.functionRules, [
+        'selected',
+        true
+      ]);
+
+      if (!routeQueryParams.function && !routeQueryParams.rule) {
+        const queryParams =
+          selectedFunction && selectedFunctionRule
+            ? {
+                function: selectedFunction.id,
+                rule: selectedFunctionRule.id
+              }
+            : {};
+        this.store.dispatch(new Go({ path: ['/'], query: queryParams }));
       }
     })
   );

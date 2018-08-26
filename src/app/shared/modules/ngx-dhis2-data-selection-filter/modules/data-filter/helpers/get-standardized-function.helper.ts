@@ -1,13 +1,24 @@
 import * as _ from 'lodash';
 import { FunctionObject } from '../store/models/function.model';
 
-export function getStandardizedFunctions(functionList): FunctionObject[] {
+export function getStandardizedFunctions(
+  functionList,
+  functionId: string = ''
+): FunctionObject[] {
   return _.map(
     functionList || [],
-    (functionItem: any, functionIndex: number) => {
+    (functionItem: any, functionItemIndex: number) => {
+      const selectedFunction = _.find(functionList || [], [
+        'id',
+        functionId !== ''
+          ? functionId
+          : functionItemIndex === 0
+            ? functionItem.id
+            : ''
+      ]);
       return {
         ...functionItem,
-        selected: functionIndex === 0,
+        selected: selectedFunction && selectedFunction.id === functionItem.id,
         rules: _.map(functionItem.rules || [], (rule: any) => rule.id)
       };
     }
