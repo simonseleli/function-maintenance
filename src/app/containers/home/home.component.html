@@ -28,6 +28,23 @@
   </div>
   <!-- end of function loading section -->
 
+  <!-- visualization loading -->
+  <div class="visualization-loading-placeholder" *ngIf="(currentVisualization$ | async) && (currentVisualization$ | async).loading">
+    <div class="text-center">
+      <img src="assets/icons/balls-3.svg" alt="">
+      <h4>
+        Discovering Visualization..
+      </h4>
+    </div>
+  </div>
+  <!-- end of visualization loading -->
+
+  <!-- visualization error block -->
+  <div class="visualization-error-block" *ngIf="(currentVisualization$ | async) && (currentVisualization$ | async).error">
+    <visualization-error-notifier [errorMessage]="(currentVisualization$ | async).error"></visualization-error-notifier>
+  </div>
+  <!-- end of visualization error block -->
+
   <!-- visualization card section -->
   <div class="row">
     <div class="col-12" *ngIf="(currentVisualization$ | async) && (currentVisualization$ | async).layers.length > 0">

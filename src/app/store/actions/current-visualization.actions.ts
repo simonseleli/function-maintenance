@@ -7,6 +7,7 @@ import {
   FunctionObject,
   FunctionRule
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
+import { CurrentVisualizationState } from '../reducers/current-visualization.reducer';
 
 export enum CurrentVisualizationActionTypes {
   AddOrUpdateCurrentVisualization = '[CurrentVisualization] Add or Update current visualization',
@@ -18,13 +19,7 @@ export enum CurrentVisualizationActionTypes {
 export class AddOrUpdateCurrentVisualizationAction implements Action {
   readonly type =
     CurrentVisualizationActionTypes.AddOrUpdateCurrentVisualization;
-  constructor(
-    public currentVisualization: {
-      id: string;
-      type: string;
-      layers: VisualizationLayer[];
-    }
-  ) {}
+  constructor(public currentVisualization: CurrentVisualizationState) {}
 }
 
 export class UpdateCurrentVisualizationWithDataSelectionsAction

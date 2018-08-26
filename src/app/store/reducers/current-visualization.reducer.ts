@@ -8,12 +8,15 @@ import {
 
 export interface CurrentVisualizationState {
   id: string;
+  loading: boolean;
+  error?: null;
   type: string;
   layers: VisualizationLayer[];
 }
 
 const initialState: CurrentVisualizationState = {
   id: generateUid(),
+  loading: true,
   type: 'REPORT_TABLE',
   layers: []
 };

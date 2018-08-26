@@ -58,6 +58,7 @@ export class CurrentVisualizationEffects {
             this.store.dispatch(
               new AddOrUpdateCurrentVisualizationAction({
                 ...currentVisualization,
+                loading: false,
                 layers: [
                   {
                     ...getDefaultVisualizationLayer(
@@ -189,6 +190,15 @@ export class CurrentVisualizationEffects {
   addVisualizationItem$: Observable<any> = this.actions$.pipe(
     ofType(CurrentVisualizationActionTypes.AddVisualizationItem),
     tap((action: AddVisualizationItemAction) => {
+      this.store.dispatch(
+        new AddOrUpdateCurrentVisualizationAction({
+          id: action.visualizationItem.id,
+          type: action.visualizationItem.type,
+          loading: true,
+          error: null,
+          layers: []
+        })
+      );
       const favorite =
         action.visualizationItem[_.camelCase(action.visualizationItem.type)];
 
@@ -199,37 +209,51 @@ export class CurrentVisualizationEffects {
             id: favorite.id,
             useTypeAsBase: true
           })
-          .subscribe((favoriteObject: any) => {
-            const visualizationLayers: VisualizationLayer[] = _.map(
-              favoriteObject.mapViews || [favoriteObject],
-              (favoriteLayer: any) => {
-                const dataSelections = getSelectionDimensionsFromFavorite(
-                  favoriteLayer
-                );
-                return {
-                  id: favoriteLayer.id,
-                  dataSelections,
-                  layerType: getVisualizationLayerType(
-                    favorite.type,
+          .subscribe(
+            (favoriteObject: any) => {
+              const visualizationLayers: VisualizationLayer[] = _.map(
+                favoriteObject.mapViews || [favoriteObject],
+                (favoriteLayer: any) => {
+                  const dataSelections = getSelectionDimensionsFromFavorite(
                     favoriteLayer
-                  ),
-                  analytics: null,
-                  config: {
-                    ...favoriteLayer,
-                    type: favoriteLayer.type ? favoriteLayer.type : 'COLUMN',
-                    visualizationType: action.visualizationItem.type
-                  }
-                };
-              }
-            );
-            this.store.dispatch(
-              new AddOrUpdateCurrentVisualizationAction({
-                id: action.visualizationItem.id,
-                type: action.visualizationItem.type,
-                layers: visualizationLayers
-              })
-            );
-          });
+                  );
+                  return {
+                    id: favoriteLayer.id,
+                    dataSelections,
+                    layerType: getVisualizationLayerType(
+                      favorite.type,
+                      favoriteLayer
+                    ),
+                    analytics: null,
+                    config: {
+                      ...favoriteLayer,
+                      type: favoriteLayer.type ? favoriteLayer.type : 'COLUMN',
+                      visualizationType: action.visualizationItem.type
+                    }
+                  };
+                }
+              );
+              this.store.dispatch(
+                new AddOrUpdateCurrentVisualizationAction({
+                  id: action.visualizationItem.id,
+                  type: action.visualizationItem.type,
+                  loading: false,
+                  layers: visualizationLayers
+                })
+              );
+            },
+            error => {
+              this.store.dispatch(
+                new AddOrUpdateCurrentVisualizationAction({
+                  id: action.visualizationItem.id,
+                  type: action.visualizationItem.type,
+                  loading: false,
+                  error,
+                  layers: []
+                })
+              );
+            }
+          );
       }
     })
   );

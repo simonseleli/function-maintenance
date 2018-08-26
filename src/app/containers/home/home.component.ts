@@ -192,6 +192,7 @@ export class HomeComponent implements OnInit {
   }
 
   onActivateFunctionObject(functionObject: FunctionObject) {
+    functionObject.selected = true;
     this.store.dispatch(new SetActiveFunction(functionObject));
     if (functionObject.rules && functionObject.rules[0]) {
       this.store.dispatch(
