@@ -81,7 +81,8 @@ export function reducer(
     }
 
     case FunctionRuleActionTypes.SetActiveFunctionRule: {
-      return action.functionRule
+      const activeFunctionRule = state.entities[action.functionRule.id];
+      return activeFunctionRule
         ? adapter.updateOne(
             { id: action.functionRule.id, changes: { selected: true } },
             { ...state, activeFunctionRuleId: action.functionRule.id }

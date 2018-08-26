@@ -96,13 +96,16 @@ export function reducer(state = initialState, action: FunctionActions): State {
     }
 
     case FunctionActionTypes.SetActiveFunction: {
-      return adapter.updateOne(
-        { id: action.functionObject.id, changes: { selected: true } },
-        {
-          ...state,
-          activeFunctionId: action.functionObject.id
-        }
-      );
+      const activeFunction = state.entities[action.functionObject.id];
+      return activeFunction
+        ? adapter.updateOne(
+            { id: action.functionObject.id, changes: { selected: true } },
+            {
+              ...state,
+              activeFunctionId: action.functionObject.id
+            }
+          )
+        : state;
     }
 
     case FunctionActionTypes.UpdateActiveFunction: {

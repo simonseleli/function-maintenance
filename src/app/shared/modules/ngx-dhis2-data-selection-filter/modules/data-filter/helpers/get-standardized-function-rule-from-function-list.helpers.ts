@@ -8,11 +8,18 @@ export function getStandardizedFunctionRulesFromFunctionList(
   const functionRules = _.flatten(
     _.map(functionList || [], (functionObject: any) => functionObject.rules)
   );
-  const selectedRule = _.find(functionRules, ['id', ruleId]);
-  return _.map(functionRules, (functionRule: any) => {
-    return {
-      ...functionRule,
-      selected: selectedRule && selectedRule.id === functionRule.id
-    };
-  });
+
+  return _.map(
+    functionRules,
+    (functionRule: any, functionRuleIndex: number) => {
+      const selectedRule = _.find(functionRules, [
+        'id',
+        ruleId !== '' ? ruleId : functionRuleIndex === 0 ? functionRule.id : ''
+      ]);
+      return {
+        ...functionRule,
+        selected: selectedRule && selectedRule.id === functionRule.id
+      };
+    }
+  );
 }
