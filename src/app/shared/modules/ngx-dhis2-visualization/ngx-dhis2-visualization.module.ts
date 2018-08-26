@@ -39,6 +39,6 @@ import { VisualizationWidgetComponent } from './components/visualization-widget/
     ...containers,
     VisualizationWidgetComponent
   ],
-  exports: [...containers]
+  exports: [...containers, ...components]
 })
 export class NgxDhis2VisualizationModule {}

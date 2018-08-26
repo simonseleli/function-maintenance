@@ -28,10 +28,27 @@
   </div>
   <!-- end of function loading section -->
 
+  <!-- visualization loading -->
+  <div class="visualization-loading-placeholder" *ngIf="(currentVisualization$ | async) && (currentVisualization$ | async).loading">
+    <div class="text-center">
+      <img src="assets/icons/balls-3.svg" alt="">
+      <h4>
+        Discovering Visualization..
+      </h4>
+    </div>
+  </div>
+  <!-- end of visualization loading -->
+
+  <!-- visualization error block -->
+  <div class="visualization-error-block" *ngIf="(currentVisualization$ | async) && (currentVisualization$ | async).error">
+    <visualization-error-notifier [errorMessage]="(currentVisualization$ | async).error"></visualization-error-notifier>
+  </div>
+  <!-- end of visualization error block -->
+
   <!-- visualization card section -->
   <div class="row">
     <div class="col-12" *ngIf="(currentVisualization$ | async) && (currentVisualization$ | async).layers.length > 0">
-      <ngx-dhis2-visualization [id]="(currentVisualization$ | async)?.id" [visualizationLayers]="(currentVisualization$ | async)?.layers"
+      <ngx-dhis2-visualization [id]="(currentVisualization$ | async)?.id" [type]="(currentVisualization$ | async)?.type" [visualizationLayers]="(currentVisualization$ | async)?.layers"
         [currentUser]="currentUser$ | async" [systemInfo]="systemInfo$ | async"></ngx-dhis2-visualization>
     </div>
   </div>
@@ -42,9 +59,7 @@
     <div [ngStyle]="{'display': loadingSave?'none':'block'}" class="col-12">
       <app-function-management [functionList]="functionList$ | async" [functionRules]="functionRules$ | async" [currentVisualizationDataSelections]="currentVisualizationDataSelections$ | async"
         (activateFunction)="onActivateFunctionObject($event)" (activateFunctionRule)="onActivateFunctionRule($event)" (simulate)="onSimulate($event)"
-                               (newFunction)="onNewFunctionObject($event)" (newFunctionRule)="onNewFunctionRule($event)"
-        (save)="onSave($event)"
-                               (delete)="onDelete($event)"></app-function-management>
+        (newFunction)="onNewFunctionObject($event)" (newFunctionRule)="onNewFunctionRule($event)" (save)="onSave($event)" (delete)="onDelete($event)"></app-function-management>
     </div>
     <div [ngStyle]="{'display': loadingSave?'block':'none'}" class="col-12">
       <img src="assets/img/balls-3.svg" /> Saving...

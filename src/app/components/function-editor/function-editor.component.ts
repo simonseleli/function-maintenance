@@ -39,12 +39,24 @@ export class FunctionEditorComponent implements OnInit {
     {
       name: 'Aggregate Analytics',
       code:
-        'function analyticsRequest() {\n    return new Promise(function(resolve, reject) {\n        $.ajax({\n            url: "../../../api/26/analytics.json?dimension=pe:" + parameters.pe + "&dimension=ou:" + parameters.ou + "&hierarchyMeta=true&skipData=true",\n            type: "GET",\n            success: function(analyticsResults) {\n                try {\n                    //Code goes here\n                    analyticsResults.headers = [{"name":"dx","column":"Data","type":"java.lang.String","hidden":false,"meta":true},{"name":"pe","column":"Period","type":"java.lang.String","hidden":false,"meta":true},{"name":"ou","column":"Organisation Unit","type":"java.lang.String","hidden":false,"meta":true},{"name":"value","column":"Value","type":"java.lang.Double","hidden":false,"meta":false}];\n                    analyticsResults.metaData.names[parameters.rule.id] = parameters.rule.name;\n                    analyticsResults.metaData.dx = [parameters.rule.id];\n                    resolve(analyticsResults);\n                } catch (e) {\n                    reject(error);\n                }\n            },\n            error: function(error) {\n                reject(error);\n            }\n        });\n    })\n}'
+        'function analyticsRequest() {\nreturn new Promise(function(resolve, reject) {\n$.ajax({\n' +
+        'url: "../../../api/26/analytics.json?dimension=pe:" + parameters.pe + "&dimension=ou:" + ' +
+        'parameters.ou + "&hierarchyMeta=true&skipData=true",\ntype: "GET",\nsuccess: function(analyticsResults)' +
+        '{\ntry {\n//Code goes here\nanalyticsResults.headers = [{"name":"dx","column":"Data","type":"java.lang.' +
+        'String","hidden":false,"meta":true},{"name":"pe","column":"Period","type":"java.lang.String","hidden":' +
+        'false,"meta":true},{"name":"ou","column":"Organisation Unit","type":"java.lang.String","hidden":false,' +
+        '"meta":true},{"name":"value","column":"Value","type":"java.lang.Double","hidden":false,"meta":false}];\n' +
+        'analyticsResults.metaData.names[parameters.rule.id] = parameters.rule.name;\nanalyticsResults.metaData.dx' +
+        ' = [parameters.rule.id];\nresolve(analyticsResults);\n} catch (e) {\nreject(error);\n}\n},\nerror: ' +
+        'function(error) {\nreject(error);\n}\n});\n})\n}'
     },
     {
       name: 'Organisation Unit',
       code:
-        'function organisationUnitsRequest() {\n    return new Promise(function(resolve, reject) {\n        $.ajax({\n            url: "../../../api/26/organisationUnits.json",\n            type: "GET",\n            success: function(organisatioUnitsResults) {\n                try {\n                    //Code goes here\n                    resolve(organisatioUnitsResults);\n                } catch (e) {\n                    reject(error);\n                }\n            },\n            error: function(error) {\n                reject(error);\n            }\n        });\n    })\n}'
+        'function organisationUnitsRequest() {\nreturn new Promise(function(resolve, reject) {\n$.ajax({\n' +
+        'url: "../../../api/26/organisationUnits.json",\ntype: "GET",\nsuccess: function(organisatioUnitsResults)' +
+        '{\ntry {\n//Code goes here\nresolve(organisatioUnitsResults);\n} catch (e) {\nreject(error);\n}\n},\nerror:' +
+        'function(error) {\nreject(error);\n}\n});\n})\n}'
     },
     {
       name: 'Data Value Sets',
@@ -65,21 +77,39 @@ export class FunctionEditorComponent implements OnInit {
   deleteFuntion = false;
   constructor(private store: Store<AppState>) {}
 
-  parameters:any = {
-
-  };
+  parameters: any = {};
   ngOnInit() {
     console.log(this.currentVisualizationDataSelections);
-    console.log("Current Visualization:",_.find(this.currentVisualizationDataSelections, function (obj) { return obj.dimension === "dx"; }));
-    this.parameters.ou = _.find(this.currentVisualizationDataSelections, function (obj) { return obj.dimension === "ou"; });
-    this.parameters.ou = _.map(this.parameters.ou.items, "id").join(";");
-    this.parameters.pe = _.find(this.currentVisualizationDataSelections, function (obj) { return obj.dimension === "pe"; });
-    this.parameters.pe = _.map(this.parameters.pe.items, "id").join(";");
-    this.parameters.rule = _.find(this.currentVisualizationDataSelections, function (obj) { return obj.dimension === "dx"; });
-    this.parameters.rule = _.map(this.parameters.rule.items, "ruleDefinition");
+    console.log(
+      'Current Visualization:',
+      _.find(this.currentVisualizationDataSelections, function(obj) {
+        return obj.dimension === 'dx';
+      })
+    );
+    this.parameters.ou = _.find(
+      this.currentVisualizationDataSelections,
+      function(obj) {
+        return obj.dimension === 'ou';
+      }
+    );
+    this.parameters.ou = _.map(this.parameters.ou.items, 'id').join(';');
+    this.parameters.pe = _.find(
+      this.currentVisualizationDataSelections,
+      function(obj) {
+        return obj.dimension === 'pe';
+      }
+    );
+    this.parameters.pe = _.map(this.parameters.pe.items, 'id').join(';');
+    this.parameters.rule = _.find(
+      this.currentVisualizationDataSelections,
+      function(obj) {
+        return obj.dimension === 'dx';
+      }
+    );
+    this.parameters.rule = _.map(this.parameters.rule.items, 'ruleDefinition');
     console.log(this.parameters.rule);
     this.parameters.rule = this.parameters.rule[0];
-    if(typeof this.parameters.rule.json === "string"){
+    if (typeof this.parameters.rule.json === 'string') {
       this.parameters.rule.json = JSON.parse(this.parameters.rule.json);
     }
   }
@@ -95,28 +125,18 @@ export class FunctionEditorComponent implements OnInit {
     this.functionObject.function = event;
     this.upsertFunction();
   }
-  upsertFunction(){
-    if(!this.functionObject.unsaved){
+  upsertFunction() {
+    if (!this.functionObject.unsaved) {
       this.functionObject.unsaved = true;
     }
-    console.log("this.functionObject:",this.functionObject);
-    this.store.dispatch(new UpsertFunction({function: this.functionObject}));
+    console.log('this.functionObject:', this.functionObject);
+    this.store.dispatch(new UpsertFunction({ function: this.functionObject }));
   }
   onSave(e) {
     e.stopPropagation();
     this.save.emit(this.functionObject);
   }
-  onDelete(){
+  onDelete() {
     this.delete.emit(this.functionObject);
-  }
-  ngOnChanges(changes: SimpleChanges) {
-    if(changes.functionObject.currentValue && changes.functionObject.previousValue){
-      if(changes.functionObject.currentValue.id !== changes.functionObject.previousValue.id){
-        this.showEditor = false;
-        setTimeout(()=>{
-          this.showEditor = true;
-        })
-      }
-    }
   }
 }

@@ -91,10 +91,13 @@ export function reducer(state = initialState, action: FunctionActions): State {
     }
 
     case FunctionActionTypes.SetActiveFunction: {
-      return {
-        ...state,
-        activeFunctionId: action.functionObject.id
-      };
+      return adapter.updateOne(
+        { id: action.functionObject.id, changes: { selected: true } },
+        {
+          ...state,
+          activeFunctionId: action.functionObject.id
+        }
+      );
     }
 
     case FunctionActionTypes.UpdateActiveFunction: {

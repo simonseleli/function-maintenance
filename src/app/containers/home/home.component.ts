@@ -4,7 +4,7 @@ import { SelectionFilterConfig } from '../../shared/modules/ngx-dhis2-data-selec
 import { Store } from '@ngrx/store';
 import { AppState } from '../../store';
 import { Observable } from 'rxjs';
-import { User, SystemInfo } from '../../core';
+import { User, SystemInfo, generateUid } from '../../core';
 import {
   getCurrentUser,
   getSystemInfo,
@@ -16,7 +16,9 @@ import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visua
 import { take } from 'rxjs/operators';
 import {
   UpdateCurrentVisualizationWithDataSelectionsAction,
-  SimulateVisualizationAction
+  SimulateVisualizationAction,
+  AddOrUpdateCurrentVisualizationAction,
+  AddVisualizationItemAction
 } from '../../store/actions/current-visualization.actions';
 import {
   getAllFunctionRules,
@@ -49,6 +51,14 @@ import {
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 import { ToasterService } from 'angular2-toaster';
 import { FunctionService } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/services/function.service';
+import {
+  AddVisualizationObjectAction,
+  AddVisualizationUiConfigurationAction
+} from '../../shared/modules/ngx-dhis2-visualization/store';
+import {
+  getStandardizedVisualizationObject,
+  getStandardizedVisualizationUiConfig
+} from '../../shared/modules/ngx-dhis2-visualization/helpers';
 
 @Component({
   selector: 'app-home',
@@ -95,21 +105,7 @@ export class HomeComponent implements OnInit {
       new UpdateCurrentVisualizationWithDataSelectionsAction(dataSelections)
     );
 
-    this.store
-      .select(getSelectedFunctions)
-      .pipe(take(1))
-      .subscribe((selectedFunctions: any[]) => {
-        _.each(selectedFunctions, (selectedFunction: any) => {
-          this.store.dispatch(
-            new UpdateFunction(selectedFunction.id, { selected: false })
-          );
-          _.each(selectedFunction.rules, (selectedRule: any) => {
-            this.store.dispatch(
-              new UpdateFunctionRule(selectedRule.id, { selected: false })
-            );
-          });
-        });
-      });
+    this.unSelectFunctionAndRules();
 
     // TODO move this logic to function effects
     const dxObject = _.find(dataSelections, ['dimension', 'dx']);
@@ -130,7 +126,45 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  onAddFavoriteAction(favoriteDetails: any) {}
+  unSelectFunctionAndRules() {
+    this.store
+      .select(getSelectedFunctions)
+      .pipe(take(1))
+      .subscribe((selectedFunctions: any[]) => {
+        _.each(selectedFunctions, (selectedFunction: any) => {
+          this.store.dispatch(
+            new UpdateFunction(selectedFunction.id, { selected: false })
+          );
+          _.each(selectedFunction.rules, (selectedRule: any) => {
+            this.store.dispatch(
+              new UpdateFunctionRule(selectedRule.id, { selected: false })
+            );
+          });
+        });
+      });
+  }
+
+  onAddFavoriteAction(favorite: any) {
+    this.unSelectFunctionAndRules();
+    const dashboardItem = {
+      id: generateUid(),
+      type: favorite.dashboardTypeDetails.type,
+      [_.camelCase(favorite.dashboardTypeDetails.type)]: favorite
+        .dashboardTypeDetails.isArray
+        ? [
+            {
+              id: favorite.id,
+              name: favorite.name
+            }
+          ]
+        : {
+            id: favorite.id,
+            name: favorite.name
+          }
+    };
+
+    this.store.dispatch(new AddVisualizationItemAction(dashboardItem));
+  }
 
   onCreateFavoriteAction() {}
 
@@ -147,6 +181,7 @@ export class HomeComponent implements OnInit {
     );
     this.onActivateFunctionObject(functionObject);
   }
+
   onNewFunctionRule(functionRule: FunctionRule) {
     this.store.dispatch(
       new AddFunctionRule({
@@ -155,6 +190,7 @@ export class HomeComponent implements OnInit {
     );
     this.onActivateFunctionObject(functionRule);
   }
+
   onActivateFunctionObject(functionObject: FunctionObject) {
     functionObject.selected = true;
     this.store.dispatch(new SetActiveFunction(functionObject));
@@ -182,28 +218,25 @@ export class HomeComponent implements OnInit {
     functionObject: FunctionObject;
     item: string;
   }) {
-    if (functionDetails.item === 'FUNCTION' && functionDetails.functionObject) {
-      this.store.dispatch(
-        new UpdateFunction(functionDetails.functionObject.id, {
-          ...functionDetails.functionObject,
-          simulating: true,
-          rules: _.map(
-            functionDetails.functionObject.rules,
-            (rule: any) => rule.id
-          )
-        })
-      );
-    } else if (
-      functionDetails.item === 'FUNCTION_RULE' &&
-      functionDetails.functionRule
-    ) {
-      this.store.dispatch(
-        new UpdateFunctionRule(functionDetails.functionRule.id, {
-          ...functionDetails.functionRule,
-          simulating: true
-        })
-      );
-    }
+    this.store.dispatch(
+      new UpdateFunction(functionDetails.functionObject.id, {
+        ...functionDetails.functionObject,
+        simulating: true,
+        selected: true,
+        rules: _.map(
+          functionDetails.functionObject.rules,
+          (rule: any) => rule.id
+        )
+      })
+    );
+
+    this.store.dispatch(
+      new UpdateFunctionRule(functionDetails.functionRule.id, {
+        ...functionDetails.functionRule,
+        simulating: true,
+        selected: true
+      })
+    );
 
     this.store.dispatch(
       new SimulateVisualizationAction(
