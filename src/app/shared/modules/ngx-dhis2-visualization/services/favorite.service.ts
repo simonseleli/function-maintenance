@@ -9,7 +9,11 @@ import { map } from 'rxjs/operators';
 export class FavoriteService {
   constructor(private http: NgxDhis2HttpClientService) {}
 
-  getFavorite(favorite: { id: string; type: string }): Observable<any> {
+  getFavorite(favorite: {
+    id: string;
+    type: string;
+    useTypeAsBase?: boolean;
+  }): Observable<any> {
     const favoriteUrl = getFavoriteUrl(favorite);
     return favoriteUrl !== '' ? this.http.get(favoriteUrl) : of(null);
   }

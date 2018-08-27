@@ -2,20 +2,32 @@ import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs';
-import { UserActionTypes, AddCurrentUser } from '../actions';
-import { map, withLatestFrom, first, take, tap } from 'rxjs/operators';
+import { UserActionTypes, AddCurrentUser, Go } from '../actions';
+import {
+  map,
+  withLatestFrom,
+  first,
+  take,
+  tap,
+  switchMap
+} from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { AppState } from '../reducers';
-import { getCurrentVisualization } from '../selectors';
+import { getCurrentVisualization, getQueryParams } from '../selectors';
 import { CurrentVisualizationState } from '../reducers/current-visualization.reducer';
 import { getDefaultVisualizationLayer } from '../../shared/modules/ngx-dhis2-visualization/helpers/get-default-visualization-layer.helper';
 import {
   AddOrUpdateCurrentVisualizationAction,
   CurrentVisualizationActionTypes,
   UpdateCurrentVisualizationWithDataSelectionsAction,
-  SimulateVisualizationAction
+  SimulateVisualizationAction,
+  AddVisualizationItemAction
 } from '../actions/current-visualization.actions';
-import { generateUid } from '../../shared/modules/ngx-dhis2-visualization/helpers';
+import {
+  generateUid,
+  getSelectionDimensionsFromFavorite,
+  getVisualizationLayerType
+} from '../../shared/modules/ngx-dhis2-visualization/helpers';
 import { LoadVisualizationAnalyticsAction } from '../../shared/modules/ngx-dhis2-visualization/store';
 
 import * as fromFunctionSelectors from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors';
@@ -24,6 +36,13 @@ import {
   VisualizationDataSelection,
   VisualizationLayer
 } from '../../shared/modules/ngx-dhis2-visualization/models';
+import { FavoriteService } from '../../shared/modules/ngx-dhis2-visualization/services';
+import { ROUTER_NAVIGATION, RouterNavigationAction } from '@ngrx/router-store';
+import {
+  SetActiveFunction,
+  FunctionActionTypes,
+  AddFunctions
+} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
 
 @Injectable()
 export class CurrentVisualizationEffects {
@@ -45,6 +64,7 @@ export class CurrentVisualizationEffects {
             this.store.dispatch(
               new AddOrUpdateCurrentVisualizationAction({
                 ...currentVisualization,
+                loading: false,
                 layers: [
                   {
                     ...getDefaultVisualizationLayer(
@@ -88,9 +108,7 @@ export class CurrentVisualizationEffects {
   );
 
   @Effect({ dispatch: false })
-  setActiveFunctionOrSimulateVisualization$: Observable<
-    any
-  > = this.actions$.pipe(
+  setActiveFunctionOrSimulateFunction$: Observable<any> = this.actions$.pipe(
     ofType(
       fromFunctionRuleActions.FunctionRuleActionTypes.SetActiveFunctionRule,
       CurrentVisualizationActionTypes.SimulateVisualization
@@ -174,5 +192,136 @@ export class CurrentVisualizationEffects {
     })
   );
 
-  constructor(private actions$: Actions, private store: Store<AppState>) {}
+  @Effect({ dispatch: false })
+  addVisualizationItem$: Observable<any> = this.actions$.pipe(
+    ofType(CurrentVisualizationActionTypes.AddVisualizationItem),
+    tap((action: AddVisualizationItemAction) => {
+      this.store.dispatch(
+        new AddOrUpdateCurrentVisualizationAction({
+          id: action.visualizationItem.id,
+          type: action.visualizationItem.type,
+          loading: true,
+          error: null,
+          layers: []
+        })
+      );
+      const favorite =
+        action.visualizationItem[_.camelCase(action.visualizationItem.type)];
+
+      if (favorite) {
+        this.favoriteService
+          .getFavorite({
+            type: _.camelCase(action.visualizationItem.type),
+            id: favorite.id,
+            useTypeAsBase: true
+          })
+          .subscribe(
+            (favoriteObject: any) => {
+              const visualizationLayers: VisualizationLayer[] = _.map(
+                favoriteObject.mapViews || [favoriteObject],
+                (favoriteLayer: any) => {
+                  const dataSelections = getSelectionDimensionsFromFavorite(
+                    favoriteLayer
+                  );
+                  return {
+                    id: favoriteLayer.id,
+                    dataSelections,
+                    layerType: getVisualizationLayerType(
+                      favorite.type,
+                      favoriteLayer
+                    ),
+                    analytics: null,
+                    config: {
+                      ...favoriteLayer,
+                      type: favoriteLayer.type ? favoriteLayer.type : 'COLUMN',
+                      visualizationType: action.visualizationItem.type
+                    }
+                  };
+                }
+              );
+              this.store.dispatch(
+                new AddOrUpdateCurrentVisualizationAction({
+                  id: action.visualizationItem.id,
+                  type: action.visualizationItem.type,
+                  loading: false,
+                  layers: visualizationLayers
+                })
+              );
+            },
+            error => {
+              this.store.dispatch(
+                new AddOrUpdateCurrentVisualizationAction({
+                  id: action.visualizationItem.id,
+                  type: action.visualizationItem.type,
+                  loading: false,
+                  error,
+                  layers: []
+                })
+              );
+            }
+          );
+      }
+    })
+  );
+
+  @Effect({ dispatch: false })
+  routerNavigation$: Observable<any> = this.actions$.pipe(
+    ofType(ROUTER_NAVIGATION),
+    take(1),
+    tap((action: any) => {
+      const queryParams: any =
+        action.payload.routerState && action.payload.routerState.queryParams
+          ? action.payload.routerState.queryParams
+          : null;
+      if (queryParams) {
+        if (queryParams.function) {
+          this.store.dispatch(
+            new SetActiveFunction({ id: queryParams.function })
+          );
+        }
+
+        if (queryParams.rule) {
+          this.store.dispatch(
+            new fromFunctionRuleActions.SetActiveFunctionRule(
+              {
+                id: queryParams.rule
+              },
+              {
+                id: queryParams.function
+              }
+            )
+          );
+        }
+      }
+    })
+  );
+
+  @Effect({ dispatch: false })
+  addFunctions$: Observable<any> = this.actions$.pipe(
+    ofType(FunctionActionTypes.AddFunctions),
+    withLatestFrom(this.store.select(getQueryParams)),
+    map(([action, routeQueryParams]: [AddFunctions, any]) => {
+      const selectedFunction = _.find(action.functions, ['selected', true]);
+      const selectedFunctionRule = _.find(action.functionRules, [
+        'selected',
+        true
+      ]);
+
+      if (!routeQueryParams.function && !routeQueryParams.rule) {
+        const queryParams =
+          selectedFunction && selectedFunctionRule
+            ? {
+                function: selectedFunction.id,
+                rule: selectedFunctionRule.id
+              }
+            : {};
+        this.store.dispatch(new Go({ path: ['/'], query: queryParams }));
+      }
+    })
+  );
+  constructor(
+    private actions$: Actions,
+    private store: Store<AppState>,
+    private favoriteService: FavoriteService
+  ) {}
 }

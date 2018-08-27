@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { SelectionFilterConfig } from '../../shared/modules/ngx-dhis2-data-selection-filter/models/selected-filter-config.model';
 import { Store } from '@ngrx/store';
-import { AppState } from '../../store';
+import { AppState, Go } from '../../store';
 import { Observable } from 'rxjs';
-import { User, SystemInfo } from '../../core';
+import { User, SystemInfo, generateUid } from '../../core';
 import {
   getCurrentUser,
   getSystemInfo,
@@ -16,7 +16,9 @@ import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visua
 import { take } from 'rxjs/operators';
 import {
   UpdateCurrentVisualizationWithDataSelectionsAction,
-  SimulateVisualizationAction
+  SimulateVisualizationAction,
+  AddOrUpdateCurrentVisualizationAction,
+  AddVisualizationItemAction
 } from '../../store/actions/current-visualization.actions';
 import {
   getAllFunctionRules,
@@ -34,11 +36,14 @@ import {
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors';
 import {
   UpdateFunctionRule,
-  SetActiveFunctionRule, AddFunctionRule
+  SetActiveFunctionRule,
+  AddFunctionRule
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
 import {
   UpdateFunction,
-  SetActiveFunction, AddFunction, DeleteFunction
+  SetActiveFunction,
+  AddFunction,
+  DeleteFunction
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
 import {
   FunctionObject,
@@ -46,6 +51,14 @@ import {
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
 import { ToasterService } from 'angular2-toaster';
 import { FunctionService } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/services/function.service';
+import {
+  AddVisualizationObjectAction,
+  AddVisualizationUiConfigurationAction
+} from '../../shared/modules/ngx-dhis2-visualization/store';
+import {
+  getStandardizedVisualizationObject,
+  getStandardizedVisualizationUiConfig
+} from '../../shared/modules/ngx-dhis2-visualization/helpers';
 
 @Component({
   selector: 'app-home',
@@ -92,21 +105,7 @@ export class HomeComponent implements OnInit {
       new UpdateCurrentVisualizationWithDataSelectionsAction(dataSelections)
     );
 
-    this.store
-      .select(getSelectedFunctions)
-      .pipe(take(1))
-      .subscribe((selectedFunctions: any[]) => {
-        _.each(selectedFunctions, (selectedFunction: any) => {
-          this.store.dispatch(
-            new UpdateFunction(selectedFunction.id, { selected: false })
-          );
-          _.each(selectedFunction.rules, (selectedRule: any) => {
-            this.store.dispatch(
-              new UpdateFunctionRule(selectedRule.id, { selected: false })
-            );
-          });
-        });
-      });
+    this.unSelectFunctionAndRules();
 
     // TODO move this logic to function effects
     const dxObject = _.find(dataSelections, ['dimension', 'dx']);
@@ -127,32 +126,86 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  onAddFavoriteAction(favoriteDetails: any) {}
+  unSelectFunctionAndRules() {
+    this.store
+      .select(getSelectedFunctions)
+      .pipe(take(1))
+      .subscribe((selectedFunctions: any[]) => {
+        _.each(selectedFunctions, (selectedFunction: any) => {
+          this.store.dispatch(
+            new UpdateFunction(selectedFunction.id, { selected: false })
+          );
+          _.each(selectedFunction.rules, (selectedRule: any) => {
+            this.store.dispatch(
+              new UpdateFunctionRule(selectedRule.id, { selected: false })
+            );
+          });
+        });
+      });
+  }
+
+  onAddFavoriteAction(favorite: any) {
+    this.unSelectFunctionAndRules();
+    const dashboardItem = {
+      id: generateUid(),
+      type: favorite.dashboardTypeDetails.type,
+      [_.camelCase(favorite.dashboardTypeDetails.type)]: favorite
+        .dashboardTypeDetails.isArray
+        ? [
+            {
+              id: favorite.id,
+              name: favorite.name
+            }
+          ]
+        : {
+            id: favorite.id,
+            name: favorite.name
+          }
+    };
+
+    this.store.dispatch(new AddVisualizationItemAction(dashboardItem));
+  }
 
   onCreateFavoriteAction() {}
 
   onNewFunctionObject(functionObject: FunctionObject) {
-    console.log("functionObject:",functionObject);
-    this.store.dispatch(new AddFunction({
-      function:functionObject
-    }));
-    this.store.dispatch(new AddFunctionRule({
-      functionRule:functionObject.rules[0]
-    }));
+    this.store.dispatch(
+      new AddFunction({
+        function: functionObject
+      })
+    );
+    this.store.dispatch(
+      new AddFunctionRule({
+        functionRule: functionObject.rules[0]
+      })
+    );
     this.onActivateFunctionObject(functionObject);
   }
+
   onNewFunctionRule(functionRule: FunctionRule) {
-    this.store.dispatch(new AddFunctionRule({
-      functionRule: functionRule
-    }));
+    this.store.dispatch(
+      new AddFunctionRule({
+        functionRule: functionRule
+      })
+    );
     this.onActivateFunctionObject(functionRule);
   }
+
   onActivateFunctionObject(functionObject: FunctionObject) {
-    functionObject.selected = true;
     this.store.dispatch(new SetActiveFunction(functionObject));
     if (functionObject.rules && functionObject.rules[0]) {
       this.store.dispatch(
         new SetActiveFunctionRule(functionObject.rules[0], functionObject)
+      );
+
+      this.store.dispatch(
+        new Go({
+          path: ['/'],
+          query: {
+            function: functionObject.id,
+            rule: functionObject.rules[0].id
+          }
+        })
       );
     }
   }
@@ -174,28 +227,25 @@ export class HomeComponent implements OnInit {
     functionObject: FunctionObject;
     item: string;
   }) {
-    if (functionDetails.item === 'FUNCTION' && functionDetails.functionObject) {
-      this.store.dispatch(
-        new UpdateFunction(functionDetails.functionObject.id, {
-          ...functionDetails.functionObject,
-          simulating: true,
-          rules: _.map(
-            functionDetails.functionObject.rules,
-            (rule: any) => rule.id
-          )
-        })
-      );
-    } else if (
-      functionDetails.item === 'FUNCTION_RULE' &&
-      functionDetails.functionRule
-    ) {
-      this.store.dispatch(
-        new UpdateFunctionRule(functionDetails.functionRule.id, {
-          ...functionDetails.functionRule,
-          simulating: true
-        })
-      );
-    }
+    this.store.dispatch(
+      new UpdateFunction(functionDetails.functionObject.id, {
+        ...functionDetails.functionObject,
+        simulating: true,
+        selected: true,
+        rules: _.map(
+          functionDetails.functionObject.rules,
+          (rule: any) => rule.id
+        )
+      })
+    );
+
+    this.store.dispatch(
+      new UpdateFunctionRule(functionDetails.functionRule.id, {
+        ...functionDetails.functionRule,
+        simulating: true,
+        selected: true
+      })
+    );
 
     this.store.dispatch(
       new SimulateVisualizationAction(
@@ -266,6 +316,7 @@ export class HomeComponent implements OnInit {
               functionObject: {
                 ...functionDetails.functionObject,
                 saving: false,
+                isNew: false,
                 unsaved: false
               },
               functionRule: { ...functionDetails.functionRule, saving: false }
@@ -297,19 +348,22 @@ export class HomeComponent implements OnInit {
       arr.push(newval);
     }
   }
-  onDelete(functionDetails){
+  onDelete(functionDetails) {
     functionDetails.functionObject.deleting = true;
     console.log(functionDetails.functionObject);
-    this.functionService.delete(functionDetails.functionObject).subscribe((results:any)=> {
-      functionDetails.functionObject.deleting = false;
-      this.store.dispatch(
-        new DeleteFunction({
-          id: functionDetails.functionObject.id
-        })
-      );
-    },(error)=>{
-      functionDetails.functionObject.deleting = false;
-      this.toasterService.pop('error', 'Error', error.message);
-    })
+    this.functionService.delete(functionDetails.functionObject).subscribe(
+      (results: any) => {
+        functionDetails.functionObject.deleting = false;
+        this.store.dispatch(
+          new DeleteFunction({
+            id: functionDetails.functionObject.id
+          })
+        );
+      },
+      error => {
+        functionDetails.functionObject.deleting = false;
+        this.toasterService.pop('error', 'Error', error.message);
+      }
+    );
   }
 }

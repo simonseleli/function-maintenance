@@ -19,11 +19,15 @@ export class FunctionListComponent implements OnInit {
   @Input()
   functionList: FunctionObject[];
 
+  newLoading: boolean;
+
   @Output()
   activate: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
 
   @Output()
-  newFunction: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
+  newFunction: EventEmitter<FunctionObject> = new EventEmitter<
+    FunctionObject
+  >();
 
   @Output()
   save: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
@@ -39,7 +43,11 @@ export class FunctionListComponent implements OnInit {
   pageClustering;
   functionFilter: any = { name: '' };
   deleteFunction;
-  constructor(private functionService: FunctionService, private store: Store<AppState>, private toasterService: ToasterService) {}
+  constructor(
+    private functionService: FunctionService,
+    private store: Store<AppState>,
+    private toasterService: ToasterService
+  ) {}
 
   ngOnInit() {
     this.pager.total = this.functionList.length;
@@ -56,7 +64,7 @@ export class FunctionListComponent implements OnInit {
     }
     this.pageClustering.push({ name: 'All', value: this.pager.total });
   }
-  deleteFunctionObject(functionObject){
+  deleteFunctionObject(functionObject) {
     this.delete.emit(functionObject);
   }
   onActivate(e, functionObject: FunctionObject) {
@@ -72,32 +80,32 @@ export class FunctionListComponent implements OnInit {
   setPageSize(size) {
     this.pager.pageSize = size;
   }
-  newLoading;
-  create(){
+
+  create() {
     this.newLoading = true;
-    this.functionService.create().subscribe((functionObject:any)=> {
-      this.store.dispatch(
-        new AddFunction({
-          function:{
-            ...functionObject,
-            rules: _.map(
-              functionObject.rules,
-              (rule: any) => rule.id
-            )
-          }
-        })
-      );
-      this.newFunction.emit(functionObject);
-      this.newLoading = false;
-    },(error)=>{
-      this.toasterService.pop('error', 'Error', error.message);
-    })
+    this.functionService.create().subscribe(
+      (functionObject: any) => {
+        this.store.dispatch(
+          new AddFunction({
+            function: {
+              ...functionObject,
+              rules: _.map(functionObject.rules, (rule: any) => rule.id)
+            }
+          })
+        );
+        this.newFunction.emit(functionObject);
+        this.newLoading = false;
+      },
+      error => {
+        this.toasterService.pop('error', 'Error', error.message);
+      }
+    );
   }
-  order(functionOne, functionTwo){
-    if(typeof true === 'boolean'){
-      if(functionOne){
+  order(functionOne, functionTwo) {
+    if (typeof true === 'boolean') {
+      if (functionOne) {
         return 1;
-      }else{
+      } else {
         return -1;
       }
     }

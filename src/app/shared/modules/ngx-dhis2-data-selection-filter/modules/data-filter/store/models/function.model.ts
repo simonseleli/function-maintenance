@@ -21,5 +21,6 @@ export interface FunctionObject {
   href?: String;
   user?: User;
   saving?: boolean;
+  isNew?: boolean;
   simulating?: boolean;
 }

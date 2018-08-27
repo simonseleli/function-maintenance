@@ -32,12 +32,12 @@ export class FunctionManagementComponent implements OnInit {
   @Output()
   newFunction: EventEmitter<FunctionObject> = new EventEmitter<
     FunctionObject
-    >();
+  >();
 
   @Output()
   newFunctionRule: EventEmitter<FunctionRule> = new EventEmitter<
     FunctionRule
-    >();
+  >();
 
   @Output()
   activateFunctionRule: EventEmitter<{
@@ -151,10 +151,10 @@ export class FunctionManagementComponent implements OnInit {
       item: 'FUNCTION_RULE'
     });
   }
-  onDeleteFunction(functionObject){
+  onDeleteFunction(functionObject) {
     this.delete.emit({
-      functionObject:functionObject,
-      functionRule:null,
+      functionObject: functionObject,
+      functionRule: null,
       item: 'FUNCTION'
     });
   }
