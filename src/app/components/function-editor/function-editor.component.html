@@ -13,7 +13,7 @@
 
       <div class="form-group">
         <label for="">Function Definition</label>
-        <div class="alert alert-primary">
+        <div *ngIf="showParameters" class="alert alert-primary">
           <h6 class="alert-heading">Parameters</h6>
           <hr>
           <ngx-json-viewer [json]="parameters" [expanded]="false"></ngx-json-viewer>
