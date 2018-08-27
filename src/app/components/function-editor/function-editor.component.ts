@@ -88,6 +88,8 @@ export class FunctionEditorComponent implements OnInit {
     if(typeof this.parameters.rule.json === "string"){
       this.parameters.rule.json = JSON.parse(this.parameters.rule.json);
     }
+    this.parameters.success = (analyticsObject)=>{};
+    this.parameters.error = (error)=>{};
   }
   onSimulate(e) {
     e.stopPropagation();
