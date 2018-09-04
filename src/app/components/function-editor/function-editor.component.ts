@@ -6,12 +6,13 @@ import {
   EventEmitter,
   SimpleChanges
 } from '@angular/core';
-import { FunctionObject } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
-import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
+import {FunctionObject} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
+import {VisualizationDataSelection} from '../../shared/modules/ngx-dhis2-visualization/models';
 import * as _ from 'lodash';
-import { UpsertFunction } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
-import { AppState } from '../../store/reducers/index';
-import { Store } from '@ngrx/store';
+import {UpsertFunction} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
+import {AppState} from '../../store/reducers/index';
+import {Store} from '@ngrx/store';
+
 @Component({
   selector: 'app-function-editor',
   templateUrl: './function-editor.component.html',
@@ -63,76 +64,93 @@ export class FunctionEditorComponent implements OnInit {
     }
   ];
   deleteFuntion = false;
-  constructor(private store: Store<AppState>) {}
 
-  parameters:any = {
+  constructor(private store: Store<AppState>) {
+  }
 
-  };
+  parameters: any = {};
 
   ngOnInit() {
     this._setParameters(this.currentVisualizationDataSelections);
   }
 
 
-  _setParameters(selections){
-    console.log(this.currentVisualizationDataSelections);
-    console.log("Current Visualization:",_.find(this.currentVisualizationDataSelections, function (obj) { return obj.dimension === "dx"; }));
-    this.parameters.ou = _.find(selections, function (obj) { return obj.dimension === "ou"; });
+  _setParameters(selections) {
+
+    this.parameters.ou = _.find(selections, function (obj) {
+      return obj.dimension === "ou";
+    });
     this.parameters.ou = _.map(this.parameters.ou.items, "id").join(";");
-    this.parameters.pe = _.find(selections, function (obj) { return obj.dimension === "pe"; });
+    this.parameters.pe = _.find(selections, function (obj) {
+      return obj.dimension === "pe";
+    });
     this.parameters.pe = _.map(this.parameters.pe.items, "id").join(";");
-    this.parameters.rule = _.find(selections, function (obj) { return obj.dimension === "dx"; });
+    this.parameters.rule = _.find(selections, function (obj) {
+      return obj.dimension === "dx";
+    });
     this.parameters.rule = _.map(this.parameters.rule.items, "ruleDefinition");
     console.log(this.parameters.rule);
     this.parameters.rule = this.parameters.rule[0];
-    if(typeof this.parameters.rule.json === "string"){
+    if (typeof this.parameters.rule.json === "string") {
       this.parameters.rule.json = JSON.parse(this.parameters.rule.json);
     }
-    this.parameters.success = (analyticsObject)=>{};
-    this.parameters.error = (error)=>{};
+    this.parameters.success = (analyticsObject) => {
+    };
+    this.parameters.error = (error) => {
+    };
   }
+
   onSimulate(e) {
     e.stopPropagation();
     this.simulate.emit(this.functionObject);
   }
+
   onChange(event) {
     this.upsertFunction();
   }
+
   onFunctionEdited(event) {
-    this.functionObject.function = event;
+    const functionObjectClone = _.clone(this.functionObject);
+    functionObjectClone.function = event;
+    this.functionObject = functionObjectClone;
     this.upsertFunction();
   }
-  upsertFunction(){
-    if(!this.functionObject.unsaved){
+
+  upsertFunction() {
+    if (!this.functionObject.unsaved) {
       this.functionObject.unsaved = true;
     }
-    console.log("this.functionObject:",this.functionObject);
-    this.store.dispatch(new UpsertFunction({function: this.functionObject}));
+
+    // this.store.dispatch(new UpsertFunction({function: this.functionObject}));
   }
+
   onSave(e) {
     e.stopPropagation();
     this.save.emit(this.functionObject);
   }
-  onDelete(){
+
+  onDelete() {
     this.delete.emit(this.functionObject);
   }
+
   showParameters = true;
+
   ngOnChanges(changes: SimpleChanges) {
-    if(changes.functionObject.currentValue && changes.functionObject.previousValue){
-      if(changes.functionObject.currentValue.id !== changes.functionObject.previousValue.id){
+    if (changes.functionObject.currentValue && changes.functionObject.previousValue) {
+      if (changes.functionObject.currentValue.id !== changes.functionObject.previousValue.id) {
         this.showEditor = false;
-        setTimeout(()=>{
+        setTimeout(() => {
           this.showEditor = true;
-        })
+        });
       }
     }
-    if(changes.currentVisualizationDataSelections){
-      if(changes.currentVisualizationDataSelections.currentValue){
+    if (changes.currentVisualizationDataSelections) {
+      if (changes.currentVisualizationDataSelections.currentValue) {
         this.showParameters = false;
         this._setParameters(changes.currentVisualizationDataSelections.currentValue);
-        setTimeout(()=>{
+        setTimeout(() => {
           this.showParameters = true;
-        })
+        });
       }
     }
   }
