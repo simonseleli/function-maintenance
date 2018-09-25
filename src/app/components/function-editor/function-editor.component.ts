@@ -111,6 +111,7 @@ export class FunctionEditorComponent implements OnInit {
   }
   onSave(e) {
     e.stopPropagation();
+    //alert("Here");
     this.save.emit(this.functionObject);
   }
   onDelete(){
