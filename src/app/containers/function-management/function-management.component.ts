@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import * as _ from 'lodash';
 import {
   FunctionObject,
   FunctionRule
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
-import { find } from 'rxjs/operators';
-import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
+import {find} from 'rxjs/operators';
+import {VisualizationDataSelection} from '../../shared/modules/ngx-dhis2-visualization/models';
 
 @Component({
   selector: 'app-function-management',
@@ -25,19 +25,13 @@ export class FunctionManagementComponent implements OnInit {
   activeEditor: string;
 
   @Output()
-  activateFunction: EventEmitter<FunctionObject> = new EventEmitter<
-    FunctionObject
-  >();
+  activateFunction: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
 
   @Output()
-  newFunction: EventEmitter<FunctionObject> = new EventEmitter<
-    FunctionObject
-  >();
+  newFunction: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
 
   @Output()
-  newFunctionRule: EventEmitter<FunctionRule> = new EventEmitter<
-    FunctionRule
-  >();
+  newFunctionRule: EventEmitter<FunctionRule> = new EventEmitter<FunctionRule>();
 
   @Output()
   activateFunctionRule: EventEmitter<{
@@ -93,16 +87,19 @@ export class FunctionManagementComponent implements OnInit {
     return _.find(this.functionRules, ['active', true]);
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   onNewFunctionObject(functionObject: FunctionObject) {
     this.activeEditor = 'FUNCTION';
     this.newFunction.emit(functionObject);
   }
+
   onNewFunctionRule(functionRule: FunctionRule) {
     this.activeEditor = 'RULE';
     this.newFunctionRule.emit(functionRule);
   }
+
   onActivateFunctionObject(functionObject: FunctionObject) {
     this.activeEditor = 'FUNCTION';
     this.activateFunction.emit(functionObject);
@@ -136,6 +133,7 @@ export class FunctionManagementComponent implements OnInit {
       item: 'FUNCTION_RULE'
     });
   }
+
   onSaveFunction(functionObject: FunctionObject) {
     this.save.emit({
       functionObject,
@@ -151,6 +149,7 @@ export class FunctionManagementComponent implements OnInit {
       item: 'FUNCTION_RULE'
     });
   }
+
   onDeleteFunction(functionObject) {
     this.delete.emit({
       functionObject: functionObject,

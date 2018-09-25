@@ -261,7 +261,9 @@ export class HomeComponent implements OnInit {
     functionObject: FunctionObject;
     item: string;
   }) {
+
     if (functionDetails.item === 'FUNCTION' && functionDetails.functionObject) {
+      console.log(functionDetails.functionObject);
       this.store.dispatch(
         new UpdateFunction(functionDetails.functionObject.id, {
           ...functionDetails.functionObject,
@@ -350,7 +352,6 @@ export class HomeComponent implements OnInit {
   }
   onDelete(functionDetails) {
     functionDetails.functionObject.deleting = true;
-    console.log(functionDetails.functionObject);
     this.functionService.delete(functionDetails.functionObject).subscribe(
       (results: any) => {
         functionDetails.functionObject.deleting = false;
