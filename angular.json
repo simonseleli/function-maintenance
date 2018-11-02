@@ -25,7 +25,10 @@
               "node_modules/angular2-toaster/toaster.css",
               "src/styles.css"
             ],
-            "scripts": ["node_modules/jquery/dist/jquery.js"]
+            "scripts": [
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/js-beautify/js/lib/beautify.js"
+            ]
           },
           "configurations": {
             "production": {
