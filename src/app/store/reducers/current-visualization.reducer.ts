@@ -17,7 +17,7 @@ export interface CurrentVisualizationState {
 const initialState: CurrentVisualizationState = {
   id: generateUid(),
   loading: true,
-  type: 'REPORT_TABLE',
+  type: 'CHART',
   layers: []
 };
 

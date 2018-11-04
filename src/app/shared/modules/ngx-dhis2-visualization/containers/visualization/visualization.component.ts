@@ -87,7 +87,7 @@ export class VisualizationComponent implements OnInit, OnChanges {
 
   constructor(private store: Store<VisualizationState>) {
     this.cardFocused = false;
-    this.type = 'REPORT_TABLE';
+    this.type = 'CHART';
     this._visualizationInputs$.asObservable().subscribe(visualizationInputs => {
       if (visualizationInputs) {
         // initialize visualization object
