@@ -95,10 +95,9 @@ export class FunctionEditorComponent implements OnInit, OnChanges {
     const ruleDefinition = _.map(
       ruleDimension ? ruleDimension.items : [],
       (item: any) => {
-        if (typeof item.ruleDefinition.rule.json === 'string') {
-          item.ruleDefinition.rule.json = JSON.parse(
-            item.ruleDefinition.rule.json
-          );
+        console.log(item);
+        if (typeof item.ruleDefinition.json === 'string') {
+          item.ruleDefinition.json = JSON.parse(item.ruleDefinition.json);
         }
         return item.ruleDefinition;
       }

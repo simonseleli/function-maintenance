@@ -13,7 +13,7 @@ import {
 } from '../../store/selectors';
 import { CurrentVisualizationState } from '../../store/reducers/current-visualization.reducer';
 import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
-import { take } from 'rxjs/operators';
+import { take, switchMap } from 'rxjs/operators';
 import {
   UpdateCurrentVisualizationWithDataSelectionsAction,
   SimulateVisualizationAction,
@@ -59,6 +59,7 @@ import {
   getStandardizedVisualizationObject,
   getStandardizedVisualizationUiConfig
 } from '../../shared/modules/ngx-dhis2-visualization/helpers';
+import { _getCurrentMap } from 'src/app/shared/modules/ngx-dhis2-visualization/modules/map/store';
 
 @Component({
   selector: 'app-home',
@@ -261,7 +262,6 @@ export class HomeComponent implements OnInit {
     functionObject: FunctionObject;
     item: string;
   }) {
-
     if (functionDetails.item === 'FUNCTION' && functionDetails.functionObject) {
       console.log(functionDetails.functionObject);
       this.store.dispatch(
@@ -301,15 +301,21 @@ export class HomeComponent implements OnInit {
           'active'
         ])
       );
-      this.functionService
-        .save(
-          _.omit(functionDetails.functionObject, [
-            'saving',
-            'unsaved',
-            'simulating',
-            'selected',
-            'active'
-          ])
+      this.currentUser$
+        .pipe(
+          take(1),
+          switchMap((currentUser: any) =>
+            this.functionService.save(
+              _.omit(functionDetails.functionObject, [
+                'saving',
+                'unsaved',
+                'simulating',
+                'selected',
+                'active'
+              ]),
+              currentUser
+            )
+          )
         )
         .subscribe(
           results => {

@@ -10,7 +10,7 @@ export function getStandardizedFunctionRulesFromFunctionList(
   );
 
   return _.map(
-    functionRules,
+    functionRules || [],
     (functionRule: any, functionRuleIndex: number) => {
       const selectedRule = _.find(functionRules, [
         'id',
