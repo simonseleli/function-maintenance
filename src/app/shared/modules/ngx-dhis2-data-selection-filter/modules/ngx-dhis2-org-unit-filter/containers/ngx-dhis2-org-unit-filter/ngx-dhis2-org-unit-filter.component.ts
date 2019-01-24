@@ -100,9 +100,10 @@ export class NgxDhis2OrgUnitFilterComponent implements OnInit, OnDestroy {
   }
 
   get selectedOrgUnits(): any[] {
-    return _.filter(
-      this.selectedOrgUnitItems,
-      selectedOrgUnit => selectedOrgUnit.type === 'ORGANISATION_UNIT'
+    return _.filter(this.selectedOrgUnitItems, selectedOrgUnit =>
+      selectedOrgUnit.type
+        ? selectedOrgUnit.type === 'ORGANISATION_UNIT'
+        : selectedOrgUnit.name.indexOf('USER') === -1
     );
   }
 
@@ -197,7 +198,7 @@ export class NgxDhis2OrgUnitFilterComponent implements OnInit, OnDestroy {
   onOrgUnitClose() {
     this.orgUnitClose.emit({
       dimension: 'ou',
-      items: this.selectedOrgUnitItems
+      items: _.uniqBy(this.selectedOrgUnitItems, 'id')
     });
   }
 
