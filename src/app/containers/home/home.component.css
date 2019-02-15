@@ -1,0 +1,22 @@
+.selected {
+  padding: 5px;
+  background-color: burlywood;
+  display: inline;
+}
+
+.function-loading-placeholder,
+.visualization-loading-placeholder {
+  display: flex;
+  height: 90vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.visualization-loading-placeholder {
+  height: 300px;
+}
+
+.visualization-error-block {
+  height: 250px;
+  margin-top: 50px;
+}

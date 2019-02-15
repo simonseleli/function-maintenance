@@ -1,0 +1,32 @@
+.function-list-table {
+  margin-bottom: 0;
+}
+
+.function-list-title {
+  display: block;
+  padding: 10px;
+}
+.function-list-title button span.new-button{
+  display:none;
+}
+.function-list-title button:hover span.new-button{
+  display:inline-block;
+}
+.function-title {
+  padding-top: 2px;
+}
+
+.function-btns {
+  display: flex;
+}
+
+.function-btns > button {
+  margin-left: 3px;
+  font-size: 11px;
+}
+
+.selected-function {
+  color: #31708f;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+}

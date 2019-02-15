@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-12">
+    <div class="form-container" *ngIf="functionRule">
+      <div class="form-group">
+        <label for="">Name:</label>
+        <input type="text" class="form-control" [(ngModel)]="functionRule.name">
+      </div>
+
+      <div class="form-group">
+        <label for="">Description:</label>
+        <textarea name="" class="form-control" id="" cols="30" rows="2" [(ngModel)]="functionRule.name"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="">JSON:</label>
+        <editor *ngIf="showEditor" [mode]="'javascript'" [code]="functionRule.json" [readonly]="operation == 'test'" [snippets]="snippets"
+          (onCodeUpdate)="onChange($event)"></editor>
+      </div>
+      <div class="form-group function-form-buttons">
+        <button class="btn btn-danger pull-right"><i class="fa fa-times"></i> Cancel</button>
+        <button class="btn btn-success pull-right" (click)="onSave($event)" [disabled]="functionRule.saving"><i class="fa fa-save"></i>
+          {{functionRule.saving ? 'Saving...' : 'Save'}}</button>
+        <button class="btn btn-primary pull-right" (click)="onSimulate($event)" [disabled]="functionRule.simulating"><i class="fa fa-eye"></i>
+          {{functionRule.simulating ? 'Simulating...' : 'Simulate'}}</button>
+
+      </div>
+    </div>
+  </div>
+</div>
