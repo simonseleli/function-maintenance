@@ -1,3 +1,9 @@
+[![Build Status](https://travis-ci.org/hisptz/function-maintenance.svg?branch=master)](https://travis-ci.org/hisptz/function-maintenance)
+[![dependencies Status](https://david-dm.org/hisptz/function-maintenance/status.svg)](https://david-dm.org/hisptz/function-maintenance)
+[![devDependencies Status](https://david-dm.org/hisptz/function-maintenance/dev-status.svg)](https://david-dm.org/hisptz/function-maintenance?type=dev)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f5b789b5cba45f0edd78/maintainability)](https://codeclimate.com/github/hisptz/function-maintenance/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/f5b789b5cba45f0edd78/test_coverage)](https://codeclimate.com/github/hisptz/function-maintenance/test_coverage)
+
 # FunctionMaintanance
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.1.3.
