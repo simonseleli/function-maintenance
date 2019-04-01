@@ -78,7 +78,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     /**
      * Menu  module
      */
-    NgxDhis2MenuModule.forRoot(),
+    NgxDhis2MenuModule,
     StoreModule.forRoot(reducers, { metaReducers }),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot(effects)
