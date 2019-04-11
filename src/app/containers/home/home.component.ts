@@ -1,65 +1,50 @@
 import { Component, OnInit } from '@angular/core';
-import * as _ from 'lodash';
-import { SelectionFilterConfig } from '../../shared/modules/ngx-dhis2-data-selection-filter/models/selected-filter-config.model';
 import { Store } from '@ngrx/store';
-import { AppState, Go } from '../../store';
+import { ToasterService } from 'angular2-toaster';
+import * as _ from 'lodash';
 import { Observable } from 'rxjs';
-import { User, SystemInfo, generateUid } from '../../core';
-import {
-  getCurrentUser,
-  getSystemInfo,
-  getCurrentVisualization,
-  getCurrentVisualizationDataSelections
-} from '../../store/selectors';
-import { CurrentVisualizationState } from '../../store/reducers/current-visualization.reducer';
-import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
-import { take, switchMap } from 'rxjs/operators';
-import {
-  UpdateCurrentVisualizationWithDataSelectionsAction,
-  SimulateVisualizationAction,
-  AddOrUpdateCurrentVisualizationAction,
-  AddVisualizationItemAction
-} from '../../store/actions/current-visualization.actions';
-import {
-  getAllFunctionRules,
-  getFunctionRuleEntities
-} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/reducers/function-rule.reducer';
-
-import * as fromModels from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
-import {
-  getFunctions,
-  getSelectedFunctions,
-  getActiveFunctionId,
-  getFunctionRulesForActiveFunction,
-  getFunctionLoadingStatus,
-  getFunctionLoadedStatus
-} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors';
-import {
-  UpdateFunctionRule,
-  SetActiveFunctionRule,
-  AddFunctionRule
-} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
-import {
-  UpdateFunction,
-  SetActiveFunction,
-  AddFunction,
-  DeleteFunction
-} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
+import { switchMap, take } from 'rxjs/operators';
 import {
   FunctionObject,
   FunctionRule
-} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
-import { ToasterService } from 'angular2-toaster';
+} from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
+
+import { generateUid, SystemInfo, User } from '../../core';
+import { SelectionFilterConfig } from '../../shared/modules/ngx-dhis2-data-selection-filter/models/selected-filter-config.model';
 import { FunctionService } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/services/function.service';
 import {
-  AddVisualizationObjectAction,
-  AddVisualizationUiConfigurationAction
-} from '../../shared/modules/ngx-dhis2-visualization/store';
+  AddFunctionRule,
+  SetActiveFunctionRule,
+  UpdateFunctionRule
+} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
 import {
-  getStandardizedVisualizationObject,
-  getStandardizedVisualizationUiConfig
-} from '../../shared/modules/ngx-dhis2-visualization/helpers';
-import { _getCurrentMap } from 'src/app/shared/modules/ngx-dhis2-visualization/modules/map/store';
+  AddFunction,
+  DeleteFunction,
+  SetActiveFunction,
+  UpdateFunction
+} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
+
+import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
+import { AppState, Go } from '../../store';
+import {
+  AddVisualizationItemAction,
+  SimulateVisualizationAction,
+  UpdateCurrentVisualizationWithDataSelectionsAction
+} from '../../store/actions/current-visualization.actions';
+import { CurrentVisualizationState } from '../../store/reducers/current-visualization.reducer';
+import {
+  getCurrentUser,
+  getCurrentVisualization,
+  getCurrentVisualizationDataSelections,
+  getSystemInfo
+} from '../../store/selectors';
+import {
+  getFunctions,
+  getFunctionLoadingStatus,
+  getFunctionLoadedStatus,
+  getSelectedFunctions
+} from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors/function.selectors';
+import { getFunctionRulesForActiveFunction } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors/function-rule.selectors';
 
 @Component({
   selector: 'app-home',
@@ -72,8 +57,8 @@ export class HomeComponent implements OnInit {
   systemInfo$: Observable<SystemInfo>;
   currentVisualization$: Observable<CurrentVisualizationState>;
   currentVisualizationDataSelections$: Observable<VisualizationDataSelection[]>;
-  functionList$: Observable<fromModels.FunctionObject[]>;
-  functionRules$: Observable<fromModels.FunctionRule[]>;
+  functionList$: Observable<FunctionObject[]>;
+  functionRules$: Observable<FunctionRule[]>;
   loadingFunctions$: Observable<boolean>;
   functionsLoaded$: Observable<boolean>;
   constructor(

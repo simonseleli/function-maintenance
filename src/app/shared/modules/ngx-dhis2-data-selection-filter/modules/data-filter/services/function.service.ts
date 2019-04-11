@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import { NgxDhis2HttpClientService } from '@hisptz/ngx-dhis2-http-client';
-import { Observable, forkJoin, of, throwError } from 'rxjs';
-import { mergeMap, catchError, map, switchMap } from 'rxjs/operators';
-import { UserService } from '../../../../../../core/services/user.service';
-import { User } from '../../../../../../core/models/user.model';
-import { FunctionObject } from '../store/models/function.model';
-import { generateUid } from '../helpers/generate-uid.helper';
-import * as fromConstants from '../constants/index';
+import { mergeMap, catchError, switchMap, map } from 'rxjs/operators';
+import { forkJoin, of, Observable } from 'rxjs';
+import { FunctionObject } from '../models';
+import { User, generateUid } from 'src/app/core';
+import {
+  PREDICTOR_FUNCTION,
+  REPORTING_RATE_BY_FILLED_DATA,
+  EARLY_COMPLETENESS_FUNCTION,
+  COMPLETENESS_FUNCTION
+} from '../constants';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class FunctionService {
-  apiVersion = '';
-  constructor(
-    private http: NgxDhis2HttpClientService,
-    private userService: UserService
-  ) {}
+  private _dataStoreUrl: string;
+  constructor(private http: NgxDhis2HttpClientService) {
+    this._dataStoreUrl = 'dataStore/functions';
+  }
 
   loadAll(currentUser: any): Observable<any> {
     return this._loadAll().pipe(
@@ -41,31 +41,20 @@ export class FunctionService {
   }
 
   private _loadAll() {
-    return this.http.get('dataStore/functions').pipe(
+    return this.http.get(this._dataStoreUrl).pipe(
       mergeMap((functionIds: Array<string>) =>
         forkJoin(
           _.map(functionIds, (functionId: string) => this.load(functionId))
-        ).pipe(
-          catchError((error: any) =>
-            error.status !== 404 ? throwError(error) : of([])
-          )
-        )
+        ).pipe(catchError(() => of([])))
       ),
-      catchError((error: any) =>
-        error.status !== 404 ? throwError(error) : of([])
-      )
+      catchError(() => of([]))
     );
   }
 
   load(id: string) {
-    return this.http.get('dataStore/functions/' + id);
+    return this.http.get(`${this._dataStoreUrl}/${id}`);
   }
-  private _save(sFunction: FunctionObject, method: string) {
-    const functionUrl = 'dataStore/functions/' + sFunction.id;
-    return method === 'POST'
-      ? this.http.post(functionUrl, sFunction)
-      : this.http.put(functionUrl, sFunction);
-  }
+
   save(sFunction: FunctionObject, currentUser: any) {
     return this.http.get('system/info').pipe(
       mergeMap((systemInfo: any) => {
@@ -95,76 +84,62 @@ export class FunctionService {
       })
     );
   }
-  getId(number?) {
-    let url = 'system/id';
-    if (number) {
-      url += '.json?limit=' + number;
-    }
-    return this.http.get(url);
-  }
-  create() {
+
+  create(currentUser: User) {
     return new Observable(observable => {
-      this.userService.getCurrentUser().subscribe(
-        (user: User) => {
-          this.getId(2).subscribe(
-            (results: any) => {
-              this.http.get('dataElements.json?pageSize=1').subscribe(
-                (dataElementResults: any) => {
-                  const functionObject = {
-                    id: results.codes[0],
-                    name: 'New Function',
-                    created: new Date(),
-                    lastUpdated: new Date(),
-                    externalAccess: false,
-                    userGroupAccesses: [],
+      this.getId(2).subscribe(
+        (results: any) => {
+          this.http.get('dataElements.json?pageSize=1').subscribe(
+            (dataElementResults: any) => {
+              const functionObject = {
+                id: results.codes[0],
+                name: 'New Function',
+                created: new Date(),
+                lastUpdated: new Date(),
+                externalAccess: false,
+                userGroupAccesses: [],
+                isNew: true,
+                unSaved: true,
+                user: {
+                  id: currentUser.id
+                },
+                attributeValues: [],
+                translations: [],
+                userAccesses: [],
+                publicAccess: 'rw------',
+                function:
+                  '//Example of function implementation\n' +
+                  'parameters.progress(50);\n' +
+                  '$.ajax({\n' +
+                  '\turl: "../../../api/analytics.json?dimension=dx:" + ' +
+                  'parameters.rule.json.data + "&dimension=pe:" + parameters.pe + "&dimension=ou:" + parameters.ou,\n' +
+                  '\ttype: "GET",\n' +
+                  '\tsuccess: function(analyticsResults) {\n' +
+                  '\t\t  parameters.success(analyticsResults);\n' +
+                  '\t},\n' +
+                  '\terror:function(error){\n' +
+                  '\t\t  parameters.error(error);\n' +
+                  '\t}\n' +
+                  '});',
+                rules: [
+                  {
+                    id: results.codes[1],
+                    name: 'Default',
+                    isDefault: true,
                     isNew: true,
                     unSaved: true,
-                    user: {
-                      id: user.id
-                    },
-                    attributeValues: [],
-                    translations: [],
-                    userAccesses: [],
-                    publicAccess: 'rw------',
-                    function:
-                      '//Example of function implementation\n' +
-                      'parameters.progress(50);\n' +
-                      '$.ajax({\n' +
-                      '\turl: "../../../api/analytics.json?dimension=dx:" + ' +
-                      'parameters.rule.json.data + "&dimension=pe:" + parameters.pe + "&dimension=ou:" + parameters.ou,\n' +
-                      '\ttype: "GET",\n' +
-                      '\tsuccess: function(analyticsResults) {\n' +
-                      '\t\t  parameters.success(analyticsResults);\n' +
-                      '\t},\n' +
-                      '\terror:function(error){\n' +
-                      '\t\t  parameters.error(error);\n' +
-                      '\t}\n' +
-                      '});',
-                    rules: [
-                      {
-                        id: results.codes[1],
-                        name: 'Default',
-                        isDefault: true,
-                        isNew: true,
-                        unSaved: true,
-                        description:
-                          'This is the default rule. Using the data element "' +
-                          dataElementResults.dataElements[0].displayName +
-                          '".',
-                        json: JSON.stringify({
-                          data: dataElementResults.dataElements[0].id
-                        })
-                      }
-                    ]
-                  };
-                  observable.next(functionObject);
-                  observable.complete();
-                },
-                error => {
-                  observable.error(error);
-                  observable.complete();
-                }
-              );
+                    description:
+                      'This is the default rule. Using the data element "' +
+                      dataElementResults.dataElements[0].displayName +
+                      '".',
+                    json: JSON.stringify({
+                      data: dataElementResults.dataElements[0].id
+                    })
+                  }
+                ]
+              };
+              observable.next(functionObject);
+              observable.complete();
             },
             error => {
               observable.error(error);
@@ -179,6 +154,7 @@ export class FunctionService {
       );
     });
   }
+
   createRule() {
     return new Observable(observable => {
       this.getId().subscribe(
@@ -213,6 +189,7 @@ export class FunctionService {
       );
     });
   }
+
   delete(sFunction: FunctionObject) {
     return new Observable(observable => {
       this.http.delete('dataStore/functions/' + sFunction.id).subscribe(
@@ -253,9 +230,6 @@ export class FunctionService {
             );
           } else {
             this.http.get('system/info').subscribe((response: any) => {
-              if (parseFloat(response.version) > 2.24) {
-                this.apiVersion = '/24';
-              }
               forkJoin(this.getFunctionCreationPromises(currentUser)).subscribe(
                 (responses: any) => {
                   this.getAll(currentUser).subscribe(
@@ -281,9 +255,6 @@ export class FunctionService {
           if (error.status === 404) {
             const observable = [];
             this.http.get('system/info').subscribe((response: any) => {
-              if (parseFloat(response.version) > 2.24) {
-                this.apiVersion = '/24';
-              }
               forkJoin(this.getFunctionCreationPromises(currentUser)).subscribe(
                 (responses: any) => {
                   this.getAll(currentUser).subscribe(
@@ -311,6 +282,7 @@ export class FunctionService {
       );
     });
   }
+
   getFunctionCreationPromises(currentUser: any): Array<Observable<any>> {
     return [
       this._createPredictorFunction(currentUser),
@@ -321,13 +293,13 @@ export class FunctionService {
       this._createOrgUnitsReportedOnDataSetFunction(currentUser)
     ];
   }
+
   createStockOutFunctions(currentUser) {
     return new Observable(observable => {
       const stockout: any = {
         function:
           '//Example of function implementation\nparameters.progress(50);\nfunction calculatePercentageForOU(ou){\n' +
           'return new Promise(function(resolve,reject){\n$.ajax({\n\turl: "../../../api' +
-          this.apiVersion +
           '/analytics.json?dimension=dx:" + parameters.rule.json.data + "&dimension=pe:" + parameters.pe + "&dimension=ou:' +
           'LEVEL-4;" + ou + "&hierarchyMeta=true",\n\ttype: "GET",\n\tsuccess: function(analyticsResults) {\n\tvar orgUnits = ' +
           '[];\n\tanalyticsResults.rows.forEach(function(row){\n\tvar orgUnitId = row[1] + "." + row[2]\n\tif(orgUnits.indexOf' +
@@ -338,7 +310,6 @@ export class FunctionService {
           'length > 0) {\n\tanalyticsResults.rows.push([parameters.rule.id,pe,ou,"" + (currentPeOrgUnits.length * 100 / analyticsResults' +
           '.metaData.ou.length).toFixed(2)])\n\t}\n\t});\n\t\tanalyticsResults.metaData.ou = [ou];\n\t\tresolve(analyticsResults);\n\t},' +
           '\n\terror:function(error){\n\t\treject(error);\n\t}\n});\n})\n}\n$.ajax({\nurl: "../../../api' +
-          this.apiVersion +
           '/analytics.json?dimension=pe:" + parameters.pe + "&dimension=ou:" + parameters.ou + "&skipData=true",\ntype:"GET",\nsuccess:' +
           'function(dummyAnalyticsResults) {\nvar promises = [];\nvar analytics;\ndummyAnalyticsResults.metaData.ou.forEach(function(ou)' +
           '{\npromises.push(calculatePercentageForOU(ou).then(function(analyticsResults){\nif(!analytics){\nanalytics = analyticsResults' +
@@ -424,9 +395,7 @@ export class FunctionService {
       const stockout: any = {
         function:
           '//Example of function implementation\nparameters.progress(50);\nfunction calculatePercentageForOU(ou){\n    return new Promise(function(resolve,reject){\n      $.ajax({\n                    \turl: "../../../api' +
-          this.apiVersion +
           '/analytics.json?dimension=dx:" + parameters.rule.json.data + "&dimension=pe:" + parameters.pe + "&dimension=ou:LEVEL-4;" + ou + "&hierarchyMeta=true",\n                    \ttype: "GET",\n                    \tsuccess: function(analyticsResults) {\n                    \t    var orgUnits = [];\n                    \t    analyticsResults.rows.forEach(function(row){\n                    \t        var orgUnitId = row[1] + \'.\' + row[2]\n                    \t        if(orgUnits.indexOf(orgUnitId) == -1){\n                    \t            orgUnits.push(orgUnitId);\n                    \t        }\n                    \t    })\n                    \t    analyticsResults.metaData.dx = [parameters.rule.id];\n                    \t    analyticsResults.metaData.names[parameters.rule.id] = parameters.rule.name;\n                    \t    analyticsResults.rows = [];\n                    \t    analyticsResults.metaData.pe.forEach(function(pe){\n                    \t        var currentPeOrgUnits = [];\n                    \t        orgUnits.forEach(function(orgUnit) {\n                    \t            if (orgUnit.split(\'.\')[0] === pe) {\n                    \t               currentPeOrgUnits.push(orgUnit)\n                    \t            }\n                    \t        });\n                    \t        \n                    \t        if (currentPeOrgUnits.length > 0) {\n                    \t            analyticsResults.rows.push([parameters.rule.id,pe,ou,"" + (currentPeOrgUnits.length * 100 / analyticsResults.metaData.ou.length).toFixed(2)])\n                    \t        }\n                    \t    });\n                    \t\tanalyticsResults.metaData.ou = [ou];\n                    \t\tresolve(analyticsResults);\n                    \t},\n                    \terror:function(error){\n                    \t\t  reject(error);\n                    \t}\n                    });  \n    })\n}\n$.ajax({\n    url: "../../../api' +
-          this.apiVersion +
           '/analytics.json?dimension=pe:" + parameters.pe + "&dimension=ou:" + parameters.ou + "&skipData=true",\n    type: "GET",\n    success: function(dummyAnalyticsResults) {\n        var promises = [];\n        var analytics;\n        dummyAnalyticsResults.metaData.ou.forEach(function(ou){\n            promises.push(calculatePercentageForOU(ou).then(function(analyticsResults){\n                if(!analytics){\n                    analytics = analyticsResults;\n                }else{\n                   analytics.metaData.ou = analytics.metaData.ou.concat(analyticsResults.metaData.ou);\n                   analyticsResults.metaData.ou.forEach(function(ouid){\n                       analytics.metaData.names[ouid] = analyticsResults.metaData.names[ouid];\n                   })\n                    analytics.rows = analytics.rows.concat(analyticsResults.rows);\n                }\n            }));\n        })\n        \n        Promise.all(promises).then(function(){\n            parameters.success(analytics);\n        },function(error){\n            parameters.error(error);\n        })\n},error:function(error){\n    reject(error);\n}\n});',
         rules: [],
         name: 'Facilities With Stockout',
@@ -511,7 +480,7 @@ export class FunctionService {
             name: 'Limit Reporting Rate to Maximum of 100%',
             description:
               'This returns completeness. If the completeness is over a hundred it returns 100.',
-            function: fromConstants.COMPLETENESS_FUNCTION,
+            function: COMPLETENESS_FUNCTION,
             rules: this._generateCompletenessFunctionRules(
               dataSetsResponse ? dataSetsResponse.dataSets : []
             )
@@ -545,7 +514,7 @@ export class FunctionService {
             name: 'Proportion of Early Completeness',
             description:
               'Calculates how early the report was submitted\n\nNumerator: Is the difference from the submission date and deadline date\n\nDenominator: Number of submission date',
-            function: fromConstants.EARLY_COMPLETENESS_FUNCTION,
+            function: EARLY_COMPLETENESS_FUNCTION,
             rules: this._generateEarlyCompletenessFunctionRules(
               dataSetsResponse ? dataSetsResponse.dataSets : []
             )
@@ -578,7 +547,7 @@ export class FunctionService {
             name: 'Reporting Rates By Filled data',
             description:
               'Calculates the reporting rate by the amount of fields filled in the report',
-            function: fromConstants.REPORTING_RATE_BY_FILLED_DATA,
+            function: REPORTING_RATE_BY_FILLED_DATA,
             rules: this._generateReportingRateByFilledDataFunctionRules(
               dataSetsResponse ? dataSetsResponse.dataSets : []
             )
@@ -611,7 +580,7 @@ export class FunctionService {
             name: 'Sample Proportion of Facilities Given a condition',
             description:
               'This calculates the percentage of facilities given a condition which can be modified to provide the required condition. Currently it calculates the proportion of organisation units reported on a given data set reporting rate',
-            function: fromConstants.REPORTING_RATE_BY_FILLED_DATA,
+            function: REPORTING_RATE_BY_FILLED_DATA,
             rules: this._generateOrgUnitsReportedOnDataSetFunctionRules(
               dataSetsResponse ? dataSetsResponse.dataSets : []
             )
@@ -644,7 +613,7 @@ export class FunctionService {
             isNew: true,
             name: 'Predictor',
             description: 'Calculates the prediction given past data',
-            function: fromConstants.PREDICTOR_FUNCTION,
+            function: PREDICTOR_FUNCTION,
             rules: this._generatePredictorFunctionRules(
               dataElementsResponse ? dataElementsResponse.dataElements : []
             )
@@ -703,7 +672,7 @@ export class FunctionService {
               name: 'Percentage of Org Units Not Reporting a dataset',
               description:
                 'Calculates the percentage of organisation units not reporting a dataset',
-              function: fromConstants.PREDICTOR_FUNCTION,
+              function: PREDICTOR_FUNCTION,
               rules: this._generateProportionOfOrgUnitsNotReportFunctionRules(
                 dataSetsResponse ? dataSetsResponse.dataSets : []
               )
@@ -744,6 +713,7 @@ export class FunctionService {
       );
     });
   }
+
   isError(code) {
     let successError = false;
     let errorError = false;
@@ -765,5 +735,20 @@ export class FunctionService {
       progressError = true;
     }
     return successError || errorError;
+  }
+
+  private _save(sFunction: FunctionObject, method: string) {
+    const functionUrl = 'dataStore/functions/' + sFunction.id;
+    return method === 'POST'
+      ? this.http.post(functionUrl, sFunction)
+      : this.http.put(functionUrl, sFunction);
+  }
+
+  private getId(number?) {
+    let url = 'system/id';
+    if (number) {
+      url += '.json?limit=' + number;
+    }
+    return this.http.get(url);
   }
 }

@@ -24,8 +24,8 @@ export function getDefaultVisualizationLayer(
       const selectedRule = selectedRules[0]
         ? selectedRules[0]
         : selectedFunction.rules && selectedFunction.rules[0]
-          ? selectedFunction.rules[0]
-          : null;
+        ? selectedFunction.rules[0]
+        : null;
 
       return selectedRule
         ? {

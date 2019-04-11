@@ -3,9 +3,8 @@ import * as _ from 'lodash';
 import * as fromFunction from '../reducers/function.reducer';
 
 import * as fromFunctionRuleReducer from '../reducers/function-rule.reducer';
-import * as fromFunctionRuleSelectors from './function-rule.selectors';
 
-import * as fromModels from '../models';
+import * as fromModels from '../../models';
 
 export const getFunctionInitiatedStatus = createSelector(
   fromFunction.getFunctionState,
@@ -45,19 +44,35 @@ export const getFunctions = createSelector(
     _.map(functionList, (functionObject: fromModels.FunctionObject) => {
       return functionObject
         ? {
-            ...functionObject,
-            active: functionObject.id === activeFunctionId,
-            rules: _.filter(
-              _.map(
-                functionObject.rules || [],
-                ruleId => functionRuleEntities[ruleId]
-              ),
-              functionRule => functionRule !== null
+            id: functionObject.id,
+            name: functionObject.name,
+            items: _.filter(
+              _.map(functionObject.rules || [], ruleId => {
+                const functionRule = functionRuleEntities[ruleId];
+                return functionRule
+                  ? {
+                      id: functionRule.id,
+                      name: functionRule.name,
+                      ruleDefinition: functionRule,
+                      functionObject: {
+                        id: functionObject.id,
+                        functionString: functionObject.function
+                      }
+                    }
+                  : null;
+              }),
+              functionRule => functionRule
             )
           }
         : null;
     })
 );
+
+export const getFunctionById = functionId =>
+  createSelector(
+    fromFunction.getFunctionEntities,
+    (functionEntities: any) => functionEntities[functionId]
+  );
 
 export const getSelectedFunctions = createSelector(
   fromFunction.getAllFunctions,

@@ -14,5 +14,4 @@ export interface VisualizationUiConfig {
   showInterpretionBlock: boolean;
   hideResizeButtons: boolean;
   showTitleBlock: boolean;
-  hideDeleteButton?: boolean;
 }

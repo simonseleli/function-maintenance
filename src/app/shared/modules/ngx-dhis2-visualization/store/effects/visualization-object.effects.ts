@@ -56,13 +56,13 @@ import {
   getStandardizedVisualizationObject,
   getStandardizedVisualizationUiConfig,
   getStandardizedAnalyticsObject,
-  getSelectionDimensionsFromAnalytics,
-  generateUid
+  getSelectionDimensionsFromAnalytics
 } from '../../helpers';
 import { SystemInfoService } from '@hisptz/ngx-dhis2-http-client';
 import { getCombinedVisualizationObjectById } from '../selectors';
 import { getFavoritePayload } from '../../helpers/get-favorite-payload.helpers';
 import { getDefaultVisualizationLayer } from '../../helpers/get-default-visualization-layer.helper';
+import { generateUid } from 'src/app/core';
 
 @Injectable()
 export class VisualizationObjectEffects {
@@ -82,7 +82,14 @@ export class VisualizationObjectEffects {
             visualizationObject.progress &&
             visualizationObject.progress.percent === 0
           ) {
-            // set initial visualization configurations
+            // update visualization configurations
+            this.store.dispatch(
+              new UpdateVisualizationObjectAction(
+                visualizationObject.id,
+                visualizationObject
+              )
+            );
+
             this.store.dispatch(
               new AddVisualizationConfigurationAction({
                 id: action.id,
@@ -108,6 +115,30 @@ export class VisualizationObjectEffects {
                   action.systemInfo
                 )
               );
+            } else if (visualizationObject.layers.length > 0) {
+              // Add visualization Layers
+              _.each(
+                visualizationObject.layers,
+                (visualizationLayerId: string) => {
+                  this.store.dispatch(
+                    new AddVisualizationLayerAction({
+                      id: visualizationLayerId
+                    })
+                  );
+                }
+              );
+
+              // Load more details for non favorite visualization
+              this.store.dispatch(
+                new UpdateVisualizationObjectAction(visualizationObject.id, {
+                  progress: {
+                    statusCode: 200,
+                    statusText: 'OK',
+                    percent: 100,
+                    message: 'Analytics has been loaded'
+                  }
+                })
+              );
             }
           }
         } else {
@@ -117,8 +148,7 @@ export class VisualizationObjectEffects {
               name: action.name,
               type: action.visualizationType,
               isNew: true
-            },
-            action.visualizationLayers
+            }
           );
 
           // set initial visualization object
@@ -164,7 +194,7 @@ export class VisualizationObjectEffects {
                       action.systemInfo
                     )
                   ],
-                  visualizationLayer => visualizationLayer !== null
+                  visualizationLayer => visualizationLayer
                 ),
               (visualizationLayer: VisualizationLayer) => {
                 return visualizationLayer.analytics ||
@@ -185,7 +215,7 @@ export class VisualizationObjectEffects {
                   : null;
               }
             ),
-            visualizationLayer => visualizationLayer !== null
+            visualizationLayer => visualizationLayer
           );
 
           // update visualization object with layers
@@ -276,35 +306,34 @@ export class VisualizationObjectEffects {
   );
 
   @Effect()
-  loadFavorite$: Observable<any> = this.actions$
-    .ofType(VisualizationObjectActionTypes.LOAD_VISUALIZATION_FAVORITE)
-    .pipe(
-      mergeMap((action: LoadVisualizationFavoriteAction) =>
-        this.favoriteService.getFavorite(action.visualization.favorite).pipe(
-          map(
-            (favorite: any) =>
-              new LoadVisualizationFavoriteSuccessAction(
-                action.visualization,
-                favorite,
-                action.currentUser,
-                action.systemInfo
-              )
-          ),
-          catchError(error =>
-            of(
-              new UpdateVisualizationObjectAction(action.visualization.id, {
-                progress: {
-                  statusCode: error.status,
-                  statusText: 'Error',
-                  percent: 100,
-                  message: error.error
-                }
-              })
+  loadFavorite$: Observable<any> = this.actions$.pipe(
+    ofType(VisualizationObjectActionTypes.LOAD_VISUALIZATION_FAVORITE),
+    mergeMap((action: LoadVisualizationFavoriteAction) =>
+      this.favoriteService.getFavorite(action.visualization.favorite).pipe(
+        map(
+          (favorite: any) =>
+            new LoadVisualizationFavoriteSuccessAction(
+              action.visualization,
+              favorite,
+              action.currentUser,
+              action.systemInfo
             )
+        ),
+        catchError(error =>
+          of(
+            new UpdateVisualizationObjectAction(action.visualization.id, {
+              progress: {
+                statusCode: error.status,
+                statusText: 'Error',
+                percent: 100,
+                message: error.message
+              }
+            })
           )
         )
       )
-    );
+    )
+  );
 
   @Effect({ dispatch: false })
   loadFavoriteSuccess$: Observable<any> = this.actions$.pipe(
@@ -354,6 +383,7 @@ export class VisualizationObjectEffects {
                   config: {
                     ...favoriteLayer,
                     type: favoriteLayer.type ? favoriteLayer.type : 'COLUMN',
+                    displayNameProperty: 'SHORTNAME',
                     spatialSupport,
                     visualizationType: action.visualization.type
                   }

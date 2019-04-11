@@ -1,18 +1,18 @@
 import {
   Component,
-  OnInit,
-  Input,
-  Output,
   EventEmitter,
-  SimpleChanges,
-  OnChanges
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
 } from '@angular/core';
-import { FunctionObject } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
-import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
-import * as _ from 'lodash';
-import { UpsertFunction } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
-import { AppState } from '../../store/reducers/index';
 import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
+import { FunctionObject } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
+
+import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
+import { AppState } from '../../store/reducers';
 
 @Component({
   selector: 'app-function-editor',

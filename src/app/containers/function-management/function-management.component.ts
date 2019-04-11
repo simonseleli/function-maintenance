@@ -1,11 +1,11 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash';
 import {
   FunctionObject,
   FunctionRule
-} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
-import {find} from 'rxjs/operators';
-import {VisualizationDataSelection} from '../../shared/modules/ngx-dhis2-visualization/models';
+} from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
+
+import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
 
 @Component({
   selector: 'app-function-management',
@@ -25,13 +25,19 @@ export class FunctionManagementComponent implements OnInit {
   activeEditor: string;
 
   @Output()
-  activateFunction: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
+  activateFunction: EventEmitter<FunctionObject> = new EventEmitter<
+    FunctionObject
+  >();
 
   @Output()
-  newFunction: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
+  newFunction: EventEmitter<FunctionObject> = new EventEmitter<
+    FunctionObject
+  >();
 
   @Output()
-  newFunctionRule: EventEmitter<FunctionRule> = new EventEmitter<FunctionRule>();
+  newFunctionRule: EventEmitter<FunctionRule> = new EventEmitter<
+    FunctionRule
+  >();
 
   @Output()
   activateFunctionRule: EventEmitter<{
@@ -87,8 +93,7 @@ export class FunctionManagementComponent implements OnInit {
     return _.find(this.functionRules, ['active', true]);
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   onNewFunctionObject(functionObject: FunctionObject) {
     this.activeEditor = 'FUNCTION';

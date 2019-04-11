@@ -1,32 +1,16 @@
-import {
-  zip as observableZip,
-  combineLatest as observableCombineLatest,
-  of,
-  Observable
-} from 'rxjs';
+import { of, forkJoin } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Effect, Actions } from '@ngrx/effects';
+import { Effect, Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import {
-  map,
-  switchMap,
-  catchError,
-  combineLatest,
-  flatMap,
-  mergeMap,
-  tap,
-  mergeAll
-} from 'rxjs/operators';
-import { GeoFeature } from '../../models/geo-feature.model';
+import { map, switchMap, catchError, tap, mergeMap } from 'rxjs/operators';
 
 import * as visualizationObjectActions from '../actions/visualization-object.action';
 import * as legendSetActions from '../actions/legend-set.action';
 import * as layerActions from '../actions/layers.action';
 import * as fromServices from '../../services';
-import * as fromStore from '..';
-import * as fromUtils from '../../utils';
+import * as fromStore from '../../store';
 import { Layer } from '../../models/layer.model';
-import { toGeoJson } from '../../utils/layers';
+import { toGeoJson, getPeriodFromFilters } from '../../utils';
 import { timeFormat } from 'd3-time-format';
 
 @Injectable()
@@ -42,252 +26,160 @@ export class VisualizationObjectEffects {
     private systemService: fromServices.SystemService
   ) {}
   @Effect()
-  createVisualizationObjet$ = this.actions$
-    .ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT)
-    .pipe(
-      map(
-        (action: visualizationObjectActions.CreateVisualizationObject) =>
-          new visualizationObjectActions.CreateVisualizationObjectSuccess(
-            action.payload
-          )
-      ),
-      catchError(error =>
-        of(new visualizationObjectActions.CreateVisualizationObjectFail(error))
-      )
-    );
+  createVisualizationObjet$ = this.actions$.pipe(
+    ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT),
+    map(
+      (action: visualizationObjectActions.CreateVisualizationObject) =>
+        new visualizationObjectActions.CreateVisualizationObjectSuccess(action.payload)
+    ),
+    catchError(error => of(new visualizationObjectActions.CreateVisualizationObjectFail(error)))
+  );
 
   @Effect()
-  updateStyleVisualizationObjet$ = this.actions$
-    .ofType(layerActions.UPDATE_LAYER_STYLE)
-    .pipe(
-      map(
-        (action: visualizationObjectActions.UpdateVisualizationObject) =>
-          new visualizationObjectActions.UpdateVisualizationObjectSuccess(
-            action.payload
-          )
-      ),
-      catchError(error =>
-        of(new visualizationObjectActions.UpdateVisualizationObjectFail(error))
-      )
-    );
+  updateStyleVisualizationObjet$ = this.actions$.pipe(
+    ofType(layerActions.UPDATE_LAYER_STYLE),
+    map(
+      (action: visualizationObjectActions.UpdateVisualizationObject) =>
+        new visualizationObjectActions.UpdateVisualizationObjectSuccess(action.payload)
+    ),
+    catchError(error => of(new visualizationObjectActions.UpdateVisualizationObjectFail(error)))
+  );
 
   @Effect({ dispatch: false })
-  dispatchCreateAnalytics$ = this.actions$
-    .ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT_SUCCESS)
-    .pipe(
-      map(
-        (
-          action: visualizationObjectActions.CreateVisualizationObjectSuccess
-        ) => {
-          const layers = action.payload.layers;
-          const needsAnalytics = layers.filter(
-            layer =>
-              layer && (layer.type === 'event' || layer.type === 'thematic')
-          );
+  dispatchCreateAnalytics$ = this.actions$.pipe(
+    ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT_SUCCESS),
+    map((action: visualizationObjectActions.CreateVisualizationObjectSuccess) => {
+      const layers = action.payload.layers;
+      const needsAnalytics = layers.filter(layer => layer && (layer.type === 'event' || layer.type === 'thematic'));
 
-          if (needsAnalytics.length) {
-            this.store.dispatch(
-              new visualizationObjectActions.LoadAnalyticsVizObj(action.payload)
-            );
-          }
-        }
-      )
-    );
+      if (needsAnalytics.length) {
+        this.store.dispatch(new visualizationObjectActions.LoadAnalyticsVizObj(action.payload));
+      }
+    })
+  );
 
   @Effect({ dispatch: false })
-  dispatchAddOrgUnitGroupSet$ = this.actions$
-    .ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT_SUCCESS)
-    .pipe(
-      tap(
-        (
-          action: visualizationObjectActions.CreateVisualizationObjectSuccess
-        ) => {
-          const layers = action.payload.layers;
-          const needsOrgUnitGroupSet = layers.filter(
-            layer => layer && layer.dataSelections.organisationUnitGroupSet
-          );
-          if (needsOrgUnitGroupSet.length) {
-            this.store.dispatch(
-              new visualizationObjectActions.AddOrgUnitGroupSetVizObj(
-                action.payload
-              )
-            );
-          }
-        }
-      )
-    );
+  dispatchAddOrgUnitGroupSet$ = this.actions$.pipe(
+    ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT_SUCCESS),
+    tap((action: visualizationObjectActions.CreateVisualizationObjectSuccess) => {
+      const layers = action.payload.layers;
+      const needsOrgUnitGroupSet = layers.filter(layer => layer && layer.dataSelections.organisationUnitGroupSet);
+      if (needsOrgUnitGroupSet.length) {
+        this.store.dispatch(new visualizationObjectActions.AddOrgUnitGroupSetVizObj(action.payload));
+      }
+    })
+  );
 
   @Effect({ dispatch: false })
-  dispatchAddLegendSetSet$ = this.actions$
-    .ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT_SUCCESS)
-    .pipe(
-      tap(
-        (
-          action: visualizationObjectActions.CreateVisualizationObjectSuccess
-        ) => {
-          const layers = action.payload.layers;
-          const needsLegendSets = layers.filter(
-            layer => layer && layer.dataSelections.legendSet
-          );
-          if (needsLegendSets.length) {
-            this.store.dispatch(
-              new legendSetActions.LoadLegendSet(action.payload)
-            );
-          }
-        }
-      )
-    );
+  dispatchAddLegendSetSet$ = this.actions$.pipe(
+    ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT_SUCCESS),
+    tap((action: visualizationObjectActions.CreateVisualizationObjectSuccess) => {
+      const layers = action.payload.layers;
+      const needsLegendSets = layers.filter(layer => layer && layer.dataSelections.legendSet);
+      if (needsLegendSets.length) {
+        this.store.dispatch(new legendSetActions.LoadLegendSet(action.payload));
+      }
+    })
+  );
 
   @Effect({ dispatch: false })
-  dispatchCreateGeoFeatures$ = this.actions$
-    .ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT_SUCCESS)
-    .pipe(
-      tap(
-        (
-          action: visualizationObjectActions.CreateVisualizationObjectSuccess
-        ) => {
-          const { layers } = action.payload;
-          const entities = this.getParameterEntities(layers);
-          const values = Object.keys(entities).map(key => entities[key]);
-          this.geofeatureService
-            .getGeoFeaturesArray(values)
-            .pipe(map(geofeature => console.log(geofeature)));
-        }
-      )
-    );
+  dispatchCreateGeoFeatures$ = this.actions$.pipe(
+    ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT_SUCCESS),
+    tap((action: visualizationObjectActions.CreateVisualizationObjectSuccess) => {
+      const { layers } = action.payload;
+      const entities = this.getParameterEntities(layers);
+      const values = Object.keys(entities).map(key => entities[key]);
+      this.geofeatureService.getGeoFeaturesArray(values).pipe(map(geofeature => {}));
+    })
+  );
 
   @Effect()
-  dispatchAddGeoFeatures$ = this.actions$
-    .ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT)
-    .pipe(
-      map(
-        (action: visualizationObjectActions.CreateVisualizationObjectSuccess) =>
-          action.payload
-      ),
-      switchMap(vizObject => {
-        const { layers } = vizObject;
-        const entities = this.getParameterEntities(layers);
-        const values = Object.keys(entities).map(key => entities[key]);
-        return this.geofeatureService.getGeoFeaturesArray(values).pipe(
-          map(geofeature => {
-            const geofeatures = Object.keys(entities).reduce(
-              (arr = {}, key, index) => {
-                return { ...arr, [key]: geofeature[index] };
-              },
-              {}
-            );
-            return new visualizationObjectActions.AddGeoFeaturesVizObj({
-              ...vizObject,
-              geofeatures
-            });
-          }),
-          catchError(error =>
-            of(
-              new visualizationObjectActions.AddVisualizationObjectCompleteFail(
-                error
-              )
-            )
-          )
-        );
-      })
-    );
-
-  @Effect({ dispatch: false })
-  dispatchAddGeoFeaturescomplete$ = this.actions$
-    .ofType(visualizationObjectActions.ADD_VISUALIZATION_OBJECT_COMPLETE)
-    .pipe(
-      switchMap(
-        (action: visualizationObjectActions.AddVisualizationObjectComplete) => {
-          const vizObject = action.payload;
-          const { layers } = vizObject;
-          const _layers = layers.map(layer => {
-            const { layerOptions } = layer;
-            if (layerOptions.serverClustering) {
-              const url = this.getEventLayerUrl(layer);
-              const { dataSelections } = layer;
-              this.program =
-                dataSelections.program && dataSelections.program.displayName;
-              this.programStage =
-                dataSelections.programStage &&
-                dataSelections.programStage.displayName;
-              const load = (params, callback) => {
-                const serverSide = `/events/cluster/${url}&clusterSize=${
-                  params.clusterSize
-                }&bbox=${
-                  params.bbox
-                }&coordinatesOnly=true&includeClusterPoints=${
-                  params.includeClusterPoints
-                }`;
-                this.analyticsService
-                  .getEventsAnalytics(serverSide)
-                  .subscribe(data => callback(params.tileId, toGeoJson(data)));
-              };
-              const popup = this.onEventClick.bind(this);
-              const serverSideConfig = {
-                ...layerOptions.serverSideConfig,
-                load,
-                popup
-              };
-              const _layerOptions = { ...layerOptions, serverSideConfig };
-              return { ...layer, layerOptions: _layerOptions };
-            }
-            if (layer.type === 'earthEngine') {
-              const accessToken = callback =>
-                this.systemService
-                  .getGoogleEarthToken()
-                  .subscribe(json => callback(json));
-              const earthEngineConfig = {
-                ...layerOptions.earthEngineConfig,
-                accessToken
-              };
-              const _layerOptions = { ...layerOptions, earthEngineConfig };
-              return { ...layer, layerOptions: _layerOptions };
-            }
-            return layer;
+  dispatchAddGeoFeatures$ = this.actions$.pipe(
+    ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT),
+    map((action: visualizationObjectActions.CreateVisualizationObjectSuccess) => action.payload),
+    switchMap(vizObject => {
+      const { layers } = vizObject;
+      const entities = this.getParameterEntities(layers);
+      const values = Object.keys(entities).map(key => entities[key]);
+      return this.geofeatureService.getGeoFeaturesArray(values).pipe(
+        map(geofeature => {
+          const geofeatures = Object.keys(entities).reduce((arr = {}, key, index) => {
+            return { ...arr, [key]: geofeature[index] };
+          }, {});
+          return new visualizationObjectActions.AddGeoFeaturesVizObj({
+            ...vizObject,
+            geofeatures
           });
+        }),
+        catchError(error => of(new visualizationObjectActions.AddVisualizationObjectCompleteFail(error)))
+      );
+    })
+  );
 
-          const entities = this.getParameterEntities(layers);
-          const parameters = Object.keys(entities).map(key => entities[key]);
-          const sources = parameters.map(param => {
+  @Effect()
+  dispatchAddGeoFeaturescomplete$ = this.actions$.pipe(
+    ofType(visualizationObjectActions.ADD_VISUALIZATION_OBJECT_COMPLETE),
+    mergeMap((action: visualizationObjectActions.AddVisualizationObjectComplete) => {
+      const vizObject = action.payload;
+      const { layers } = vizObject;
+      const _layers = layers.map(layer => {
+        const { layerOptions } = layer;
+        if (layerOptions.serverClustering) {
+          const url = this.getEventLayerUrl(layer);
+          const { dataSelections } = layer;
+          this.program = dataSelections.program && dataSelections.program.displayName;
+          this.programStage = dataSelections.programStage && dataSelections.programStage.displayName;
+          const load = (params, callback) => {
+            const serverSide = `/events/cluster/${url}&clusterSize=${params.clusterSize}&bbox=${
+              params.bbox
+            }&coordinatesOnly=true&includeClusterPoints=${params.includeClusterPoints}`;
+            this.analyticsService
+              .getEventsAnalytics(serverSide)
+              .subscribe(data => callback(params.tileId, toGeoJson(data)));
+          };
+          const popup = this.onEventClick.bind(this);
+          const serverSideConfig = {
+            ...layerOptions.serverSideConfig,
+            load,
+            popup
+          };
+          const _layerOptions = { ...layerOptions, serverSideConfig };
+          return { ...layer, layerOptions: _layerOptions };
+        }
+        if (layer.type === 'earthEngine') {
+          const accessToken = callback => this.systemService.getGoogleEarthToken().subscribe(json => callback(json));
+          const earthEngineConfig = {
+            ...layerOptions.earthEngineConfig,
+            accessToken
+          };
+          const _layerOptions = { ...layerOptions, earthEngineConfig };
+          return { ...layer, layerOptions: _layerOptions };
+        }
+        return layer;
+      });
+
+      const entities = this.getParameterEntities(layers);
+      const parameters = Object.keys(entities).map(key => entities[key]);
+      const sources = parameters.length
+        ? parameters.map(param => {
             return this.geofeatureService.getGeoFeatures(param);
+          })
+        : of([]);
+      return forkJoin(sources).pipe(
+        map(geofeature => {
+          const geofeatures = Object.keys(entities).reduce((arr = {}, key, index) => {
+            return { ...arr, [key]: geofeature[index] };
+          }, {});
+          return new visualizationObjectActions.AddVisualizationObjectCompleteSuccess({
+            ...vizObject,
+            layers: _layers,
+            geofeatures
           });
-
-          if (sources.length === 0) {
-            this.store.dispatch(
-              new visualizationObjectActions.AddVisualizationObjectCompleteSuccess(
-                {
-                  ...vizObject,
-                  layers: _layers
-                }
-              )
-            );
-          }
-
-          // This is a hack find a way not to subscribe please!
-          // TODO: remove this hack;
-          observableCombineLatest(sources).subscribe(geofeature => {
-            if (geofeature) {
-              const geofeatures = Object.keys(entities).reduce(
-                (arr = {}, key, index) => {
-                  return { ...arr, [key]: geofeature[index] };
-                },
-                {}
-              );
-              this.store.dispatch(
-                new visualizationObjectActions.AddVisualizationObjectCompleteSuccess(
-                  {
-                    ...vizObject,
-                    layers: _layers,
-                    geofeatures
-                  }
-                )
-              );
-            }
-          });
-          return observableZip(sources);
-        }
-      )
-    );
+        }),
+        catchError(error => of(new visualizationObjectActions.UpdateVisualizationObjectFail(error)))
+      );
+    })
+  );
 
   getParameterEntities(layers: Layer[]) {
     let globalEntities = {};
@@ -298,14 +190,11 @@ export class VisualizationObjectEffects {
         return;
       }
       const requestParams = [...rows, ...columns, ...filters];
-      const data = requestParams.filter(
-        dimension => dimension.dimension === 'ou'
-      );
+      const data = requestParams.filter(dimension => dimension.dimension === 'ou');
+
       const parameter = data
-        .map((param, paramIndex) => {
-          return `ou=${param.dimension}:${param.items
-            .map(item => item.id || item.dimensionItem)
-            .join(';')}`;
+        .map(param => {
+          return `ou=${param.dimension}:${param.items.map(item => item.id || item.dimensionItem).join(';')}`;
         })
         .join('&');
       const url = isFacility
@@ -335,9 +224,7 @@ export class VisualizationObjectEffects {
                     </tr>
                     <tr>
                       <th>Event location: </th>
-                      <td>${Number(coordinate.latitude).toFixed(6)}, ${Number(
-        coordinate.longitude
-      ).toFixed(6)}</td>
+                      <td>${Number(coordinate.latitude).toFixed(6)}, ${Number(coordinate.longitude).toFixed(6)}</td>
                     </tr></tbody></table>`;
       // Close any popup if there is one
       layer.closePopup();
@@ -355,29 +242,25 @@ export class VisualizationObjectEffects {
       ...layer.dataSelections.filters
     ];
     const dimensions = [];
+    const period = getPeriodFromFilters(requestParams);
 
     requestParams.map(param => {
       const dimension = `dimension=${param.dimension}`;
       if (param.items.length) {
-        dimensions.push(
-          `${dimension}:${param.items
-            .map(item => item.dimensionItem || item.id)
-            .join(';')}`
-        );
+        dimensions.push(`${dimension}:${param.items.map(item => item.dimensionItem).join(';')}`);
       } else {
         if (param.dimension !== 'dx' && param.dimension !== 'pe') {
           dimensions.push(dimension);
         }
       }
     });
-    console.log(dimensions);
-    let url = `${layer.dataSelections.program.id}.json?stage=${
-      layer.dataSelections.programStage.id
-    }&${dimensions.join('&')}`;
-    if (layer.dataSelections.endDate) {
+    let url = `${layer.dataSelections.program.id}.json?stage=${layer.dataSelections.programStage.id}&${dimensions.join(
+      '&'
+    )}`;
+    if (layer.dataSelections.endDate && !period) {
       url += `&endDate=${layer.dataSelections.endDate.split('T')[0]}`;
     }
-    if (layer.dataSelections.startDate) {
+    if (layer.dataSelections.startDate && !period) {
       url += `&startDate=${layer.dataSelections.startDate.split('T')[0]}`;
     }
     return url;

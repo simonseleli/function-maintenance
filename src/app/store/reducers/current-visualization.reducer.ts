@@ -1,10 +1,11 @@
 import * as _ from 'lodash';
 import { VisualizationLayer } from '../../shared/modules/ngx-dhis2-visualization/models';
-import { generateUid } from '../../shared/modules/ngx-dhis2-visualization/helpers';
+
 import {
   CurrentVisualizationActions,
   CurrentVisualizationActionTypes
 } from '../actions/current-visualization.actions';
+import { generateUid } from 'src/app/core';
 
 export interface CurrentVisualizationState {
   id: string;

@@ -14,6 +14,7 @@ export function getAnalyticsUrl(
 
 function flattenDimensions(
   dataSelections: VisualizationDataSelection[],
+  visualizationType: string,
   isAggregate?: boolean
 ): string {
   const isEligibleForAnalytics = isAggregate
@@ -34,13 +35,18 @@ function flattenDimensions(
       const selectionValues = dataSelection.filter
         ? dataSelection.filter
         : _.map(dataSelection.items, item => item.id).join(';');
+
+      const dimensionSection =
+        dataSelection.layout === 'filters' && visualizationType !== 'MAP'
+          ? 'filter='
+          : 'dimension=';
       return selectionValues !== ''
-        ? 'dimension=' + dataSelection.dimension + ':' + selectionValues
+        ? dimensionSection + dataSelection.dimension + ':' + selectionValues
         : ['dx', 'ou', 'pe'].indexOf(dataSelection.dimension) === -1
-          ? 'dimension=' +
-            dataSelection.dimension +
-            (dataSelection.legendSet ? '-' + dataSelection.legendSet : '')
-          : '';
+        ? dimensionSection +
+          dataSelection.dimension +
+          (dataSelection.legendSet ? '-' + dataSelection.legendSet : '')
+        : '';
     }),
     dimension => dimension !== ''
   );
@@ -53,7 +59,11 @@ function getAggregateAnalyticsUrl(
   layerType: string,
   config?: any
 ): string {
-  const flattenedDimensionString = flattenDimensions(dataSelections, true);
+  const flattenedDimensionString = flattenDimensions(
+    dataSelections,
+    config ? config.visualizationType : undefined,
+    true
+  );
   return flattenedDimensionString !== ''
     ? 'analytics.json?' +
         flattenedDimensionString +
@@ -82,14 +92,9 @@ function getAnalyticsUrlOptions(config: any, layerType: string) {
 
   const coordinateSection =
     layerType === 'event' ? '&coordinatesOnly=true' : '';
+  const includeMetadataDetails = `&includeMetadataDetails=true`;
 
-  return (
-    displayPropertySection +
-    aggregrationTypeSection +
-    valueSection +
-    outputType +
-    coordinateSection
-  );
+  return `${displayPropertySection}${aggregrationTypeSection}${valueSection}${outputType}${coordinateSection}${includeMetadataDetails}`;
 }
 
 function getEventAnalyticsUrl(
@@ -97,7 +102,10 @@ function getEventAnalyticsUrl(
   layerType: string,
   config: any
 ) {
-  const flattenedDimensionString = flattenDimensions(dataSelections);
+  const flattenedDimensionString = flattenDimensions(
+    dataSelections,
+    config ? config.visualizationType : undefined
+  );
   const analyticsUrlFields =
     flattenedDimensionString !== ''
       ? getEventAnalyticsUrlSection(config) +

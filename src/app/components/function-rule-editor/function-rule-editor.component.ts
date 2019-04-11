@@ -1,12 +1,5 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  SimpleChanges
-} from '@angular/core';
-import { FunctionRule } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FunctionRule } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
 
 @Component({
   selector: 'app-function-rule-editor',

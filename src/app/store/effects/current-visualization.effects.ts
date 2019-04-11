@@ -1,48 +1,40 @@
 import { Injectable } from '@angular/core';
-import * as _ from 'lodash';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Observable } from 'rxjs';
-import { UserActionTypes, AddCurrentUser, Go } from '../actions';
-import {
-  map,
-  withLatestFrom,
-  first,
-  take,
-  tap,
-  switchMap
-} from 'rxjs/operators';
+import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { Store } from '@ngrx/store';
-import { AppState } from '../reducers';
-import { getCurrentVisualization, getQueryParams } from '../selectors';
-import { CurrentVisualizationState } from '../reducers/current-visualization.reducer';
-import { getDefaultVisualizationLayer } from '../../shared/modules/ngx-dhis2-visualization/helpers/get-default-visualization-layer.helper';
+import * as _ from 'lodash';
+import { Observable } from 'rxjs';
+import { first, map, take, tap, withLatestFrom } from 'rxjs/operators';
+import { getSelectedFunctions } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors/function.selectors';
+
+import * as fromFunctionRuleActions from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
 import {
-  AddOrUpdateCurrentVisualizationAction,
-  CurrentVisualizationActionTypes,
-  UpdateCurrentVisualizationWithDataSelectionsAction,
-  SimulateVisualizationAction,
-  AddVisualizationItemAction
-} from '../actions/current-visualization.actions';
+  AddFunctions,
+  FunctionActionTypes,
+  SetActiveFunction
+} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
 import {
-  generateUid,
   getSelectionDimensionsFromFavorite,
   getVisualizationLayerType
 } from '../../shared/modules/ngx-dhis2-visualization/helpers';
-import { LoadVisualizationAnalyticsAction } from '../../shared/modules/ngx-dhis2-visualization/store';
-
-import * as fromFunctionSelectors from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors';
-import * as fromFunctionRuleActions from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
+import { getDefaultVisualizationLayer } from '../../shared/modules/ngx-dhis2-visualization/helpers/get-default-visualization-layer.helper';
 import {
   VisualizationDataSelection,
   VisualizationLayer
 } from '../../shared/modules/ngx-dhis2-visualization/models';
 import { FavoriteService } from '../../shared/modules/ngx-dhis2-visualization/services';
-import { ROUTER_NAVIGATION, RouterNavigationAction } from '@ngrx/router-store';
+import { LoadVisualizationAnalyticsAction } from '../../shared/modules/ngx-dhis2-visualization/store';
+import { AddCurrentUser, Go, UserActionTypes } from '../actions';
 import {
-  SetActiveFunction,
-  FunctionActionTypes,
-  AddFunctions
-} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
+  AddOrUpdateCurrentVisualizationAction,
+  AddVisualizationItemAction,
+  CurrentVisualizationActionTypes,
+  UpdateCurrentVisualizationWithDataSelectionsAction
+} from '../actions/current-visualization.actions';
+import { AppState } from '../reducers';
+import { CurrentVisualizationState } from '../reducers/current-visualization.reducer';
+import { getCurrentVisualization, getQueryParams } from '../selectors';
+import { generateUid } from 'src/app/core';
 
 @Injectable()
 export class CurrentVisualizationEffects {
@@ -56,7 +48,7 @@ export class CurrentVisualizationEffects {
         CurrentVisualizationState
       ]) => {
         this.store
-          .select(fromFunctionSelectors.getSelectedFunctions)
+          .select(getSelectedFunctions)
           .pipe(
             first((selectedFunctions: any[]) => selectedFunctions.length > 0)
           )
@@ -212,8 +204,7 @@ export class CurrentVisualizationEffects {
         this.favoriteService
           .getFavorite({
             type: _.camelCase(action.visualizationItem.type),
-            id: favorite.id,
-            useTypeAsBase: true
+            id: favorite.id
           })
           .subscribe(
             (favoriteObject: any) => {

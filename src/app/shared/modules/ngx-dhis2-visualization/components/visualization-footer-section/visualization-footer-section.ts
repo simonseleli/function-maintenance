@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { openAnimation } from '../../animations';
+import { openAnimation } from '../../../favorite-filter/animations';
 
 /**
  * Generated class for the VisualizationFooterSectionComponent component.
@@ -8,7 +8,6 @@ import { openAnimation } from '../../animations';
  * Components.
  */
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'visualization-footer-section',
   templateUrl: 'visualization-footer-section.html',
   styleUrls: ['./visualization-footer-section.css'],
@@ -27,8 +26,9 @@ export class VisualizationFooterSectionComponent {
   hideTypeButtons: boolean;
   @Input()
   hideManagementBlock: boolean;
+
   @Input()
-  hideDeleteButton: boolean;
+  hideDownloadBlock: boolean;
 
   @Output()
   visualizationTypeChange: EventEmitter<{
@@ -41,6 +41,9 @@ export class VisualizationFooterSectionComponent {
 
   @Output()
   removeVisualization: EventEmitter<any> = new EventEmitter<any>();
+
+  @Output()
+  download: EventEmitter<any> = new EventEmitter<any>();
 
   constructor() {
     this.hideManagementBlock = this.hideTypeButtons = true;
@@ -56,5 +59,9 @@ export class VisualizationFooterSectionComponent {
 
   onVisualizationRemove(details: any) {
     this.removeVisualization.emit(details);
+  }
+
+  onDownload(downloadFormat: string) {
+    this.download.emit({ type: this.type, downloadFormat: downloadFormat });
   }
 }

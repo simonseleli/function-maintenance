@@ -1,11 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { VisualizationUiConfig } from '../../models/visualization-ui-config.model';
-import { VisualizationLayer } from '../../models/visualization-layer.model';
+import * as _ from 'lodash';
+
+import { openAnimation } from '../../../favorite-filter/animations';
+import { SelectionFilterConfig } from '../../../ngx-dhis2-data-selection-filter/models/selected-filter-config.model';
+import { getMergedDataSelections } from '../../helpers';
 import { VisualizationDataSelection } from '../../models/visualization-data-selection.model';
-import { openAnimation } from '../../animations';
+import { VisualizationLayer } from '../../models/visualization-layer.model';
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'visualization-header-section',
   templateUrl: 'visualization-header-section.html',
   styleUrls: ['./visualization-header-section.css'],
@@ -29,6 +31,9 @@ export class VisualizationHeaderSectionComponent {
   @Input()
   visualizationLayer: VisualizationLayer;
 
+  @Input()
+  favoriteType: string;
+
   showNameInput: boolean;
 
   @Output()
@@ -42,7 +47,16 @@ export class VisualizationHeaderSectionComponent {
   @Output()
   savefavorite: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor() {}
+  selectionFilterConfig: SelectionFilterConfig;
+
+  constructor() {
+    this.selectionFilterConfig = {
+      showPeriodFilter: true,
+      showOrgUnitFilter: true,
+      showLayout: true,
+      showDataFilter: false
+    };
+  }
 
   onFullScreenAction(id) {
     this.fullScreenAction.emit({
@@ -55,7 +69,14 @@ export class VisualizationHeaderSectionComponent {
   onFilterUpdateAction(dataSelections: VisualizationDataSelection[]) {
     this.visualizationLayerUpdate.emit({
       ...this.visualizationLayer,
-      dataSelections
+      dataSelections: _.sortBy(
+        getMergedDataSelections(
+          this.visualizationLayer.dataSelections,
+          dataSelections,
+          this.favoriteType
+        ),
+        'layoutOrder'
+      )
     });
   }
 

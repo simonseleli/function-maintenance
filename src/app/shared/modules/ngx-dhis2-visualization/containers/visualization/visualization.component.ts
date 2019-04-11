@@ -5,15 +5,17 @@ import {
   OnChanges,
   OnInit,
   Output,
-  EventEmitter
+  EventEmitter,
+  ViewChild
 } from '@angular/core';
 import { VisualizationLayer } from '../../models/visualization-layer.model';
 import { VisualizationInputs } from '../../models/visualization-inputs.model';
-import { Observable, Subject, forkJoin, pipe, of } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Visualization } from '../../models/visualization.model';
 import { VisualizationUiConfig } from '../../models/visualization-ui-config.model';
 import { VisualizationProgress } from '../../models/visualization-progress.model';
 import { VisualizationConfig } from '../../models/visualization-config.model';
+import { LegendSet } from '../../models/legend-set.model';
 import { VisualizationState } from '../../store/reducers';
 import { Store } from '@ngrx/store';
 import {
@@ -41,11 +43,11 @@ import {
   LoadVisualizationAnalyticsAction,
   UpdateVisualizationLayerAction
 } from '../../store/actions/visualization-layer.actions';
-import { take, switchMap, map, distinctUntilChanged } from 'rxjs/operators';
-import { openAnimation } from '../../animations';
+import { take } from 'rxjs/operators';
+import { VisualizationBodySectionComponent } from '../../components/visualization-body-section/visualization-body-section';
+import { openAnimation } from '../../../favorite-filter/animations';
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'ngx-dhis2-visualization',
   templateUrl: './visualization.component.html',
   styleUrls: ['./visualization.component.css'],
@@ -67,6 +69,9 @@ export class VisualizationComponent implements OnInit, OnChanges {
   dashboardId: string;
   @Input()
   currentUser: any;
+
+  @Input()
+  legendSets: LegendSet[];
   @Input()
   systemInfo: any;
   cardFocused: boolean;
@@ -76,6 +81,9 @@ export class VisualizationComponent implements OnInit, OnChanges {
 
   @Output()
   deleteVisualization: EventEmitter<any> = new EventEmitter<any>();
+
+  @ViewChild(VisualizationBodySectionComponent)
+  visualizationBody: VisualizationBodySectionComponent;
 
   private _visualizationInputs$: Subject<VisualizationInputs> = new Subject();
   visualizationObject$: Observable<Visualization>;
@@ -87,7 +95,7 @@ export class VisualizationComponent implements OnInit, OnChanges {
 
   constructor(private store: Store<VisualizationState>) {
     this.cardFocused = false;
-    this.type = 'CHART';
+    this.type = 'REPORT_TABLE';
     this._visualizationInputs$.asObservable().subscribe(visualizationInputs => {
       if (visualizationInputs) {
         // initialize visualization object
@@ -146,11 +154,34 @@ export class VisualizationComponent implements OnInit, OnChanges {
   }
 
   onVisualizationTypeChange(visualizationTypeObject) {
-    this.store.dispatch(
-      new UpdateVisualizationConfigurationAction(visualizationTypeObject.id, {
-        currentType: visualizationTypeObject.type
-      })
-    );
+    this.visualizationConfig$
+      .pipe(take(1))
+      .subscribe((visualizationConfig: VisualizationConfig) => {
+        this.store.dispatch(
+          new UpdateVisualizationConfigurationAction(
+            visualizationTypeObject.id,
+            {
+              currentType: visualizationTypeObject.type
+            }
+          )
+        );
+
+        if (
+          visualizationConfig.currentType === 'MAP' ||
+          visualizationTypeObject.type === 'MAP'
+        ) {
+          this.visualizationLayers$
+            .pipe(take(1))
+            .subscribe((visualizationLayers: VisualizationLayer[]) => {
+              this.store.dispatch(
+                new LoadVisualizationAnalyticsAction(
+                  this.id,
+                  visualizationLayers
+                )
+              );
+            });
+        }
+      });
   }
 
   onFullScreenAction(event: {
@@ -225,5 +256,14 @@ export class VisualizationComponent implements OnInit, OnChanges {
           })
         );
       });
+  }
+
+  onVisualizationDownload(downloadDetails: any) {
+    if (this.visualizationBody) {
+      this.visualizationBody.onDownloadVisualization(
+        downloadDetails.type,
+        downloadDetails.downloadFormat
+      );
+    }
   }
 }

@@ -6,5 +6,7 @@ export function getVisualizationLayerType(
     ? favorite.layer.indexOf('thematic') !== -1
       ? 'thematic'
       : favorite.layer
-    : 'thematic';
+    : visualizationType.indexOf('event') !== -1
+      ? 'event'
+      : 'thematic';
 }

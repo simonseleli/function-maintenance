@@ -9,8 +9,8 @@ export function getChartConfiguration(
     customChartType !== ''
       ? customChartType.toLowerCase()
       : visualizationSettings.type
-        ? visualizationSettings.type.toLowerCase()
-        : 'column';
+      ? visualizationSettings.type.toLowerCase()
+      : 'column';
   return {
     renderId: renderId,
     type: chartType,
@@ -22,10 +22,10 @@ export function getChartConfiguration(
       : '',
     hideTitle: visualizationSettings.hasOwnProperty('hideTitle')
       ? visualizationSettings.hideTitle
-      : false,
+      : true,
     hideSubtitle: visualizationSettings.hasOwnProperty('hideSubtitle')
       ? visualizationSettings.hideSubtitle
-      : false,
+      : true,
     showData: visualizationSettings.hasOwnProperty('showData')
       ? visualizationSettings.showData
       : true,
@@ -34,7 +34,7 @@ export function getChartConfiguration(
       : true,
     hideLegend: visualizationSettings.hasOwnProperty('hideLegend')
       ? visualizationSettings.hideLegend
-      : false,
+      : true,
     cumulativeValues: visualizationSettings.hasOwnProperty('cumulativeValues')
       ? visualizationSettings.cumulativeValues
       : false,
@@ -74,6 +74,9 @@ export function getChartConfiguration(
     xAxisType: visualizationLayout.rows ? visualizationLayout.rows : ['dx'],
     yAxisType: visualizationLayout.columns
       ? visualizationLayout.columns[0]
-      : 'ou'
+      : 'ou',
+    zAxisType: visualizationLayout.filters
+      ? visualizationLayout.filters
+      : ['pe']
   };
 }

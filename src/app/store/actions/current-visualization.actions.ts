@@ -1,12 +1,10 @@
 import { Action } from '@ngrx/store';
 import {
-  VisualizationLayer,
-  VisualizationDataSelection
-} from '../../shared/modules/ngx-dhis2-visualization/models';
-import {
   FunctionObject,
   FunctionRule
-} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
+} from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
+
+import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
 import { CurrentVisualizationState } from '../reducers/current-visualization.reducer';
 
 export enum CurrentVisualizationActionTypes {

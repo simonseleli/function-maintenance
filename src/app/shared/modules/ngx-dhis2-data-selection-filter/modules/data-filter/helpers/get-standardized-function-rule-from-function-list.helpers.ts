@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { FunctionRule } from '../store/models/function-rule.model';
+import { FunctionRule } from '../models/function-rule.model';
 
 export function getStandardizedFunctionRulesFromFunctionList(
   functionList,
@@ -10,7 +10,7 @@ export function getStandardizedFunctionRulesFromFunctionList(
   );
 
   return _.map(
-    functionRules || [],
+    functionRules,
     (functionRule: any, functionRuleIndex: number) => {
       const selectedRule = _.find(functionRules, [
         'id',
@@ -18,6 +18,7 @@ export function getStandardizedFunctionRulesFromFunctionList(
       ]);
       return {
         ...functionRule,
+        type: 'FUNCTION_RULE',
         selected: selectedRule && selectedRule.id === functionRule.id
       };
     }
