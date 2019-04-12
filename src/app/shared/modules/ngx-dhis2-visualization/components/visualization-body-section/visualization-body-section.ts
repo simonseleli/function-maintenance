@@ -24,6 +24,8 @@ export class VisualizationBodySectionComponent {
   @Input()
   id: string;
   @Input()
+  visualizationType: string;
+  @Input()
   appKey: string;
   @Input()
   baseUrl: string;

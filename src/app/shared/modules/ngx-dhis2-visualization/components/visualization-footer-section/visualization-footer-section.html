@@ -2,13 +2,13 @@
   <div class="visualization-footer-left">
     <div *ngIf="!hideTypeButtons">
       <app-visualization-types-section
-        [currentVisualization]="type"
+        [currentVisualization]="visualizationType"
         (visualizationTypeChange)="onVisualizationTypeChange($event)"
       ></app-visualization-types-section>
     </div>
     <div *ngIf="!hideDownloadBlock">
       <app-visualization-downloads-section
-        [visualizationType]="type"
+        [visualizationType]="visualizationType"
         (downloadVisualization)="onDownload($event)"
       ></app-visualization-downloads-section>
     </div>

@@ -43,9 +43,10 @@ import {
   LoadVisualizationAnalyticsAction,
   UpdateVisualizationLayerAction
 } from '../../store/actions/visualization-layer.actions';
-import { take } from 'rxjs/operators';
+import { take, map, switchMap } from 'rxjs/operators';
 import { VisualizationBodySectionComponent } from '../../components/visualization-body-section/visualization-body-section';
 import { openAnimation } from '../../../favorite-filter/animations';
+import { UpdateVisualizationObject } from '../../modules/map/store';
 
 @Component({
   selector: 'ngx-dhis2-visualization',
@@ -56,7 +57,11 @@ import { openAnimation } from '../../../favorite-filter/animations';
 })
 export class VisualizationComponent implements OnInit, OnChanges {
   @Input()
+  visualizationObject: any;
+  @Input()
   id: string;
+  @Input()
+  visualizationConfig: VisualizationConfig;
   @Input()
   type: string;
   @Input()
@@ -98,31 +103,6 @@ export class VisualizationComponent implements OnInit, OnChanges {
     this.type = 'REPORT_TABLE';
     this._visualizationInputs$.asObservable().subscribe(visualizationInputs => {
       if (visualizationInputs) {
-        // initialize visualization object
-        this.store.dispatch(
-          new InitializeVisualizationObjectAction(
-            visualizationInputs.id,
-            visualizationInputs.name,
-            visualizationInputs.type,
-            visualizationInputs.visualizationLayers,
-            visualizationInputs.currentUser,
-            visualizationInputs.systemInfo
-          )
-        );
-
-        // Get selectors
-        this.visualizationObject$ = this.store.select(
-          getVisualizationObjectById(visualizationInputs.id)
-        );
-        this.visualizationLayers$ = this.store.select(
-          getCurrentVisualizationObjectLayers(visualizationInputs.id)
-        );
-        this.visualizationUiConfig$ = this.store.select(
-          getCurrentVisualizationUiConfig(visualizationInputs.id)
-        );
-        this.visualizationProgress$ = this.store.select(
-          getCurrentVisualizationProgress(visualizationInputs.id)
-        );
         this.visualizationConfig$ = this.store.select(
           getCurrentVisualizationConfig(visualizationInputs.id)
         );
@@ -143,7 +123,53 @@ export class VisualizationComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.visualizationObject) {
+      // initialize visualization object
+      this.store.dispatch(
+        new InitializeVisualizationObjectAction(
+          this.visualizationObject.id,
+          this.visualizationObject.name,
+          this.visualizationObject.type,
+          this.visualizationObject.layers,
+          this.visualizationObject,
+          this.currentUser,
+          this.systemInfo
+        )
+      );
+
+      // Set visualization selectors
+      this.setOrUpdateSelectors(this.visualizationObject);
+    }
+  }
+
+  setOrUpdateSelectors(visualizationObject) {
+    this.visualizationObject$ = this.store.select(
+      getVisualizationObjectById(visualizationObject.id)
+    );
+
+    this.visualizationLayers$ = this.visualizationObject$.pipe(
+      switchMap((visualization: Visualization) =>
+        this.store.select(
+          getCurrentVisualizationObjectLayers(
+            visualization ? visualization.layers : []
+          )
+        )
+      )
+    );
+
+    this.visualizationProgress$ = this.visualizationObject$.pipe(
+      map((visualization: Visualization) =>
+        visualization ? visualization.progress : null
+      )
+    );
+
+    this.visualizationUiConfig$ = this.visualizationObject$.pipe(
+      map((visualization: Visualization) =>
+        visualization ? visualization.uiConfig : null
+      )
+    );
+  }
 
   onToggleVisualizationBody(uiConfig) {
     this.store.dispatch(
@@ -153,35 +179,28 @@ export class VisualizationComponent implements OnInit, OnChanges {
     );
   }
 
-  onVisualizationTypeChange(visualizationTypeObject) {
-    this.visualizationConfig$
-      .pipe(take(1))
-      .subscribe((visualizationConfig: VisualizationConfig) => {
-        this.store.dispatch(
-          new UpdateVisualizationConfigurationAction(
-            visualizationTypeObject.id,
-            {
-              currentType: visualizationTypeObject.type
-            }
-          )
-        );
+  onVisualizationTypeChange(visualizationType: string) {
+    this.store.dispatch(
+      new UpdateVisualizationObjectAction(this.visualizationObject.id, {
+        currentType: visualizationType
+      })
+    );
 
-        if (
-          visualizationConfig.currentType === 'MAP' ||
-          visualizationTypeObject.type === 'MAP'
-        ) {
-          this.visualizationLayers$
-            .pipe(take(1))
-            .subscribe((visualizationLayers: VisualizationLayer[]) => {
-              this.store.dispatch(
-                new LoadVisualizationAnalyticsAction(
-                  this.id,
-                  visualizationLayers
-                )
-              );
-            });
-        }
-      });
+    if (
+      visualizationType === 'MAP' ||
+      this.visualizationObject.type === 'MAP'
+    ) {
+      this.visualizationLayers$
+        .pipe(take(1))
+        .subscribe((visualizationLayers: VisualizationLayer[]) => {
+          this.store.dispatch(
+            new LoadVisualizationAnalyticsAction(
+              this.visualizationObject.id,
+              visualizationLayers
+            )
+          );
+        });
+    }
   }
 
   onFullScreenAction(event: {
@@ -228,9 +247,12 @@ export class VisualizationComponent implements OnInit, OnChanges {
         .pipe(take(1))
         .subscribe((visualizationUiConfig: VisualizationUiConfig) => {
           this.store.dispatch(
-            new ToggleVisualizationFocusAction(visualizationUiConfig.id, {
-              hideFooter: !focused,
-              hideResizeButtons: !focused
+            new UpdateVisualizationObjectAction(this.visualizationObject.id, {
+              uiConfig: {
+                ...visualizationUiConfig,
+                hideFooter: !focused,
+                hideResizeButtons: !focused
+              }
             })
           );
           this.cardFocused = focused;

@@ -22,6 +22,11 @@ export function visualizationLayerReducer(
   action: any
 ): VisualizationLayerState {
   switch (action.type) {
+    case VisualizationLayerActionTypes.AddVisualizationLayers:
+      return visualizationLayerAdapter.addMany(
+        action.visualizationLayers,
+        state
+      );
     case VisualizationLayerActionTypes.ADD_VISUALIZATION_LAYER:
       return visualizationLayerAdapter.addOne(action.visualizationLayer, state);
     case VisualizationLayerActionTypes.UPDATE_VISUALIZATION_LAYER:

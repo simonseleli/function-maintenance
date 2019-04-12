@@ -4,6 +4,7 @@ import { Update } from '@ngrx/entity';
 
 export enum VisualizationLayerActionTypes {
   ADD_VISUALIZATION_LAYER = '[VisualizationLayer] Add visualization layer',
+  AddVisualizationLayers = '[VisualizationLayer] Add visualization layers',
   UPDATE_VISUALIZATION_LAYER = '[VisualizationLayer] Update visualization layer',
   UPDATE_VISUALIZATION_LAYERS = '[VisualizationLayer] Update visualization layers',
   LOAD_VISUALIZATION_ANALYTICS = '[VisualizationLayer] Load visualization analytics',
@@ -17,6 +18,11 @@ export class AddVisualizationLayerAction implements Action {
   readonly type = VisualizationLayerActionTypes.ADD_VISUALIZATION_LAYER;
 
   constructor(public visualizationLayer: VisualizationLayer) {}
+}
+
+export class AddVisualizationLayersAction implements Action {
+  readonly type = VisualizationLayerActionTypes.AddVisualizationLayers;
+  constructor(public visualizationLayers: VisualizationLayer[]) {}
 }
 
 export class UpdateVisualizationLayerAction implements Action {
@@ -65,6 +71,7 @@ export class RemoveVisualizationLayerAction implements Action {
 
 export type VisualizationLayerAction =
   | AddVisualizationLayerAction
+  | AddVisualizationLayersAction
   | UpdateVisualizationLayerAction
   | LoadVisualizationAnalyticsAction
   | LoadVisualizationAnalyticsSuccessAction

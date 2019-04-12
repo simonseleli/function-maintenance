@@ -1,68 +1,59 @@
 import { Injectable } from '@angular/core';
+import { SystemInfoService } from '@hisptz/ngx-dhis2-http-client';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import * as _ from 'lodash';
-import { Observable, of, forkJoin } from 'rxjs';
 import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
+import { Observable, of } from 'rxjs';
 import {
   catchError,
   map,
   mergeMap,
-  tap,
-  withLatestFrom,
+  switchMap,
   take,
-  switchMap
+  tap,
+  withLatestFrom
 } from 'rxjs/operators';
+import { generateUid } from 'src/app/core';
 
-// actions
 import {
+  getSelectionDimensionsFromAnalytics,
+  getSelectionDimensionsFromFavorite,
+  getStandardizedAnalyticsObject,
+  getStandardizedVisualizationObject,
+  getStandardizedVisualizationType,
+  getStandardizedVisualizationUiConfig,
+  getVisualizationLayerType
+} from '../../helpers';
+import { getDefaultVisualizationLayer } from '../../helpers/get-default-visualization-layer.helper';
+import { getFavoritePayload } from '../../helpers/get-favorite-payload.helpers';
+import { Visualization, VisualizationLayer } from '../../models';
+import { FavoriteService } from '../../services/favorite.service';
+import {
+  AddVisualizationLayerAction,
+  AddVisualizationLayersAction,
   AddVisualizationObjectAction,
+  AddVisualizationUiConfigurationAction,
   InitializeVisualizationObjectAction,
+  LoadVisualizationAnalyticsAction,
   LoadVisualizationFavoriteAction,
   LoadVisualizationFavoriteSuccessAction,
-  UpdateVisualizationObjectAction,
-  VisualizationObjectActionTypes,
-  AddVisualizationLayerAction,
-  LoadVisualizationAnalyticsAction,
-  UpdateVisualizationLayerAction,
-  AddVisualizationConfigurationAction,
-  UpdateVisualizationConfigurationAction,
-  AddVisualizationUiConfigurationAction,
-  SaveVisualizationFavoriteAction,
-  RemoveVisualizationObjectAction,
   RemoveVisualizationConfigurationAction,
-  RemoveVisualizationLayerAction,
-  RemoveVisualizationUiConfigurationAction,
   RemoveVisualizationFavoriteAction,
-  SaveVisualizationFavoriteSuccessAction
+  RemoveVisualizationLayerAction,
+  RemoveVisualizationObjectAction,
+  RemoveVisualizationUiConfigurationAction,
+  SaveVisualizationFavoriteAction,
+  SaveVisualizationFavoriteSuccessAction,
+  UpdateVisualizationConfigurationAction,
+  UpdateVisualizationLayerAction,
+  UpdateVisualizationObjectAction,
+  VisualizationObjectActionTypes
 } from '../actions';
-
-// reducers
 import {
-  VisualizationState,
-  getVisualizationObjectEntities
+  getVisualizationObjectEntities,
+  VisualizationState
 } from '../reducers';
-
-// models
-import { Visualization, VisualizationLayer } from '../../models';
-
-// services
-import { FavoriteService } from '../../services/favorite.service';
-
-// helpers
-import {
-  getSelectionDimensionsFromFavorite,
-  getVisualizationLayerType,
-  getStandardizedVisualizationType,
-  getStandardizedVisualizationObject,
-  getStandardizedVisualizationUiConfig,
-  getStandardizedAnalyticsObject,
-  getSelectionDimensionsFromAnalytics
-} from '../../helpers';
-import { SystemInfoService } from '@hisptz/ngx-dhis2-http-client';
 import { getCombinedVisualizationObjectById } from '../selectors';
-import { getFavoritePayload } from '../../helpers/get-favorite-payload.helpers';
-import { getDefaultVisualizationLayer } from '../../helpers/get-default-visualization-layer.helper';
-import { generateUid } from 'src/app/core';
 
 @Injectable()
 export class VisualizationObjectEffects {
@@ -76,11 +67,41 @@ export class VisualizationObjectEffects {
         any
       ]) => {
         const visualizationObject: Visualization =
-          visualizationObjectEntities[action.id];
-        if (visualizationObject) {
+          visualizationObjectEntities[action.visualizationObject.id];
+
+        if (!visualizationObject) {
+          // Set visualization object
+          this.store.dispatch(
+            new AddVisualizationObjectAction({
+              ...action.visualizationObject,
+              currentType: getStandardizedVisualizationType(
+                action.visualizationObject.type
+              ),
+              name: 'Untitled',
+              layers: (action.visualizationObject.layers || []).map(
+                (layer: VisualizationLayer) => layer.id
+              )
+            })
+          );
+          // Set visualization progress
+          // Set visualization layers
+
+          this.store.dispatch(
+            new AddVisualizationLayersAction(action.visualizationObject.layers)
+          );
+
+          // Load analytics for visualization layers
+          this.store.dispatch(
+            new LoadVisualizationAnalyticsAction(
+              action.visualizationObject.id,
+              action.visualizationObject.layers
+            )
+          );
+
+          // Update visualization progress
           if (
-            visualizationObject.progress &&
-            visualizationObject.progress.percent === 0
+            action.visualizationObject.progress &&
+            action.visualizationObject.progress.percent === 0
           ) {
             // update visualization configurations
             this.store.dispatch(
@@ -88,22 +109,6 @@ export class VisualizationObjectEffects {
                 visualizationObject.id,
                 visualizationObject
               )
-            );
-
-            this.store.dispatch(
-              new AddVisualizationConfigurationAction({
-                id: action.id,
-                type: visualizationObject.type,
-                contextPath: action.systemInfo
-                  ? action.systemInfo.contextPath
-                  : '../../..',
-                currentType: getStandardizedVisualizationType(
-                  visualizationObject.type
-                ),
-                name: visualizationObject.favorite
-                  ? visualizationObject.favorite.name
-                  : ''
-              })
             );
 
             // Load favorite information
@@ -128,7 +133,7 @@ export class VisualizationObjectEffects {
                 }
               );
 
-              // Load more details for non favorite visualization
+              // Complete loading for non favorite visualization
               this.store.dispatch(
                 new UpdateVisualizationObjectAction(visualizationObject.id, {
                   progress: {
@@ -164,23 +169,6 @@ export class VisualizationObjectEffects {
                 type: action.visualizationType
               })
             )
-          );
-
-          // set initial global visualization configurations
-          this.store.dispatch(
-            new AddVisualizationConfigurationAction({
-              id: action.id,
-              type: initialVisualizationObject.type,
-              contextPath: action.systemInfo
-                ? action.systemInfo.contextPath
-                : '../../..',
-              currentType: getStandardizedVisualizationType(
-                initialVisualizationObject.type
-              ),
-              name: initialVisualizationObject.favorite
-                ? initialVisualizationObject.favorite.name
-                : ''
-            })
           );
 
           // set visualization layers

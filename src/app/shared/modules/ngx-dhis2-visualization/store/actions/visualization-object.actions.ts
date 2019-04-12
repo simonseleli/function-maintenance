@@ -36,6 +36,7 @@ export class InitializeVisualizationObjectAction implements Action {
     public name: string,
     public visualizationType: string,
     public visualizationLayers: VisualizationLayer[],
+    public visualizationObject: any,
     public currentUser: any,
     public systemInfo: any
   ) {}

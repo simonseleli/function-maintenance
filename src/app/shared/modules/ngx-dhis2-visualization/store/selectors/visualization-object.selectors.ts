@@ -1,13 +1,17 @@
-import { createSelector, MemoizedSelector } from '@ngrx/store';
+import { createSelector } from '@ngrx/store';
+
+import { Visualization } from '../../models';
 import { getVisualizationObjectEntities } from '../reducers';
-import { Visualization, VisualizationProgress } from '../../models';
 import { getCurrentVisualizationConfig } from './visualization-configuration.selectors';
 import { getCurrentVisualizationObjectLayers } from './visualization-layer.selectors';
 
 export const getVisualizationObjectById = id =>
   createSelector(
     getVisualizationObjectEntities,
-    visualizationObjectEntity => visualizationObjectEntity[id]
+    visualizationObjectEntity => {
+      console.log('called');
+      return visualizationObjectEntity[id];
+    }
   );
 
 export const getCombinedVisualizationObjectById = id =>
@@ -27,11 +31,8 @@ export const getCombinedVisualizationObjectById = id =>
   );
 
 export const getCurrentVisualizationProgress = id =>
-  createSelector(getVisualizationObjectEntities, visualizationObjectEntity => {
-    const currentVisualizationObject: Visualization =
-      visualizationObjectEntity[id];
-
-    return currentVisualizationObject
-      ? currentVisualizationObject.progress
-      : null;
-  });
+  createSelector(
+    getVisualizationObjectById(id),
+    (visualizationObject: Visualization) =>
+      visualizationObject ? visualizationObject.progress : null
+  );

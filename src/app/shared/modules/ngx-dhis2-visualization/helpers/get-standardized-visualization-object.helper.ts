@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 
 import { Visualization } from '../models';
 import { checkIfVisualizationIsNonVisualizable } from './check-if-visualization-is-non-visualizable.helper';
+import { getStandardizedVisualizationUiConfig } from './get-standardized-visualization-ui-config.helper';
 
 export function getStandardizedVisualizationObject(
   visualizationItem: any
@@ -20,6 +21,7 @@ export function getStandardizedVisualizationObject(
     lastUpdated: visualizationItem.lastUpdated,
     isNew: visualizationItem.isNew,
     isNonVisualizable,
+    uiConfig: getStandardizedVisualizationUiConfig(visualizationItem),
     progress: {
       statusCode: 200,
       statusText: 'OK',

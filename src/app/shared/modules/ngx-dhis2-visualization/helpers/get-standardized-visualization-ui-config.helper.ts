@@ -10,9 +10,9 @@ export function getStandardizedVisualizationUiConfig(
     visualizationItem.type
   );
 
-  const isFullScreen = currentVisualizationItemId === visualizationItem.id;
+  const isFullScreen =
+    visualizationItem.id && currentVisualizationItemId === visualizationItem.id;
   return {
-    id: visualizationItem.id,
     shape: visualizationItem.shape || 'NORMAL',
     height: isFullScreen ? '99vh' : '450px',
     width: getVisualizationWidthFromShape(visualizationItem.shape || 'NORMAL'),

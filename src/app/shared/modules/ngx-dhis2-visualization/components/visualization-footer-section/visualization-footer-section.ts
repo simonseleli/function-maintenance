@@ -15,13 +15,11 @@ import { openAnimation } from '../../../favorite-filter/animations';
 })
 export class VisualizationFooterSectionComponent {
   @Input()
-  type: string;
+  visualizationType: string;
   @Input()
   name: string;
   @Input()
   description: string;
-  @Input()
-  configId: string;
   @Input()
   hideTypeButtons: boolean;
   @Input()
@@ -31,10 +29,7 @@ export class VisualizationFooterSectionComponent {
   hideDownloadBlock: boolean;
 
   @Output()
-  visualizationTypeChange: EventEmitter<{
-    id: string;
-    type: string;
-  }> = new EventEmitter<{ id: string; type: string }>();
+  visualizationTypeChange: EventEmitter<string> = new EventEmitter<string>();
 
   @Output()
   saveVisualization: EventEmitter<any> = new EventEmitter<any>();
@@ -49,8 +44,8 @@ export class VisualizationFooterSectionComponent {
     this.hideManagementBlock = this.hideTypeButtons = true;
   }
 
-  onVisualizationTypeChange(type: string) {
-    this.visualizationTypeChange.emit({ id: this.configId, type: type });
+  onVisualizationTypeChange(visualizationType: string) {
+    this.visualizationTypeChange.emit(visualizationType);
   }
 
   onVisualizationSave(visualizationDetails: any) {
@@ -62,6 +57,9 @@ export class VisualizationFooterSectionComponent {
   }
 
   onDownload(downloadFormat: string) {
-    this.download.emit({ type: this.type, downloadFormat: downloadFormat });
+    this.download.emit({
+      visualizationType: this.visualizationType,
+      downloadFormat: downloadFormat
+    });
   }
 }

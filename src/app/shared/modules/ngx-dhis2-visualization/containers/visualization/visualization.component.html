@@ -28,10 +28,7 @@
       [showBody]="(visualizationUiConfig$ | async)?.showBody"
       [fullScreen]="(visualizationUiConfig$ | async)?.fullScreen"
       [type]="(visualizationConfig$ | async)?.currentType"
-      [name]="
-        (visualizationObject$ | async)?.title ||
-        (visualizationObject$ | async)?.name
-      "
+      [name]="(visualizationConfig$ | async)?.name"
       (toggleVisualization)="onToggleVisualizationBody($event)"
     ></visualization-title-section>
   </div>
@@ -41,7 +38,6 @@
   <div
     class="visualization-body-block"
     [style.height]="(visualizationUiConfig$ | async)?.height"
-    *ngIf="(visualizationUiConfig$ | async)?.showBody"
   >
     <!--visualization body header-->
     <div
@@ -128,6 +124,7 @@
               ? id + '_full_screen'
               : id
           "
+          [visualizationType]="(visualizationObject$ | async)?.currentType"
           [visualizationUiConfig]="visualizationUiConfig$ | async"
           [visualizationLayers]="visualizationLayers$ | async"
           [visualizationConfig]="visualizationConfig$ | async"
@@ -153,8 +150,7 @@
       "
     >
       <visualization-footer-section
-        [type]="(visualizationConfig$ | async)?.currentType"
-        [configId]="(visualizationConfig$ | async)?.id"
+        [visualizationType]="(visualizationObject$ | async)?.currentType"
         [name]="(visualizationObject$ | async)?.name"
         [hideTypeButtons]="(visualizationUiConfig$ | async)?.hideTypeButtons"
         [hideManagementBlock]="

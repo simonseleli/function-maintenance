@@ -12,7 +12,9 @@ import {
 import {
   getMergedDataSelections,
   getSanitizedAnalytics,
-  getStandardizedAnalyticsObject
+  getStandardizedAnalyticsObject,
+  checkIfVisualizationIsNonVisualizable,
+  prepareVisualizationLayersForAnalytics
 } from '../../helpers';
 import { VisualizationDataSelection, VisualizationLayer } from '../../models';
 import { AnalyticsService } from '../../services/analytics.service';
@@ -37,37 +39,11 @@ export class VisualizationLayerEffects {
         .pipe(take(1))
         .subscribe((visualizationObject: any) => {
           if (visualizationObject) {
-            const visualizationType = visualizationObject.config
-              ? visualizationObject.config.currentType
-              : visualizationObject.type;
-            if (!visualizationObject.isNonVisualizable) {
-              this.store.dispatch(
-                new UpdateVisualizationObjectAction(action.visualizationId, {
-                  progress: {
-                    statusCode: 200,
-                    statusText: 'OK',
-                    percent: 50,
-                    message: 'Favorite information has been loaded'
-                  }
-                })
-              );
-
-              const visualizationLayers = action.globalSelections
-                ? _.map(
-                    visualizationObject.layers,
-                    (visualizationLayer: VisualizationLayer) => {
-                      return {
-                        ...visualizationLayer,
-                        dataSelections: getMergedDataSelections(
-                          visualizationLayer.dataSelections,
-                          action.globalSelections,
-                          visualizationType
-                        )
-                      };
-                    }
-                  )
-                : action.visualizationLayers;
-
+            if (
+              !checkIfVisualizationIsNonVisualizable(
+                visualizationObject.currentType
+              )
+            ) {
               this.store
                 .select(getFunctionLoadedStatus)
                 .pipe(
@@ -80,50 +56,36 @@ export class VisualizationLayerEffects {
                     _.map(functions, functionObject => functionObject.items)
                   );
 
-                  const newVisualizationLayers: VisualizationLayer[] = _.map(
-                    visualizationLayers,
-                    (visualizationLayer: VisualizationLayer) => {
-                      const dataSelections: VisualizationDataSelection[] = _.map(
-                        visualizationLayer.dataSelections,
-                        (dataSelection: VisualizationDataSelection) => {
-                          switch (dataSelection.dimension) {
-                            case 'dx': {
-                              return {
-                                ...dataSelection,
-                                items: _.map(
-                                  dataSelection.items,
-                                  (item: any) => {
-                                    if (item.type === 'FUNCTION_RULE') {
-                                      const functionRule = _.find(
-                                        functionRules,
-                                        ['id', item.id]
-                                      );
-                                      return functionRule
-                                        ? { ...functionRule, type: item.type }
-                                        : item;
-                                    }
-                                    return item;
-                                  }
-                                )
-                              };
-                            }
-                            default:
-                              return dataSelection;
+                  const visualizationLayers: VisualizationLayer[] = prepareVisualizationLayersForAnalytics(
+                    action.globalSelections
+                      ? _.map(
+                          visualizationObject.layers,
+                          (visualizationLayer: VisualizationLayer) => {
+                            return {
+                              ...visualizationLayer,
+                              dataSelections: getMergedDataSelections(
+                                visualizationLayer.dataSelections,
+                                action.globalSelections,
+                                visualizationObject.currentType
+                              )
+                            };
                           }
-                        }
-                      );
-                      return { ...visualizationLayer, dataSelections };
-                    }
+                        )
+                      : action.visualizationLayers,
+                    functionRules
                   );
 
                   forkJoin(
                     _.map(
-                      newVisualizationLayers,
+                      visualizationLayers,
                       (visualizationLayer: VisualizationLayer) => {
                         return this.analyticsService.getAnalytics(
                           visualizationLayer.dataSelections,
                           visualizationLayer.layerType,
-                          { ...visualizationLayer.config, visualizationType }
+                          {
+                            ...visualizationLayer.config,
+                            visualizationType: action.type
+                          }
                         );
                       }
                     )
