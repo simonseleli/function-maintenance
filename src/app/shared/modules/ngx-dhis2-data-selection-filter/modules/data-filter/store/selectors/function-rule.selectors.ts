@@ -10,6 +10,13 @@ export const getActiveFunctionRuleId = createSelector(
     functionRuleState.activeFunctionRuleId
 );
 
+export const getActiveFunctionRule = createSelector(
+  fromFunctionRuleReducer.getFunctionRuleEntities,
+  getActiveFunctionRuleId,
+  (functionRuleEntities: any, activeFunctionRuleId: string) =>
+    functionRuleEntities[activeFunctionRuleId]
+);
+
 export const getFunctionRulesForActiveFunction = createSelector(
   fromFunctionRuleReducer.getFunctionRuleEntities,
   getActiveFunction,

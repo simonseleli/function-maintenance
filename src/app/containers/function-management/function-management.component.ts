@@ -6,6 +6,12 @@ import {
 } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
 
 import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
+import { State, Store } from '@ngrx/store';
+import { AppState } from 'src/app/store';
+import { Observable } from 'rxjs';
+import { getActiveFunction } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors/function.selectors';
+import { getActiveFunctionRule } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors/function-rule.selectors';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-function-management',
@@ -81,19 +87,17 @@ export class FunctionManagementComponent implements OnInit {
     item: string;
   }>();
 
-  constructor() {
+  activeFunction$: Observable<FunctionObject>;
+  activeFunctionRule$: Observable<FunctionRule>;
+
+  constructor(private readonly store: Store<AppState>) {
     this.activeEditor = 'FUNCTION';
   }
 
-  get activeFunction(): FunctionObject {
-    return _.find(this.functionList, ['active', true]);
+  ngOnInit() {
+    this.activeFunction$ = this.store.select(getActiveFunction);
+    this.activeFunctionRule$ = this.store.select(getActiveFunctionRule);
   }
-
-  get activeFunctionRule(): FunctionRule {
-    return _.find(this.functionRules, ['active', true]);
-  }
-
-  ngOnInit() {}
 
   onNewFunctionObject(functionObject: FunctionObject) {
     this.activeEditor = 'FUNCTION';
@@ -112,10 +116,14 @@ export class FunctionManagementComponent implements OnInit {
 
   onActivateFunctionRule(functionRule: FunctionRule) {
     this.activeEditor = 'RULE';
-    this.activateFunctionRule.emit({
-      functionRule,
-      functionObject: this.activeFunction
-    });
+    this.activeFunction$
+      .pipe(take(1))
+      .subscribe((activeFunction: FunctionObject) => {
+        this.activateFunctionRule.emit({
+          functionRule,
+          functionObject: activeFunction
+        });
+      });
   }
 
   onSetActiveEditor(e, editor: string) {
@@ -124,35 +132,51 @@ export class FunctionManagementComponent implements OnInit {
   }
 
   onSimulateFunction(functionObject: FunctionObject) {
-    this.simulate.emit({
-      functionObject,
-      functionRule: this.activeFunctionRule,
-      item: 'FUNCTION'
-    });
+    this.activeFunctionRule$
+      .pipe(take(1))
+      .subscribe((activeFunctionRule: FunctionRule) => {
+        this.simulate.emit({
+          functionObject,
+          functionRule: activeFunctionRule,
+          item: 'FUNCTION'
+        });
+      });
   }
 
   onSimulateFunctionRule(functionRule: FunctionRule) {
-    this.simulate.emit({
-      functionObject: this.activeFunction,
-      functionRule,
-      item: 'FUNCTION_RULE'
-    });
+    this.activeFunction$
+      .pipe(take(1))
+      .subscribe((activeFunction: FunctionObject) => {
+        this.simulate.emit({
+          functionObject: activeFunction,
+          functionRule,
+          item: 'FUNCTION_RULE'
+        });
+      });
   }
 
   onSaveFunction(functionObject: FunctionObject) {
-    this.save.emit({
-      functionObject,
-      functionRule: this.activeFunctionRule,
-      item: 'FUNCTION'
-    });
+    this.activeFunctionRule$
+      .pipe(take(1))
+      .subscribe((activeFunctionRule: FunctionRule) => {
+        this.save.emit({
+          functionObject,
+          functionRule: activeFunctionRule,
+          item: 'FUNCTION'
+        });
+      });
   }
 
   onSaveFunctionRule(functionRule: FunctionRule) {
-    this.save.emit({
-      functionObject: this.activeFunction,
-      functionRule,
-      item: 'FUNCTION_RULE'
-    });
+    this.activeFunction$
+      .pipe(take(1))
+      .subscribe((activeFunction: FunctionObject) => {
+        this.save.emit({
+          functionObject: activeFunction,
+          functionRule,
+          item: 'FUNCTION_RULE'
+        });
+      });
   }
 
   onDeleteFunction(functionObject) {
