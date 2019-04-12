@@ -129,19 +129,20 @@ export class NgxDhis2DynamicDimensionComponent implements OnInit, OnDestroy {
     private dynamicDimensionStore: Store<fromDynamicDimension.State>
   ) {
     this.selectedDimensions = [];
+  }
+
+  ngOnInit() {
     this.dynamicDimensionStore.dispatch(new LoadDynamicDimensionsAction());
 
     // select dynamic dimension prorperties
     this.dynamicDimensions$ = this.dynamicDimensionStore.select(
-      fromDynamicDimensionSelectors.getDynamicDimensions
+      fromDynamicDimensionSelectors.getDynamicDimensions()
     );
 
     this.dynamicDimensionLoading$ = this.dynamicDimensionStore.select(
       fromDynamicDimensionSelectors.getDynamicDimensionLoadingStatus
     );
-  }
 
-  ngOnInit() {
     this.selectedDimensions = _.map(
       this.selectedDynamicDimensions || [],
       (selectedDynamicDimension: any) => {
@@ -153,8 +154,10 @@ export class NgxDhis2DynamicDimensionComponent implements OnInit, OnDestroy {
     );
   }
 
-  onSetActiveDynamicDimension(dynamicDimension: DynamicDimension) {
-    this._activeDimension = dynamicDimension;
+  onSetActiveDynamicDimension(dynamicDimension: DynamicDimension, e) {
+    console.log(dynamicDimension);
+    e.stopPropagation();
+    // this._activeDimension = dynamicDimension;
   }
 
   onAddDimensionItem(dimensionObject, dimensionItem: any, e?) {

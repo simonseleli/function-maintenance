@@ -15,7 +15,9 @@ import {
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
 import {
   getSelectionDimensionsFromFavorite,
-  getVisualizationLayerType
+  getVisualizationLayerType,
+  getVisualizationLayersFromFavorite,
+  getStandardizedVisualizationUiConfig
 } from '../../shared/modules/ngx-dhis2-visualization/helpers';
 import { getDefaultVisualizationLayer } from '../../shared/modules/ngx-dhis2-visualization/helpers/get-default-visualization-layer.helper';
 import {
@@ -184,62 +186,50 @@ export class CurrentVisualizationEffects {
   addVisualizationItem$: Observable<any> = this.actions$.pipe(
     ofType(CurrentVisualizationActionTypes.AddVisualizationItem),
     tap((action: AddVisualizationItemAction) => {
-      this.store.dispatch(
-        new AddOrUpdateCurrentVisualizationAction({
-          id: action.visualizationItem.id,
-          type: action.visualizationItem.type,
+      if (
+        action.favorite &&
+        action.favorite.dashboardTypeDetails &&
+        action.favorite.dashboardTypeDetails.type &&
+        action.favorite.id
+      ) {
+        const visualizationType = action.favorite.dashboardTypeDetails.type;
+        const visualizationObject = {
+          id: generateUid(),
+          type: visualizationType,
+          name: action.favorite.name,
+          uiConfig: getStandardizedVisualizationUiConfig({
+            type: visualizationType
+          }),
           loading: true,
-          error: null,
           layers: []
-        })
-      );
-      const favorite =
-        action.visualizationItem[_.camelCase(action.visualizationItem.type)];
+        };
+        this.store.dispatch(
+          new AddOrUpdateCurrentVisualizationAction(visualizationObject)
+        );
 
-      if (favorite) {
         this.favoriteService
           .getFavorite({
-            type: _.camelCase(action.visualizationItem.type),
-            id: favorite.id
+            type: _.camelCase(visualizationType),
+            id: action.favorite.id,
+            useTypeAsBase: true
           })
           .subscribe(
             (favoriteObject: any) => {
-              const visualizationLayers: VisualizationLayer[] = _.map(
-                favoriteObject.mapViews || [favoriteObject],
-                (favoriteLayer: any) => {
-                  const dataSelections = getSelectionDimensionsFromFavorite(
-                    favoriteLayer
-                  );
-                  return {
-                    id: favoriteLayer.id,
-                    dataSelections,
-                    layerType: getVisualizationLayerType(
-                      favorite.type,
-                      favoriteLayer
-                    ),
-                    analytics: null,
-                    config: {
-                      ...favoriteLayer,
-                      type: favoriteLayer.type ? favoriteLayer.type : 'COLUMN',
-                      visualizationType: action.visualizationItem.type
-                    }
-                  };
-                }
-              );
               this.store.dispatch(
                 new AddOrUpdateCurrentVisualizationAction({
-                  id: action.visualizationItem.id,
-                  type: action.visualizationItem.type,
+                  ...visualizationObject,
                   loading: false,
-                  layers: visualizationLayers
+                  layers: getVisualizationLayersFromFavorite(
+                    favoriteObject,
+                    visualizationType
+                  )
                 })
               );
             },
             error => {
               this.store.dispatch(
                 new AddOrUpdateCurrentVisualizationAction({
-                  id: action.visualizationItem.id,
-                  type: action.visualizationItem.type,
+                  ...visualizationObject,
                   loading: false,
                   error,
                   layers: []

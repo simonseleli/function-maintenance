@@ -1,5 +1,6 @@
 .ngx-dhis2-dynamic-dimension-container {
   display: flex;
+  justify-content: space-evenly;
   width: 100%;
 }
 
@@ -8,7 +9,7 @@
   padding: 5px;
   height: 300px;
   flex: 1;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .ngx-dhis2-dynamic-dimensions-loading {
@@ -22,10 +23,6 @@
   list-style-type: none;
   padding: 0;
   margin: 0;
-}
-
-.ngx-dhis2-dynamic-dimension-list:hover {
-  overflow-y: auto;
 }
 
 .ngx-dhis2-dynamic-dimension-items {
@@ -45,6 +42,10 @@
   display: flex;
   width: 100%;
   cursor: pointer;
+}
+
+.ngx-dhis2-dynamic-dimension-list > li > a:hover {
+  background-color: #eeeeee;
 }
 .active-dimension {
   background-color: #eeeeee;

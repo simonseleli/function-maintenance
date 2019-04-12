@@ -132,24 +132,7 @@ export class HomeComponent implements OnInit {
 
   onAddFavoriteAction(favorite: any) {
     this.unSelectFunctionAndRules();
-    const dashboardItem = {
-      id: generateUid(),
-      type: favorite.dashboardTypeDetails.type,
-      [_.camelCase(favorite.dashboardTypeDetails.type)]: favorite
-        .dashboardTypeDetails.isArray
-        ? [
-            {
-              id: favorite.id,
-              name: favorite.name
-            }
-          ]
-        : {
-            id: favorite.id,
-            name: favorite.name
-          }
-    };
-
-    this.store.dispatch(new AddVisualizationItemAction(dashboardItem));
+    this.store.dispatch(new AddVisualizationItemAction(favorite));
   }
 
   onCreateFavoriteAction() {}

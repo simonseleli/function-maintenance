@@ -18,11 +18,13 @@ export const getDynamicDimensionLoadingStatus = createSelector(
   (state: fromDynamicDimension.State) => state.loading
 );
 
-export const getDynamicDimensions = createSelector(
-  fromDynamicDimension.getAllDynamicDimensions,
-  getAllowedDynamicDimensions,
-  (dynamicDimensions: DynamicDimension[], allowedDimensions: string[]) =>
-    _.filter(dynamicDimensions, (dynamicDimension: any) =>
-      allowedDimensions.includes(dynamicDimension.id)
-    )
-);
+export const getDynamicDimensions = (allowedDimensions?: string[]) =>
+  createSelector(
+    fromDynamicDimension.getAllDynamicDimensions,
+    (dynamicDimensions: DynamicDimension[]) =>
+      allowedDimensions && allowedDimensions.length > 0
+        ? _.filter(dynamicDimensions, (dynamicDimension: any) =>
+            allowedDimensions.includes(dynamicDimension.id)
+          )
+        : dynamicDimensions
+  );

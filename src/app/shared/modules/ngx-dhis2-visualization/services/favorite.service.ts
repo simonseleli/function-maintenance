@@ -28,7 +28,7 @@ export class FavoriteService {
   }
 
   getFavorite(
-    favorite: { id: string; type: string },
+    favorite: { id: string; type: string; useTypeAsBase?: boolean },
     configurations: FavoriteConfiguration = {
       useDataStoreAsSource: false,
       useBothSources: true,

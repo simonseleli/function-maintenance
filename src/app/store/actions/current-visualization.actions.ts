@@ -38,7 +38,7 @@ export class SimulateVisualizationAction implements Action {
 
 export class AddVisualizationItemAction implements Action {
   readonly type = CurrentVisualizationActionTypes.AddVisualizationItem;
-  constructor(public visualizationItem: any) {}
+  constructor(public favorite: any) {}
 }
 
 export type CurrentVisualizationActions =
