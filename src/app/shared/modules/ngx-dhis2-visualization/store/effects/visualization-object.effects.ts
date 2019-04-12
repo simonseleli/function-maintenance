@@ -71,21 +71,28 @@ export class VisualizationObjectEffects {
 
         if (!visualizationObject) {
           // Set visualization object
+          const visualizationName =
+            action.visualizationObject.name || 'Untitled';
           this.store.dispatch(
             new AddVisualizationObjectAction({
               ...action.visualizationObject,
               currentType: getStandardizedVisualizationType(
                 action.visualizationObject.type
               ),
-              name: 'Untitled',
+              name: visualizationName,
+              progress: {
+                statusCode: 200,
+                statusText: 'OK',
+                percent: 0,
+                message: `Loading Data for ${visualizationName}`
+              },
               layers: (action.visualizationObject.layers || []).map(
                 (layer: VisualizationLayer) => layer.id
               )
             })
           );
-          // Set visualization progress
-          // Set visualization layers
 
+          // Set visualization layers
           this.store.dispatch(
             new AddVisualizationLayersAction(action.visualizationObject.layers)
           );
@@ -97,197 +104,6 @@ export class VisualizationObjectEffects {
               action.visualizationObject.layers
             )
           );
-
-          // Update visualization progress
-          if (
-            action.visualizationObject.progress &&
-            action.visualizationObject.progress.percent === 0
-          ) {
-            // update visualization configurations
-            this.store.dispatch(
-              new UpdateVisualizationObjectAction(
-                visualizationObject.id,
-                visualizationObject
-              )
-            );
-
-            // Load favorite information
-            if (visualizationObject.favorite) {
-              this.store.dispatch(
-                new LoadVisualizationFavoriteAction(
-                  visualizationObject,
-                  action.currentUser,
-                  action.systemInfo
-                )
-              );
-            } else if (visualizationObject.layers.length > 0) {
-              // Add visualization Layers
-              _.each(
-                visualizationObject.layers,
-                (visualizationLayerId: string) => {
-                  this.store.dispatch(
-                    new AddVisualizationLayerAction({
-                      id: visualizationLayerId
-                    })
-                  );
-                }
-              );
-
-              // Complete loading for non favorite visualization
-              this.store.dispatch(
-                new UpdateVisualizationObjectAction(visualizationObject.id, {
-                  progress: {
-                    statusCode: 200,
-                    statusText: 'OK',
-                    percent: 100,
-                    message: 'Analytics has been loaded'
-                  }
-                })
-              );
-            }
-          }
-        } else {
-          const initialVisualizationObject: Visualization = getStandardizedVisualizationObject(
-            {
-              id: action.id,
-              name: action.name,
-              type: action.visualizationType,
-              isNew: true
-            }
-          );
-
-          // set initial visualization object
-          this.store.dispatch(
-            new AddVisualizationObjectAction(initialVisualizationObject)
-          );
-
-          // set initial visualization ui configuration
-          this.store.dispatch(
-            new AddVisualizationUiConfigurationAction(
-              getStandardizedVisualizationUiConfig({
-                id: action.id,
-                type: action.visualizationType
-              })
-            )
-          );
-
-          // set visualization layers
-          const visualizationLayers: any[] = _.filter(
-            _.map(
-              action.visualizationLayers ||
-                _.filter(
-                  [
-                    getDefaultVisualizationLayer(
-                      action.currentUser,
-                      action.systemInfo
-                    )
-                  ],
-                  visualizationLayer => visualizationLayer
-                ),
-              (visualizationLayer: VisualizationLayer) => {
-                return visualizationLayer.analytics ||
-                  visualizationLayer.dataSelections
-                  ? {
-                      ...visualizationLayer,
-                      id: initialVisualizationObject.favorite
-                        ? initialVisualizationObject.favorite.id
-                        : '',
-                      analytics: visualizationLayer.analytics
-                        ? getStandardizedAnalyticsObject(
-                            visualizationLayer.analytics,
-                            true
-                          )
-                        : null,
-                      dataSelections: visualizationLayer.dataSelections || []
-                    }
-                  : null;
-              }
-            ),
-            visualizationLayer => visualizationLayer
-          );
-
-          // update visualization object with layers
-          if (visualizationLayers.length > 0) {
-            // Update visualization object
-            if (
-              _.some(
-                visualizationLayers,
-                visualizationLayer => visualizationLayer.analytics
-              )
-            ) {
-              this.store.dispatch(
-                new UpdateVisualizationObjectAction(action.id, {
-                  layers: _.map(
-                    visualizationLayers,
-                    visualizationLayer => visualizationLayer.id
-                  ),
-                  progress: {
-                    statusCode: 200,
-                    statusText: 'OK',
-                    percent: 100,
-                    message: 'Analytics has been loaded'
-                  }
-                })
-              );
-
-              // Add visualization Layers
-              _.each(visualizationLayers, visualizationLayer => {
-                this.store.dispatch(
-                  new AddVisualizationLayerAction({
-                    ...visualizationLayer,
-                    dataSelections: getSelectionDimensionsFromAnalytics(
-                      visualizationLayer.analytics
-                    )
-                  })
-                );
-              });
-            } else if (
-              !_.some(
-                visualizationLayers,
-                visualizationLayer => visualizationLayer.analytics
-              ) &&
-              _.some(
-                visualizationLayers,
-                visualizationLayer => visualizationLayer.dataSelections
-              )
-            ) {
-              this.store.dispatch(
-                new UpdateVisualizationObjectAction(action.id, {
-                  layers: _.map(
-                    visualizationLayers,
-                    visualizationLayer => visualizationLayer.id
-                  ),
-                  progress: {
-                    statusCode: 200,
-                    statusText: 'OK',
-                    percent: 50,
-                    message: 'Favorite has been loaded'
-                  }
-                })
-              );
-
-              // Add visualization Layers
-              _.each(visualizationLayers, visualizationLayer => {
-                this.store.dispatch(
-                  new AddVisualizationLayerAction(visualizationLayer)
-                );
-              });
-
-              // Load analytics for visualization layers
-              this.store.dispatch(
-                new LoadVisualizationAnalyticsAction(
-                  action.id,
-                  visualizationLayers
-                )
-              );
-            } else {
-              console.warn(
-                `Visualization with id ${
-                  action.id
-                } has no any visualizable layer or data selections`
-              );
-            }
-          }
         }
       }
     )

@@ -12,7 +12,8 @@ export enum VisualizationObjectActionTypes {
   SaveVisualizationFavorite = '[Visualization] Save visualization favorite',
   SaveVisualizationFavoriteSuccess = '[Visualization] Save visualization favorite success',
   RemoveVisualizationFavorite = '[Visualization] Remove visualization favorite',
-  RemoveVisualizationObject = '[Visualization] Remove visualization object'
+  RemoveVisualizationObject = '[Visualization] Remove visualization object',
+  ToggleFullScreen = '[Visualization] toggle full screen'
 }
 
 export class AddVisualizationObjectAction implements Action {
@@ -112,6 +113,12 @@ export class RemoveVisualizationFavoriteAction implements Action {
   ) {}
 }
 
+export class ToggleVisualizationFullScreenAction implements Action {
+  readonly type = VisualizationObjectActionTypes.ToggleFullScreen;
+
+  constructor(public id: string) {}
+}
+
 export type VisualizationObjectAction =
   | AddVisualizationObjectAction
   | AddVisualizationObjectsAction
@@ -123,4 +130,5 @@ export type VisualizationObjectAction =
   | UpdateVisualizationObjectAction
   | RemoveVisualizationObjectAction
   | RemoveVisualizationFavoriteAction
-  | SaveVisualizationFavoriteSuccessAction;
+  | SaveVisualizationFavoriteSuccessAction
+  | ToggleVisualizationFullScreenAction;

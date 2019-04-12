@@ -21,7 +21,8 @@ import { Store } from '@ngrx/store';
 import {
   InitializeVisualizationObjectAction,
   UpdateVisualizationObjectAction,
-  SaveVisualizationFavoriteAction
+  SaveVisualizationFavoriteAction,
+  ToggleVisualizationFullScreenAction
 } from '../../store/actions/visualization-object.actions';
 import {
   getCurrentVisualizationProgress,
@@ -55,7 +56,7 @@ import { UpdateVisualizationObject } from '../../modules/map/store';
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [openAnimation]
 })
-export class VisualizationComponent implements OnInit, OnChanges {
+export class VisualizationComponent implements OnInit {
   @Input()
   visualizationObject: any;
   @Input()
@@ -98,30 +99,7 @@ export class VisualizationComponent implements OnInit, OnChanges {
   visualizationConfig$: Observable<VisualizationConfig>;
   focusedVisualization$: Observable<string>;
 
-  constructor(private store: Store<VisualizationState>) {
-    this.cardFocused = false;
-    this.type = 'REPORT_TABLE';
-    this._visualizationInputs$.asObservable().subscribe(visualizationInputs => {
-      if (visualizationInputs) {
-        this.visualizationConfig$ = this.store.select(
-          getCurrentVisualizationConfig(visualizationInputs.id)
-        );
-
-        this.focusedVisualization$ = store.select(getFocusedVisualization);
-      }
-    });
-  }
-
-  ngOnChanges() {
-    this._visualizationInputs$.next({
-      id: this.id,
-      type: this.type,
-      visualizationLayers: this.visualizationLayers,
-      name: this.name,
-      currentUser: this.currentUser,
-      systemInfo: this.systemInfo
-    });
-  }
+  constructor(private store: Store<VisualizationState>) {}
 
   ngOnInit() {
     if (this.visualizationObject) {
@@ -169,6 +147,12 @@ export class VisualizationComponent implements OnInit, OnChanges {
         visualization ? visualization.uiConfig : null
       )
     );
+
+    this.visualizationConfig$ = this.store.select(
+      getCurrentVisualizationConfig(visualizationObject.id)
+    );
+
+    this.focusedVisualization$ = this.store.select(getFocusedVisualization);
   }
 
   onToggleVisualizationBody(uiConfig) {
@@ -203,17 +187,15 @@ export class VisualizationComponent implements OnInit, OnChanges {
     }
   }
 
-  onFullScreenAction(event: {
-    id: string;
-    uiConfigId: string;
-    fullScreen: boolean;
-  }) {
+  onToggleFullScreenAction(fullScreenStatus: boolean) {
     this.toggleFullScreen.emit({
-      id: this.id,
+      id: this.visualizationObject.id,
       dashboardId: this.dashboardId,
-      fullScreen: event.fullScreen
+      fullScreen: fullScreenStatus
     });
-    this.store.dispatch(new ToggleFullScreenAction(event.uiConfigId));
+    this.store.dispatch(
+      new ToggleVisualizationFullScreenAction(this.visualizationObject.id)
+    );
   }
 
   onLoadVisualizationAnalytics(visualizationLayer: VisualizationLayer) {

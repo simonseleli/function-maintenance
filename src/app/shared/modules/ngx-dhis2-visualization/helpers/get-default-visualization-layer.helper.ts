@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
-import { VisualizationLayer, VisualizationDataSelection } from '../models';
+
+import { VisualizationLayer } from '../models';
 
 export function getDefaultVisualizationLayer(
   currentUser,

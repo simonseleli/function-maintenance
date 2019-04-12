@@ -3,7 +3,7 @@
   <div class="chart-visualization-block" *ngIf="visualizationType === 'CHART'">
     <ngx-dhis2-chart-list
       [visualizationId]="id"
-      [visualizationLayers]="visualizationLayers"
+      [visualizationLayers]="layers"
       [chartHeight]="visualizationUiConfig.height"
       (updateChartVisualizationLayer)="onVisualizationLayerUpdate($event)"
     ></ngx-dhis2-chart-list>
@@ -13,7 +13,7 @@
   <!--table visualization-->
   <div class="chart-visualization-block" *ngIf="visualizationType === 'TABLE'">
     <ngx-dhis2-table-list
-      [visualizationLayers]="visualizationLayers"
+      [visualizationLayers]="layers"
       [visualizationType]="visualizationType"
       [legendSets]="legendSets"
     ></ngx-dhis2-table-list>
@@ -24,7 +24,7 @@
   <div class="map-visualization-block" *ngIf="visualizationType === 'MAP'">
     <app-map
       [id]="id"
-      [visualizationLayers]="visualizationLayers"
+      [visualizationLayers]="layers"
       [visualizationUiConfig]="visualizationUiConfig"
       [visualizationConfig]="visualizationConfig"
     ></app-map>
@@ -73,7 +73,7 @@
       [height]="visualizationUiConfig.height"
       [visualizationId]="id"
       [contextPath]="visualizationConfig.contextPath"
-      [visualizationLayers]="visualizationLayers"
+      [visualizationLayers]="layers"
       [dashboardId]="dashboardId"
       [focusedDashboardItem]="focusedVisualization"
     ></app-visualization-widget>

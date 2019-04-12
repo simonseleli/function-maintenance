@@ -42,7 +42,7 @@ export class VisualizationHeaderSectionComponent {
   >();
 
   @Output()
-  fullScreenAction: EventEmitter<any> = new EventEmitter<any>();
+  togglefullScreen: EventEmitter<any> = new EventEmitter<any>();
 
   @Output()
   savefavorite: EventEmitter<any> = new EventEmitter<any>();
@@ -58,12 +58,8 @@ export class VisualizationHeaderSectionComponent {
     };
   }
 
-  onFullScreenAction(id) {
-    this.fullScreenAction.emit({
-      id,
-      uiConfigId: this.uiConfigId,
-      fullScreen: this.fullScreen
-    });
+  onToggleFullScreenAction(id) {
+    this.togglefullScreen.emit(!this.fullScreen);
   }
 
   onFilterUpdateAction(dataSelections: VisualizationDataSelection[]) {

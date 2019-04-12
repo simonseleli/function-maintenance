@@ -18,7 +18,7 @@ export function getStandardizedVisualizationUiConfig(
     width: getVisualizationWidthFromShape(visualizationItem.shape || 'NORMAL'),
     showBody: true,
     fullScreen: isFullScreen,
-    showFilters: !isNonVisualizable,
+    showFilters: false,
     hideFooter: true,
     hideHeader: false,
     hideManagementBlock: !isNonVisualizable,

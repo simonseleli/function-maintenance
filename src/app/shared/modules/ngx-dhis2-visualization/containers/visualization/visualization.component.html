@@ -59,7 +59,7 @@
             : null
         "
         [favoriteType]="(visualizationObject$ | async)?.type"
-        (fullScreenAction)="onFullScreenAction($event)"
+        (togglefullScreen)="onToggleFullScreenAction($event)"
         (visualizationLayerUpdate)="onLoadVisualizationAnalytics($event)"
         (savefavorite)="onSaveFavorite($event)"
       ></visualization-header-section>
@@ -77,12 +77,11 @@
         *ngIf="
           (visualizationProgress$ | async) &&
           (visualizationProgress$ | async).statusCode === 200 &&
-          (visualizationProgress$ | async).percent < 100 &&
-          !isNewFavorite
+          (visualizationProgress$ | async).percent < 100
         "
       >
         <app-visualization-card-loader
-          [visualizationType]="(visualizationConfig$ | async)?.currentType"
+          [visualizationType]="(visualizationObject$ | async)?.currentType"
           [height]="(visualizationUiConfig$ | async)?.height"
           [name]="(visualizationObject$ | async)?.name"
         ></app-visualization-card-loader>

@@ -8,10 +8,7 @@ import { getCurrentVisualizationObjectLayers } from './visualization-layer.selec
 export const getVisualizationObjectById = id =>
   createSelector(
     getVisualizationObjectEntities,
-    visualizationObjectEntity => {
-      console.log('called');
-      return visualizationObjectEntity[id];
-    }
+    visualizationObjectEntity => visualizationObjectEntity[id]
   );
 
 export const getCombinedVisualizationObjectById = id =>

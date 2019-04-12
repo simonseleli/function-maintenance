@@ -75,7 +75,8 @@
       class="col-12"
       *ngIf="
         (currentVisualization$ | async) &&
-        (currentVisualization$ | async).layers.length > 0
+        (currentVisualization$ | async).layers.length > 0 &&
+        !(currentVisualization$ | async).loading
       "
     >
       <ngx-dhis2-visualization

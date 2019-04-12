@@ -1,17 +1,19 @@
 import {
+  ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   Input,
   Output,
-  EventEmitter,
-  ChangeDetectionStrategy,
   ViewChild
 } from '@angular/core';
 import * as _ from 'lodash';
+
+import { getVisualizationLayout } from '../../helpers';
 import { VisualizationConfig } from '../../models/visualization-config.model';
-import { VisualizationUiConfig } from '../../models/visualization-ui-config.model';
 import { VisualizationLayer } from '../../models/visualization-layer.model';
-import { TableListComponent } from '../../modules/ngx-dhis2-table/components/table-list/table-list.component';
+import { VisualizationUiConfig } from '../../models/visualization-ui-config.model';
 import { ChartListComponent } from '../../modules/ngx-dhis-chart/components/chart-list/chart-list.component';
+import { TableListComponent } from '../../modules/ngx-dhis2-table/components/table-list/table-list.component';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -59,6 +61,17 @@ export class VisualizationBodySectionComponent {
       _.flatten(
         _.map(this.visualizationLayers, layer => layer.metadataIdentifiers)
       )
+    );
+  }
+
+  get layers(): VisualizationLayer[] {
+    return (this.visualizationLayers || []).map(
+      (visualizationLayer: VisualizationLayer) => {
+        return {
+          ...visualizationLayer,
+          layout: getVisualizationLayout(visualizationLayer.dataSelections)
+        };
+      }
     );
   }
 
