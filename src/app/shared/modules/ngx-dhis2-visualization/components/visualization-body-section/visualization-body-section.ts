@@ -4,11 +4,15 @@ import {
   EventEmitter,
   Input,
   Output,
-  ViewChild
+  ViewChild,
+  OnInit
 } from '@angular/core';
 import * as _ from 'lodash';
 
-import { getVisualizationLayout } from '../../helpers';
+import {
+  getVisualizationLayout,
+  getVisualizationMetadataIdentifiers
+} from '../../helpers';
 import { VisualizationConfig } from '../../models/visualization-config.model';
 import { VisualizationLayer } from '../../models/visualization-layer.model';
 import { VisualizationUiConfig } from '../../models/visualization-ui-config.model';
@@ -22,7 +26,7 @@ import { TableListComponent } from '../../modules/ngx-dhis2-table/components/tab
   styleUrls: ['./visualization-body-section.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VisualizationBodySectionComponent {
+export class VisualizationBodySectionComponent implements OnInit {
   @Input()
   id: string;
   @Input()
@@ -56,26 +60,28 @@ export class VisualizationBodySectionComponent {
   @ViewChild(ChartListComponent)
   chartList: ChartListComponent;
 
-  get metadataIdentifiers() {
-    return _.uniq(
-      _.flatten(
-        _.map(this.visualizationLayers, layer => layer.metadataIdentifiers)
-      )
-    );
-  }
+  layers: VisualizationLayer[];
 
-  get layers(): VisualizationLayer[] {
-    return (this.visualizationLayers || []).map(
+  metadataIdentifiers: string[];
+  constructor() {}
+
+  ngOnInit() {
+    this.layers = (this.visualizationLayers || []).map(
       (visualizationLayer: VisualizationLayer) => {
         return {
           ...visualizationLayer,
-          layout: getVisualizationLayout(visualizationLayer.dataSelections)
+          layout: getVisualizationLayout(visualizationLayer.dataSelections),
+          metadataIdentifiers: getVisualizationMetadataIdentifiers(
+            visualizationLayer.dataSelections
+          )
         };
       }
     );
-  }
 
-  constructor() {}
+    this.metadataIdentifiers = _.uniq(
+      _.flatten(_.map(this.layers, layer => layer.metadataIdentifiers))
+    );
+  }
 
   onDownloadVisualization(visualizationType: string, downloadFormat: string) {
     if (visualizationType === 'CHART' && this.chartList) {

@@ -282,7 +282,8 @@ export class DataFilterComponent implements OnInit, OnDestroy {
         }),
         (dataGroup: DataGroup) => dataGroup.name !== ''
       ),
-      dimension: 'dx'
+      dimension: 'dx',
+      changed: true
     };
   }
 
