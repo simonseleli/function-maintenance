@@ -16,16 +16,16 @@ export function getChartConfiguration(
     type: chartType,
     title: visualizationSettings.hasOwnProperty('displayName')
       ? visualizationSettings.displayName
-      : '',
+      : visualizationSettings.name,
     subtitle: visualizationSettings.hasOwnProperty('subtitle')
       ? visualizationSettings.subtitle
       : '',
     hideTitle: visualizationSettings.hasOwnProperty('hideTitle')
       ? visualizationSettings.hideTitle
-      : true,
+      : false,
     hideSubtitle: visualizationSettings.hasOwnProperty('hideSubtitle')
       ? visualizationSettings.hideSubtitle
-      : true,
+      : false,
     showData: visualizationSettings.hasOwnProperty('showData')
       ? visualizationSettings.showData
       : true,
@@ -34,7 +34,7 @@ export function getChartConfiguration(
       : true,
     hideLegend: visualizationSettings.hasOwnProperty('hideLegend')
       ? visualizationSettings.hideLegend
-      : true,
+      : false,
     cumulativeValues: visualizationSettings.hasOwnProperty('cumulativeValues')
       ? visualizationSettings.cumulativeValues
       : false,

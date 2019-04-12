@@ -79,7 +79,7 @@ export class HomeComponent implements OnInit {
     this.functionsLoaded$ = store.select(getFunctionLoadedStatus);
 
     this.selectionFilterConfig = {
-      showLayout: false
+      showLayout: true
     };
   }
 
