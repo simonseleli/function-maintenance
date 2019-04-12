@@ -95,7 +95,11 @@ export class FunctionEditorComponent implements OnInit, OnChanges {
     const ruleDefinition = _.map(
       ruleDimension ? ruleDimension.items : [],
       (item: any) => {
-        if (typeof item.ruleDefinition.json === 'string') {
+        if (
+          item &&
+          item.ruleDefinition &&
+          typeof item.ruleDefinition.json === 'string'
+        ) {
           item.ruleDefinition.json = JSON.parse(item.ruleDefinition.json);
         }
         return item.ruleDefinition;
@@ -147,6 +151,7 @@ export class FunctionEditorComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (
+      changes.functionObject &&
       changes.functionObject.currentValue &&
       changes.functionObject.previousValue
     ) {
