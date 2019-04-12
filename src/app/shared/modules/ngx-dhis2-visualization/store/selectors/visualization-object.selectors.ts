@@ -1,7 +1,10 @@
 import { createSelector } from '@ngrx/store';
 
 import { Visualization } from '../../models';
-import { getVisualizationObjectEntities } from '../reducers';
+import {
+  getVisualizationObjectEntities,
+  getVisualizationLayerEntities
+} from '../reducers';
 import { getCurrentVisualizationConfig } from './visualization-configuration.selectors';
 import { getCurrentVisualizationObjectLayers } from './visualization-layer.selectors';
 
@@ -14,14 +17,14 @@ export const getVisualizationObjectById = id =>
 export const getCombinedVisualizationObjectById = id =>
   createSelector(
     getVisualizationObjectById(id),
-    getCurrentVisualizationConfig(id),
-    getCurrentVisualizationObjectLayers(id),
-    (visualizationObject, visualizationConfig, visualizationLayers) => {
+    getVisualizationLayerEntities,
+    (visualizationObject, visualizationLayerEntities) => {
       return visualizationObject
         ? {
             ...visualizationObject,
-            config: visualizationConfig,
-            layers: visualizationLayers
+            layers: (visualizationObject.layers || [])
+              .map((layerId: string) => visualizationLayerEntities[layerId])
+              .filter(layer => layer)
           }
         : null;
     }

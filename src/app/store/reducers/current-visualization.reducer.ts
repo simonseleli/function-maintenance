@@ -1,7 +1,8 @@
 import * as _ from 'lodash';
 import {
   VisualizationLayer,
-  VisualizationUiConfig
+  VisualizationUiConfig,
+  VisualizationDataSelection
 } from '../../shared/modules/ngx-dhis2-visualization/models';
 
 import {
@@ -48,7 +49,11 @@ export function currentVisualizationReducer(
         layers: _.map(state.layers, layer => {
           return {
             ...layer,
-            dataSelections: action.dataSelections
+            dataSelections: _.filter(
+              action.dataSelections || [],
+              (dataSelection: VisualizationDataSelection) =>
+                dataSelection && dataSelection.items.length > 0
+            )
           };
         })
       };

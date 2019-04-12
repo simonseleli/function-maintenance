@@ -57,7 +57,7 @@ export function getMergedDataSelections(
 
   return _.filter(
     [...unAvailableDataSelections, ...mergedDataSelections],
-    (dataSelection: any) =>
-      dataSelection ? dataSelection.items.length > 0 : false
+    (dataSelection: VisualizationDataSelection) =>
+      dataSelection && dataSelection.items.length > 0
   );
 }

@@ -48,7 +48,8 @@ export class NgxDhis2SelectionFiltersComponent implements OnInit {
   selectedFilter: string;
 
   constructor() {
-    this.showFilters = this.showFilterBody = false;
+    this.showFilters = true;
+    this.showFilterBody = false;
 
     // icons initializations
     this.filterIcon = FILTER_ICON;
@@ -109,15 +110,19 @@ export class NgxDhis2SelectionFiltersComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.selectedFilter = this.filterConfig.showDataFilter
-      ? 'DATA'
-      : this.filterConfig.showPeriodFilter
-      ? 'PERIOD'
-      : this.filterConfig.showOrgUnitFilter
-      ? 'ORG_UNIT'
-      : this.filterConfig.showLayout
-      ? 'LAYOUT'
-      : '';
+    if (!this.showFilters) {
+      this.selectedFilter = this.filterConfig.showDataFilter
+        ? 'DATA'
+        : this.filterConfig.showPeriodFilter
+        ? 'PERIOD'
+        : this.filterConfig.showOrgUnitFilter
+        ? 'ORG_UNIT'
+        : this.filterConfig.showLayout
+        ? 'LAYOUT'
+        : '';
+    } else {
+      this.selectedFilter = '';
+    }
   }
 
   toggleFilters(e) {

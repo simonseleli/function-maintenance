@@ -83,7 +83,7 @@ export class DataFilterComponent implements OnInit, OnDestroy {
     this.dataFilterPreferences = {
       enabledSelections: ['in', 'fn'],
       singleSelection: false,
-      showGroupsOnStartup: true,
+      showGroupsOnStartup: false,
       hideSelectedPanel: true
     };
 

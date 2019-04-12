@@ -89,12 +89,8 @@ export class CurrentVisualizationEffects {
       ]) =>
         new LoadVisualizationAnalyticsAction(
           currentVisualization.id,
-          _.map(currentVisualization.layers, layer => {
-            return {
-              ...layer,
-              dataSelections: action.dataSelections
-            };
-          })
+          [],
+          action.dataSelections
         )
     )
   );
