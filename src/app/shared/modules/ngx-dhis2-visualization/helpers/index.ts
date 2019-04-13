@@ -21,4 +21,7 @@ export * from './get-visualization-width-from-shape.helper';
 export * from './get-selection-dimensions-from-analytics.helper';
 export * from './get-merged-dataSelections.helper';
 export * from './get-merged-analytics.helper';
-export * from './generate-uid.helper';
+export * from './update-data-selection-based-preference.helper';
+export * from './check-if-data-selection-has-dynamic-dimension.helper';
+export * from './prepare-visualization-layers-for-analystics.helper';
+export * from './get-visualization-layers-from-favorite.helper';

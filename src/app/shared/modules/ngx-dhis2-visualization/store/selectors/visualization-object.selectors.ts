@@ -1,6 +1,10 @@
-import { createSelector, MemoizedSelector } from '@ngrx/store';
-import { getVisualizationObjectEntities } from '../reducers';
-import { Visualization, VisualizationProgress } from '../../models';
+import { createSelector } from '@ngrx/store';
+
+import { Visualization } from '../../models';
+import {
+  getVisualizationObjectEntities,
+  getVisualizationLayerEntities
+} from '../reducers';
 import { getCurrentVisualizationConfig } from './visualization-configuration.selectors';
 import { getCurrentVisualizationObjectLayers } from './visualization-layer.selectors';
 
@@ -13,25 +17,22 @@ export const getVisualizationObjectById = id =>
 export const getCombinedVisualizationObjectById = id =>
   createSelector(
     getVisualizationObjectById(id),
-    getCurrentVisualizationConfig(id),
-    getCurrentVisualizationObjectLayers(id),
-    (visualizationObject, visualizationConfig, visualizationLayers) => {
+    getVisualizationLayerEntities,
+    (visualizationObject, visualizationLayerEntities) => {
       return visualizationObject
         ? {
             ...visualizationObject,
-            config: visualizationConfig,
-            layers: visualizationLayers
+            layers: (visualizationObject.layers || [])
+              .map((layerId: string) => visualizationLayerEntities[layerId])
+              .filter(layer => layer)
           }
         : null;
     }
   );
 
 export const getCurrentVisualizationProgress = id =>
-  createSelector(getVisualizationObjectEntities, visualizationObjectEntity => {
-    const currentVisualizationObject: Visualization =
-      visualizationObjectEntity[id];
-
-    return currentVisualizationObject
-      ? currentVisualizationObject.progress
-      : null;
-  });
+  createSelector(
+    getVisualizationObjectById(id),
+    (visualizationObject: Visualization) =>
+      visualizationObject ? visualizationObject.progress : null
+  );

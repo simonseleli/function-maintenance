@@ -18,6 +18,7 @@ import { ChartType } from '../../models/chart-type.model';
 import { CHART_TYPES } from '../../constants/chart-types.constant';
 
 import { drawChart } from '../../helpers';
+import { VisualizationExportService } from '../../../../services';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -41,7 +42,7 @@ export class ChartItemComponent implements OnInit {
   currentChartType: string;
   renderId: string;
 
-  constructor() {
+  constructor(private visualizationExportService: VisualizationExportService) {
     this.chartTypes = CHART_TYPES;
     this.showOptions = true;
   }
@@ -68,7 +69,8 @@ export class ChartItemComponent implements OnInit {
     this.currentChartType = chartType;
     this.drawChart(this.analyticsObject, {
       ...this.chartConfiguration,
-      type: chartType
+      type: chartType,
+      touched: true
     });
     this.chartUpdate.emit({
       id: this.renderId,
@@ -84,7 +86,8 @@ export class ChartItemComponent implements OnInit {
     }
   }
 
-  downloadChart(filename, downloadFormat) {
+  downloadChart(downloadFormat) {
+    const filename = this.chartConfiguration.title;
     if (this.chart) {
       if (downloadFormat === 'PDF') {
         this.chart.exportChartLocal({
@@ -101,16 +104,16 @@ export class ChartItemComponent implements OnInit {
           type: 'image/svg+xml'
         });
       } else if (downloadFormat === 'CSV') {
-        // this.visualizationExportService.exportCSV(
-        //   filename,
-        //   '',
-        //   this.chart.getCSV()
-        // );
+        this.visualizationExportService.exportCSV(
+          filename,
+          '',
+          this.chart.getCSV()
+        );
       } else if (downloadFormat === 'XLS') {
-        // this.visualizationExportService.exportXLS(
-        //   filename,
-        //   this.chart.getTable()
-        // );
+        this.visualizationExportService.exportXLS(
+          filename,
+          this.chart.getTable()
+        );
       }
     }
   }

@@ -10,10 +10,8 @@ import * as fromFunctionActions from '../actions/function.actions';
 import * as fromFuctionSelectors from '../selectors/function.selectors';
 import * as fromHelpers from '../../helpers';
 
+import { FunctionObject } from '../../models/function.model';
 import { FunctionService } from '../../services/function.service';
-import { FunctionObject } from '../models/function.model';
-import { flatten } from '@angular/core/src/render3/util';
-import { VisualizationLayerActionTypes } from '../../../../../ngx-dhis2-visualization/store';
 
 @Injectable()
 export class FunctionEffects {
@@ -56,12 +54,6 @@ export class FunctionEffects {
         }
       }
     )
-  );
-
-  @Effect()
-  visualizationAnalyticsLoaded$: Observable<any> = this.actions$.pipe(
-    ofType(VisualizationLayerActionTypes.LOAD_VISUALIZATION_ANALYTICS_SUCCESS),
-    map(() => new fromFunctionActions.UpdateActiveFunction())
   );
 
   constructor(

@@ -2,7 +2,7 @@
  * Created by mpande on 2/21/18.
  */
 import { Injectable } from '@angular/core';
-import { Effect, Actions } from '@ngrx/effects';
+import { Effect, Actions, ofType } from '@ngrx/effects';
 import { catchError, map, tap, switchMap } from 'rxjs/operators';
 import * as filesAction from '../actions/files.action';
 import { of, Observable } from 'rxjs';
@@ -14,7 +14,8 @@ export class FilesEffects {
   constructor(private actions$: Actions, private fileService: fromServices.MapFilesService) {}
 
   @Effect()
-  downloadCSV$ = this.actions$.ofType(filesAction.DOWNLOAD_CSV).pipe(
+  downloadCSV$ = this.actions$.pipe(
+    ofType(filesAction.DOWNLOAD_CSV),
     map((action: filesAction.DownloadCSV) => this.fileService.downloadMapVisualizationAsCSV(action)),
     switchMap(payload => {
       return of(new filesAction.FileDownloadSuccess(payload));
@@ -22,7 +23,8 @@ export class FilesEffects {
   );
 
   @Effect()
-  downloadGML$ = this.actions$.ofType(filesAction.DOWNLOAD_GML).pipe(
+  downloadGML$ = this.actions$.pipe(
+    ofType(filesAction.DOWNLOAD_GML),
     map((action: filesAction.DownloadGML) => this.fileService.downloadMapVisualizationAsGML(action)),
     switchMap(payload => {
       return of(new filesAction.FileDownloadSuccess(payload));
@@ -30,7 +32,8 @@ export class FilesEffects {
   );
 
   @Effect()
-  downloadKML$ = this.actions$.ofType(filesAction.DOWNLOAD_KML).pipe(
+  downloadKML$ = this.actions$.pipe(
+    ofType(filesAction.DOWNLOAD_KML),
     map((action: filesAction.DownloadKML) => this.fileService.downloadMapVisualizationAsKML(action)),
     switchMap(payload => {
       return of(new filesAction.FileDownloadSuccess(payload));
@@ -38,7 +41,8 @@ export class FilesEffects {
   );
 
   @Effect()
-  downloadSHAPEFILE$ = this.actions$.ofType(filesAction.DOWNLOAD_SHAPEFILE).pipe(
+  downloadSHAPEFILE$ = this.actions$.pipe(
+    ofType(filesAction.DOWNLOAD_SHAPEFILE),
     map((action: filesAction.DownloadShapeFile) => this.fileService.downloadMapVisualizationAsSHAPEFILE(action)),
     switchMap(payload => {
       return of(new filesAction.FileDownloadSuccess(payload));
@@ -46,7 +50,8 @@ export class FilesEffects {
   );
 
   @Effect()
-  downloadJSON$ = this.actions$.ofType(filesAction.DOWNLOAD_JSON).pipe(
+  downloadJSON$ = this.actions$.pipe(
+    ofType(filesAction.DOWNLOAD_JSON),
     map((action: filesAction.DownloadJSON) => this.fileService.downloadMapVisualizationAsGeoJSON(action)),
     switchMap(payload => {
       return of(new filesAction.FileDownloadSuccess(payload));

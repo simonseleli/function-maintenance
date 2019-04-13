@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { openAnimation } from '../../animations';
+import { openAnimation } from '../../../favorite-filter/animations';
 
 @Component({
   selector: 'app-visualization-management-section',
@@ -18,10 +18,6 @@ export class VisualizationManagementSectionComponent implements OnInit {
 
   @Input()
   hideManagementBlock: boolean;
-
-  @Input()
-  hideDeleteButton: boolean;
-
   @Output()
   save: EventEmitter<any> = new EventEmitter<any>();
 

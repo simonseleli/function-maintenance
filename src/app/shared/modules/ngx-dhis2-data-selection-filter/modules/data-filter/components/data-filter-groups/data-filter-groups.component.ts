@@ -1,15 +1,20 @@
 import {
   Component,
-  OnInit,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  Output,
   EventEmitter,
-  OnDestroy
+  Input,
+  OnDestroy,
+  OnInit,
+  Output
 } from '@angular/core';
-import { DRAG_ICON, ARROW_DOWN_ICON } from '../../icons';
 import * as _ from 'lodash';
+import { DragulaService } from 'ng2-dragula';
+import { addDefaultDataGroupInList } from '../../helpers/add-default-data-group-in-list.helper';
+import { removeGroupFromList } from '../../helpers/remove-group-from-list.helper';
+import { updateDataGroupInList } from '../../helpers/update-data-group-in-list.helper';
+import { ARROW_DOWN_ICON, DRAG_ICON } from '../../icons';
+import { generateUid } from 'src/app/core';
+import { DataGroup } from '../../models/data-group.model';
+import { removeAllMembersFromGroups } from '../../helpers/remove-all-members-from-groups.helper';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -17,130 +22,138 @@ import * as _ from 'lodash';
   templateUrl: './data-filter-groups.component.html',
   styleUrls: ['./data-filter-groups.component.css']
 })
-export class DataFilterGroupsComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() dataGroups: any[];
-  @Input() selectedItems: any[];
-  @Input() selectedGroupId: string;
+export class DataFilterGroupsComponent implements OnInit, OnDestroy {
+  @Input()
+  dataGroups: any[];
+  @Input()
+  selectedItems: any[];
+  @Input()
+  selectedGroupId: string;
 
-  @Output() dataGroupsUpdate: EventEmitter<any[]> = new EventEmitter<any[]>();
+  @Input()
+  dataGroupPreferences: {
+    maximumNumberOfGroups: number;
+    maximumItemPerGroup: number;
+  };
   @Output()
-  selectedGroupUpdate: EventEmitter<string> = new EventEmitter<string>();
+  dataGroupsUpdate: EventEmitter<any[]> = new EventEmitter<any[]>();
+
+  @Output()
+  selectedGroupIdUpdate: EventEmitter<string> = new EventEmitter<string>();
+
+  @Output()
+  removeMember: EventEmitter<any> = new EventEmitter<any>();
+
+  @Output()
+  updateMember: EventEmitter<any> = new EventEmitter<any>();
+
+  @Output()
+  updateSelectedItems: EventEmitter<any[]> = new EventEmitter<any[]>();
   // icons
   dragIcon: string;
   arrowDownIcon: string;
-  constructor() {
+
+  constructor(private dragulaService: DragulaService) {
     this.dragIcon = DRAG_ICON;
     this.arrowDownIcon = ARROW_DOWN_ICON;
     this.dataGroups = [];
-    this.selectedGroupId = 'group_1';
+
+    this.dragulaService.createGroup('GROUPS', {
+      direction: 'vertical',
+      moves: (el, source, handle) => handle.className === 'group-handle'
+    });
   }
 
-  get dataGroupsVm() {
-    return _.map(
-      this.dataGroups || [],
-      (dataGroup: any, dataGroupIndex: number) => {
-        return {
-          ...dataGroup,
-          current: this.selectedGroupId
-            ? dataGroup.id === this.selectedGroupId
-            : dataGroupIndex === 0
-        };
-      }
-    );
+  get selectedGroup() {
+    return _.find(this.dataGroups || [], ['id', this.selectedGroupId]);
   }
 
-  ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges['selectedItems']) {
-      if (this.dataGroups.length === 1) {
-        this.dataGroups = _.map(this.dataGroups, dataGroup => {
-          return {
-            ...dataGroup,
-            members: _.map(this.selectedItems, selectedItem => {
-              return {
-                id: selectedItem.id,
-                name: selectedItem.name
-              };
-            })
-          };
-        });
-      } else {
-        let alreadySelectedItems = [];
-        this.dataGroups = _.map(
-          _.map(this.dataGroups, dataGroup => {
-            return {
-              ...dataGroup,
-              members:
-                !dataGroup.current && dataGroup.members.length > 0
-                  ? _.filter(dataGroup.members, member => {
-                      const availableMember = _.find(this.selectedItems, [
-                        'id',
-                        member.id
-                      ]);
-
-                      // save already selected item for future use
-                      alreadySelectedItems = availableMember
-                        ? [...alreadySelectedItems, availableMember]
-                        : alreadySelectedItems;
-
-                      return availableMember;
-                    })
-                  : dataGroup.members
-            };
-          }),
-          newDataGroup => {
-            console.log(alreadySelectedItems, newDataGroup);
-            return {
-              ...newDataGroup,
-              members: newDataGroup.current
-                ? _.filter(
-                    this.selectedItems,
-                    selectedItem =>
-                      !_.find(alreadySelectedItems, ['id', selectedItem.id])
-                  )
-                : newDataGroup.members
-            };
-          }
-        );
-      }
-      this.dataGroupsUpdate.emit(this.dataGroups);
+  ngOnInit() {
+    if (!this.selectedGroupId && this.dataGroups[0]) {
+      this.selectedGroupId = this.dataGroups[0].id;
     }
   }
 
-  ngOnInit() {}
-
   onAddGroup(e) {
     e.stopPropagation();
-    const currentGroupLength = this.dataGroups.length;
-    this.dataGroups = [
-      ..._.map(this.dataGroups, dataGroup => {
-        return { ...dataGroup, current: false };
-      }),
-      {
-        id: `group_${currentGroupLength + 1}`,
-        name: `Untitled Group ${currentGroupLength + 1}`,
-        current: true,
-        members: []
-      }
-    ];
-
-    this.dataGroupsUpdate.emit(this.dataGroups);
+    const newGroupId = generateUid();
+    this.selectedGroupId = newGroupId;
+    this.dataGroups = addDefaultDataGroupInList(this.dataGroups, newGroupId);
+    this.selectedGroupIdUpdate.emit(this.selectedGroupId);
   }
 
   onSetCurrentGroup(currentDataGroup, e) {
     e.stopPropagation();
-    this.dataGroups = _.map(this.dataGroups, (dataGroup: any) => {
-      return {
-        ...dataGroup,
-        current: dataGroup.id === currentDataGroup.id && !dataGroup.current
-      };
+
+    if (currentDataGroup.id === this.selectedGroupId) {
+      this.selectedGroupId = '';
+    } else {
+      this.selectedGroupId = currentDataGroup.id;
+    }
+
+    this.selectedGroupIdUpdate.emit(this.selectedGroupId);
+  }
+
+  onUpdateMember(member: any) {
+    this.updateMember.emit(member);
+  }
+
+  onRemoveMember(memberDetails: { dataItem: any; group: DataGroup }) {
+    this.removeMember.emit(memberDetails);
+  }
+
+  onRemovedAllMembers() {
+    this.dataGroups = removeAllMembersFromGroups(this.dataGroups);
+  }
+
+  onDeleteGroup(group: any, e) {
+    e.stopPropagation();
+    // remove group members
+    _.each(group ? group.members : [], (groupMember: any) => {
+      this.removeMember.emit(groupMember);
     });
 
+    this.dataGroups = removeGroupFromList(this.dataGroups, group);
+
+    this.emitDataGroups();
+  }
+
+  onSortGroups(sortedDataGroups: any[]) {
+    this.dataGroups = [...sortedDataGroups];
+    this.emitDataGroups();
+  }
+
+  onSortGroupMembers(sortedMembers: any[], group: any) {
+    const groupIndex = this.dataGroups.indexOf(
+      _.find(this.dataGroups, ['id', group.id])
+    );
+
+    if (groupIndex !== -1) {
+      this.dataGroups = [
+        ..._.slice(this.dataGroups, 0, groupIndex),
+        { ...group, members: sortedMembers },
+        ..._.slice(this.dataGroups, groupIndex + 1)
+      ];
+
+      this.updateSelectedItems.emit(
+        _.flatten(_.map(this.dataGroups, (dataGroup: any) => dataGroup.members))
+      );
+
+      this.emitDataGroups();
+    }
+  }
+
+  emitDataGroups() {
     this.dataGroupsUpdate.emit(this.dataGroups);
-    this.selectedGroupUpdate.emit(currentDataGroup.id);
+  }
+
+  onUpdateDataGroup(dataGroup: any) {
+    this.dataGroups = updateDataGroupInList(this.dataGroups, dataGroup);
+    this.emitDataGroups();
   }
 
   ngOnDestroy() {
-    this.dataGroupsUpdate.emit(this.dataGroups);
-    this.selectedGroupUpdate.emit(this.selectedGroupId);
+    this.dragulaService.destroy('GROUPS');
+    this.emitDataGroups();
   }
 }

@@ -1,18 +1,18 @@
 import {
   Component,
-  OnInit,
-  Input,
-  Output,
   EventEmitter,
-  SimpleChanges,
-  OnChanges
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
 } from '@angular/core';
-import { FunctionObject } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
-import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
-import * as _ from 'lodash';
-import { UpsertFunction } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
-import { AppState } from '../../store/reducers/index';
 import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
+import { FunctionObject } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
+
+import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
+import { AppState } from '../../store/reducers';
 
 @Component({
   selector: 'app-function-editor',
@@ -95,7 +95,11 @@ export class FunctionEditorComponent implements OnInit, OnChanges {
     const ruleDefinition = _.map(
       ruleDimension ? ruleDimension.items : [],
       (item: any) => {
-        if (typeof item.ruleDefinition.json === 'string') {
+        if (
+          item &&
+          item.ruleDefinition &&
+          typeof item.ruleDefinition.json === 'string'
+        ) {
           item.ruleDefinition.json = JSON.parse(item.ruleDefinition.json);
         }
         return item.ruleDefinition;
@@ -147,6 +151,7 @@ export class FunctionEditorComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (
+      changes.functionObject &&
       changes.functionObject.currentValue &&
       changes.functionObject.previousValue
     ) {

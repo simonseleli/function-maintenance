@@ -5,21 +5,24 @@ import {
   OnChanges,
   OnInit,
   Output,
-  EventEmitter
+  EventEmitter,
+  ViewChild
 } from '@angular/core';
 import { VisualizationLayer } from '../../models/visualization-layer.model';
 import { VisualizationInputs } from '../../models/visualization-inputs.model';
-import { Observable, Subject, forkJoin, pipe, of } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Visualization } from '../../models/visualization.model';
 import { VisualizationUiConfig } from '../../models/visualization-ui-config.model';
 import { VisualizationProgress } from '../../models/visualization-progress.model';
 import { VisualizationConfig } from '../../models/visualization-config.model';
+import { LegendSet } from '../../models/legend-set.model';
 import { VisualizationState } from '../../store/reducers';
 import { Store } from '@ngrx/store';
 import {
   InitializeVisualizationObjectAction,
   UpdateVisualizationObjectAction,
-  SaveVisualizationFavoriteAction
+  SaveVisualizationFavoriteAction,
+  ToggleVisualizationFullScreenAction
 } from '../../store/actions/visualization-object.actions';
 import {
   getCurrentVisualizationProgress,
@@ -41,20 +44,25 @@ import {
   LoadVisualizationAnalyticsAction,
   UpdateVisualizationLayerAction
 } from '../../store/actions/visualization-layer.actions';
-import { take, switchMap, map, distinctUntilChanged } from 'rxjs/operators';
-import { openAnimation } from '../../animations';
+import { take, map, switchMap } from 'rxjs/operators';
+import { VisualizationBodySectionComponent } from '../../components/visualization-body-section/visualization-body-section';
+import { openAnimation } from '../../../favorite-filter/animations';
+import { UpdateVisualizationObject } from '../../modules/map/store';
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'ngx-dhis2-visualization',
   templateUrl: './visualization.component.html',
   styleUrls: ['./visualization.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [openAnimation]
 })
-export class VisualizationComponent implements OnInit, OnChanges {
+export class VisualizationComponent implements OnInit {
+  @Input()
+  visualizationObject: any;
   @Input()
   id: string;
+  @Input()
+  visualizationConfig: VisualizationConfig;
   @Input()
   type: string;
   @Input()
@@ -67,6 +75,9 @@ export class VisualizationComponent implements OnInit, OnChanges {
   dashboardId: string;
   @Input()
   currentUser: any;
+
+  @Input()
+  legendSets: LegendSet[];
   @Input()
   systemInfo: any;
   cardFocused: boolean;
@@ -77,6 +88,9 @@ export class VisualizationComponent implements OnInit, OnChanges {
   @Output()
   deleteVisualization: EventEmitter<any> = new EventEmitter<any>();
 
+  @ViewChild(VisualizationBodySectionComponent)
+  visualizationBody: VisualizationBodySectionComponent;
+
   private _visualizationInputs$: Subject<VisualizationInputs> = new Subject();
   visualizationObject$: Observable<Visualization>;
   visualizationLayers$: Observable<VisualizationLayer[]>;
@@ -85,57 +99,61 @@ export class VisualizationComponent implements OnInit, OnChanges {
   visualizationConfig$: Observable<VisualizationConfig>;
   focusedVisualization$: Observable<string>;
 
-  constructor(private store: Store<VisualizationState>) {
-    this.cardFocused = false;
-    this.type = 'CHART';
-    this._visualizationInputs$.asObservable().subscribe(visualizationInputs => {
-      if (visualizationInputs) {
-        // initialize visualization object
-        this.store.dispatch(
-          new InitializeVisualizationObjectAction(
-            visualizationInputs.id,
-            visualizationInputs.name,
-            visualizationInputs.type,
-            visualizationInputs.visualizationLayers,
-            visualizationInputs.currentUser,
-            visualizationInputs.systemInfo
+  constructor(private store: Store<VisualizationState>) {}
+
+  ngOnInit() {
+    if (this.visualizationObject) {
+      // initialize visualization object
+      this.store.dispatch(
+        new InitializeVisualizationObjectAction(
+          this.visualizationObject.id,
+          this.visualizationObject.name,
+          this.visualizationObject.type,
+          this.visualizationObject.layers,
+          this.visualizationObject,
+          this.currentUser,
+          this.systemInfo
+        )
+      );
+
+      // Set visualization selectors
+      this.setOrUpdateSelectors(this.visualizationObject);
+    }
+  }
+
+  setOrUpdateSelectors(visualizationObject) {
+    this.visualizationObject$ = this.store.select(
+      getVisualizationObjectById(visualizationObject.id)
+    );
+
+    this.visualizationLayers$ = this.visualizationObject$.pipe(
+      switchMap((visualization: Visualization) =>
+        this.store.select(
+          getCurrentVisualizationObjectLayers(
+            visualization ? visualization.layers : []
           )
-        );
+        )
+      )
+    );
 
-        // Get selectors
-        this.visualizationObject$ = this.store.select(
-          getVisualizationObjectById(visualizationInputs.id)
-        );
-        this.visualizationLayers$ = this.store.select(
-          getCurrentVisualizationObjectLayers(visualizationInputs.id)
-        );
-        this.visualizationUiConfig$ = this.store.select(
-          getCurrentVisualizationUiConfig(visualizationInputs.id)
-        );
-        this.visualizationProgress$ = this.store.select(
-          getCurrentVisualizationProgress(visualizationInputs.id)
-        );
-        this.visualizationConfig$ = this.store.select(
-          getCurrentVisualizationConfig(visualizationInputs.id)
-        );
+    this.visualizationProgress$ = this.visualizationObject$.pipe(
+      map((visualization: Visualization) =>
+        visualization ? visualization.progress : null
+      )
+    );
 
-        this.focusedVisualization$ = store.select(getFocusedVisualization);
-      }
-    });
+    this.visualizationUiConfig$ = this.visualizationObject$.pipe(
+      map((visualization: Visualization) =>
+        visualization ? visualization.uiConfig : null
+      )
+    );
+
+    this.visualizationConfig$ = this.store.select(
+      getCurrentVisualizationConfig(visualizationObject.id)
+    );
+
+    this.focusedVisualization$ = this.store.select(getFocusedVisualization);
   }
-
-  ngOnChanges() {
-    this._visualizationInputs$.next({
-      id: this.id,
-      type: this.type,
-      visualizationLayers: this.visualizationLayers,
-      name: this.name,
-      currentUser: this.currentUser,
-      systemInfo: this.systemInfo
-    });
-  }
-
-  ngOnInit() {}
 
   onToggleVisualizationBody(uiConfig) {
     this.store.dispatch(
@@ -145,25 +163,39 @@ export class VisualizationComponent implements OnInit, OnChanges {
     );
   }
 
-  onVisualizationTypeChange(visualizationTypeObject) {
+  onVisualizationTypeChange(visualizationType: string) {
     this.store.dispatch(
-      new UpdateVisualizationConfigurationAction(visualizationTypeObject.id, {
-        currentType: visualizationTypeObject.type
+      new UpdateVisualizationObjectAction(this.visualizationObject.id, {
+        currentType: visualizationType
       })
     );
+
+    if (
+      visualizationType === 'MAP' ||
+      this.visualizationObject.type === 'MAP'
+    ) {
+      this.visualizationLayers$
+        .pipe(take(1))
+        .subscribe((visualizationLayers: VisualizationLayer[]) => {
+          this.store.dispatch(
+            new LoadVisualizationAnalyticsAction(
+              this.visualizationObject.id,
+              visualizationLayers
+            )
+          );
+        });
+    }
   }
 
-  onFullScreenAction(event: {
-    id: string;
-    uiConfigId: string;
-    fullScreen: boolean;
-  }) {
+  onToggleFullScreenAction(fullScreenStatus: boolean) {
     this.toggleFullScreen.emit({
-      id: this.id,
+      id: this.visualizationObject.id,
       dashboardId: this.dashboardId,
-      fullScreen: event.fullScreen
+      fullScreen: fullScreenStatus
     });
-    this.store.dispatch(new ToggleFullScreenAction(event.uiConfigId));
+    this.store.dispatch(
+      new ToggleVisualizationFullScreenAction(this.visualizationObject.id)
+    );
   }
 
   onLoadVisualizationAnalytics(visualizationLayer: VisualizationLayer) {
@@ -197,9 +229,12 @@ export class VisualizationComponent implements OnInit, OnChanges {
         .pipe(take(1))
         .subscribe((visualizationUiConfig: VisualizationUiConfig) => {
           this.store.dispatch(
-            new ToggleVisualizationFocusAction(visualizationUiConfig.id, {
-              hideFooter: !focused,
-              hideResizeButtons: !focused
+            new UpdateVisualizationObjectAction(this.visualizationObject.id, {
+              uiConfig: {
+                ...visualizationUiConfig,
+                hideFooter: !focused,
+                hideResizeButtons: !focused
+              }
             })
           );
           this.cardFocused = focused;
@@ -225,5 +260,14 @@ export class VisualizationComponent implements OnInit, OnChanges {
           })
         );
       });
+  }
+
+  onVisualizationDownload(downloadDetails: any) {
+    if (this.visualizationBody) {
+      this.visualizationBody.onDownloadVisualization(
+        downloadDetails.type,
+        downloadDetails.downloadFormat
+      );
+    }
   }
 }

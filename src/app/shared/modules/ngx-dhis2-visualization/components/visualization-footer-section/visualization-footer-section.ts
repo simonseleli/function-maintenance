@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { openAnimation } from '../../animations';
+import { openAnimation } from '../../../favorite-filter/animations';
 
 /**
  * Generated class for the VisualizationFooterSectionComponent component.
@@ -8,7 +8,6 @@ import { openAnimation } from '../../animations';
  * Components.
  */
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'visualization-footer-section',
   templateUrl: 'visualization-footer-section.html',
   styleUrls: ['./visualization-footer-section.css'],
@@ -16,25 +15,21 @@ import { openAnimation } from '../../animations';
 })
 export class VisualizationFooterSectionComponent {
   @Input()
-  type: string;
+  visualizationType: string;
   @Input()
   name: string;
   @Input()
   description: string;
   @Input()
-  configId: string;
-  @Input()
   hideTypeButtons: boolean;
   @Input()
   hideManagementBlock: boolean;
+
   @Input()
-  hideDeleteButton: boolean;
+  hideDownloadBlock: boolean;
 
   @Output()
-  visualizationTypeChange: EventEmitter<{
-    id: string;
-    type: string;
-  }> = new EventEmitter<{ id: string; type: string }>();
+  visualizationTypeChange: EventEmitter<string> = new EventEmitter<string>();
 
   @Output()
   saveVisualization: EventEmitter<any> = new EventEmitter<any>();
@@ -42,12 +37,15 @@ export class VisualizationFooterSectionComponent {
   @Output()
   removeVisualization: EventEmitter<any> = new EventEmitter<any>();
 
+  @Output()
+  download: EventEmitter<any> = new EventEmitter<any>();
+
   constructor() {
     this.hideManagementBlock = this.hideTypeButtons = true;
   }
 
-  onVisualizationTypeChange(type: string) {
-    this.visualizationTypeChange.emit({ id: this.configId, type: type });
+  onVisualizationTypeChange(visualizationType: string) {
+    this.visualizationTypeChange.emit(visualizationType);
   }
 
   onVisualizationSave(visualizationDetails: any) {
@@ -56,5 +54,12 @@ export class VisualizationFooterSectionComponent {
 
   onVisualizationRemove(details: any) {
     this.removeVisualization.emit(details);
+  }
+
+  onDownload(downloadFormat: string) {
+    this.download.emit({
+      visualizationType: this.visualizationType,
+      downloadFormat: downloadFormat
+    });
   }
 }

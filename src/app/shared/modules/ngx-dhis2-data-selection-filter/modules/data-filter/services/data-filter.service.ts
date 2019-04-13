@@ -4,16 +4,11 @@ import * as _ from 'lodash';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { NgxDhis2HttpClientService } from '@hisptz/ngx-dhis2-http-client';
 
-import * as fromFunctionReducer from '../store/reducers/function.reducer';
-import * as fromFunctionSelectors from '../store/selectors/function.selectors';
-
 import { DataSet } from '../model/dataset';
 import { DataelementGroup } from '../model/dataelement-group';
-import { IndicatorGroup } from '../model/indicator-group';
 import { CategoryCombo } from '../model/category-combo';
 import { Indicator } from '../model/indicator';
 import { DataElement } from '../model/data-element';
-import { Store } from '@ngrx/store';
 
 export const DATAELEMENT_KEY = 'data-elements';
 export const DATASET_KEY = 'data-sets';
@@ -41,10 +36,7 @@ export class DataFilterService {
 
   private _dataItems: any[] = [];
 
-  constructor(
-    private http: NgxDhis2HttpClientService,
-    private functionStore: Store<fromFunctionReducer.State>
-  ) {}
+  constructor(private http: NgxDhis2HttpClientService) {}
 
   getIndicators(): Observable<Indicator[]> {
     return this.http
@@ -91,7 +83,7 @@ export class DataFilterService {
       .pipe(map(res => res.dataElementGroups || []));
   }
 
-  getIndicatorGroups(): Observable<IndicatorGroup[]> {
+  getIndicatorGroups(): Observable<any[]> {
     return this.http
       .get(
         'indicatorGroups.json?paging=false&fields=id,name,indicators[id,name]'
@@ -114,7 +106,16 @@ export class DataFilterService {
   }
 
   getFunctions(): Observable<any> {
-    return this.functionStore.select(fromFunctionSelectors.getFunctions);
+    return this.http.get('dataStore/functions').pipe(
+      switchMap((functionIds: Array<string>) =>
+        forkJoin(
+          _.map(functionIds, (functionId: string) =>
+            this.http.get('dataStore/functions/' + functionId)
+          )
+        ).pipe(catchError(() => of([])))
+      ),
+      catchError(() => of([]))
+    );
   }
 
   initiateData() {

@@ -10,20 +10,19 @@ export function getStandardizedVisualizationUiConfig(
     visualizationItem.type
   );
 
-  const isFullScreen = currentVisualizationItemId === visualizationItem.id;
+  const isFullScreen =
+    visualizationItem.id && currentVisualizationItemId === visualizationItem.id;
   return {
-    id: visualizationItem.id,
     shape: visualizationItem.shape || 'NORMAL',
-    height: isFullScreen ? '99vh' : '500px',
+    height: isFullScreen ? '99vh' : '450px',
     width: getVisualizationWidthFromShape(visualizationItem.shape || 'NORMAL'),
     showBody: true,
     fullScreen: isFullScreen,
     showFilters: false,
     hideFooter: true,
     hideHeader: false,
-    hideManagementBlock: true,
-    hideDeleteButton: true,
-    hideTypeButtons: isNonVisualizable,
+    hideManagementBlock: !isNonVisualizable,
+    hideTypeButtons: false,
     showInterpretionBlock: !isNonVisualizable,
     hideResizeButtons: true,
     showTitleBlock: false

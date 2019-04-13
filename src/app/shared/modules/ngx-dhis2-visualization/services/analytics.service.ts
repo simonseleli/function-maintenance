@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
-import { Observable, of, forkJoin, throwError } from 'rxjs';
+import { Observable, of, forkJoin, throwError, pipe } from 'rxjs';
 import { NgxDhis2HttpClientService } from '@hisptz/ngx-dhis2-http-client';
 
 import { VisualizationDataSelection } from '../models';
@@ -51,20 +51,19 @@ export class AnalyticsService {
     const analyticsUrl = !layerType
       ? getAnalyticsUrl(dataSelections, 'thematic', config)
       : layerType === 'thematic' || layerType === 'event'
-        ? getAnalyticsUrl(dataSelections, layerType, config)
-        : '';
+      ? getAnalyticsUrl(dataSelections, layerType, config)
+      : '';
     return analyticsUrl !== ''
       ? this.http.get(analyticsUrl).pipe(
-          mergeMap(
-            (analytics: any) =>
-              analytics.count && analytics.count < 2000
-                ? this.http.get(
-                    getAnalyticsUrl(dataSelections, layerType, {
-                      ...config,
-                      eventClustering: false
-                    })
-                  )
-                : of(analytics)
+          mergeMap((analytics: any) =>
+            analytics.count && analytics.count < 2000
+              ? this.http.get(
+                  getAnalyticsUrl(dataSelections, layerType, {
+                    ...config,
+                    eventClustering: false
+                  })
+                )
+              : of(analytics)
           )
         )
       : of(null);
@@ -84,7 +83,7 @@ export class AnalyticsService {
       ? _.join(_.map(peObject.items, item => item.id), ';')
       : '';
 
-    const dynamicDimensions = _.filter(
+    const dimensions = _.filter(
       dataSelections,
       (dataSelection: any) =>
         ['pe', 'dx', 'ou'].indexOf(dataSelection.dimension) === -1
@@ -95,45 +94,48 @@ export class AnalyticsService {
       return null;
     }
 
-    const functionAnalyticsPromises = _.map(dxObject.items, (dxItem: any) => {
-      let functionPromise = of(null);
-      try {
-        const functionRuleJson =
-          typeof dxItem.ruleDefinition.json === 'string'
-            ? JSON.parse(dxItem.ruleDefinition.json)
-            : dxItem.ruleDefinition.json;
-        functionPromise = this._runFunction(
-          {
-            pe: peValue,
-            ou: ouValue,
-            dynamicDimensions,
-            rule: {
-              ...dxItem.ruleDefinition,
-              json: functionRuleJson
+    const functionAnalyticsPromises = _.map(
+      dxObject.items || [],
+      (dxItem: any) => {
+        let functionPromise = of(null);
+        try {
+          const functionRuleJson =
+            typeof dxItem.ruleDefinition.json === 'string'
+              ? JSON.parse(dxItem.ruleDefinition.json)
+              : dxItem.ruleDefinition.json;
+          functionPromise = this._runFunction(
+            {
+              pe: peValue,
+              ou: ouValue,
+              dimensions,
+              rule: {
+                ...dxItem.ruleDefinition,
+                json: functionRuleJson
+              },
+              dataSelections,
+              success: result => {},
+              error: error => {},
+              progress: progress => {}
             },
-            dataSelections,
-            success: result => {},
-            error: error => {},
-            progress: progress => {}
-          },
-          dxItem.functionObject ? dxItem.functionObject.functionString : ''
-        );
-      } catch (e) {
-        functionPromise = throwError({
-          status: '400',
-          statusText: 'Internal server error',
-          error: 'Something is wrong with your rule definition, ' + e
-        });
+            dxItem.functionObject ? dxItem.functionObject.functionString : ''
+          );
+        } catch (e) {
+          functionPromise = throwError({
+            status: '400',
+            statusText: 'Internal server error',
+            error: 'Something is wrong with your rule definition, ' + e
+          });
+        }
+        return functionPromise;
       }
-      return functionPromise;
-    });
+    );
 
     return forkJoin(functionAnalyticsPromises).pipe(
-      map((analyticsResults: any[]) =>
-        getMergedAnalytics(
+      map((analyticsResults: any[]) => {
+        return getMergedAnalytics(
           this._getSanitizedAnalyticsArray(analyticsResults, dataSelections)
-        )
-      )
+        );
+      })
     );
   }
 

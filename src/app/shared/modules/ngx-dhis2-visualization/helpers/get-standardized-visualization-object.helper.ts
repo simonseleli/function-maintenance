@@ -1,38 +1,49 @@
-import { Visualization, VisualizationLayer } from '../models';
 import * as _ from 'lodash';
+
+import { Visualization } from '../models';
 import { checkIfVisualizationIsNonVisualizable } from './check-if-visualization-is-non-visualizable.helper';
-import { generateUid } from './generate-uid.helper';
+import { getStandardizedVisualizationUiConfig } from './get-standardized-visualization-ui-config.helper';
 
 export function getStandardizedVisualizationObject(
-  visualizationItem: any,
-  visualizationLayers?: VisualizationLayer[]
+  visualizationItem: any
 ): Visualization {
   const isNonVisualizable = checkIfVisualizationIsNonVisualizable(
     visualizationItem.type
   );
-  const favoriteId =
-    visualizationLayers && visualizationLayers[0]
-      ? visualizationLayers[0].id
-      : '';
   const visualizationObject = {
     id: visualizationItem.id,
+    title: getVisualizationTitle(visualizationItem),
     name: getVisualizationName(visualizationItem),
     type: visualizationItem.type,
-    favorite: getFavoriteDetails(visualizationItem, favoriteId),
+    favorite: getFavoriteDetails(visualizationItem),
     created: visualizationItem.created,
     appKey: visualizationItem.appKey,
     lastUpdated: visualizationItem.lastUpdated,
     isNew: visualizationItem.isNew,
     isNonVisualizable,
+    uiConfig: getStandardizedVisualizationUiConfig(visualizationItem),
     progress: {
       statusCode: 200,
       statusText: 'OK',
       percent: 0,
       message: 'Loading..'
     },
-    layers: []
+    layers: getVisualizationLayers(visualizationItem)
   };
   return visualizationObject;
+}
+
+function getVisualizationLayers(visualizationItem: any) {
+  if (!visualizationItem) {
+    return [];
+  }
+
+  const favoriteItemArray =
+    visualizationItem[_.camelCase(visualizationItem.type)];
+
+  return _.isArray(favoriteItemArray)
+    ? (favoriteItemArray || []).map((item: any) => item.id)
+    : [];
 }
 
 function getVisualizationName(visualizationItem: any) {
@@ -56,16 +67,27 @@ function getVisualizationName(visualizationItem: any) {
         ? visualizationItem.name
         : visualizationItem.type &&
           visualizationItem.hasOwnProperty(_.camelCase(visualizationItem.type))
-          ? _.isPlainObject(
-              visualizationItem[_.camelCase(visualizationItem.type)]
-            )
-            ? visualizationItem[_.camelCase(visualizationItem.type)].displayName
-            : 'Untitled'
-          : 'Untitled';
+        ? _.isPlainObject(
+            visualizationItem[_.camelCase(visualizationItem.type)]
+          )
+          ? visualizationItem[_.camelCase(visualizationItem.type)].displayName
+          : 'Untitled'
+        : 'Untitled';
   }
 }
 
-function getFavoriteDetails(visualizationItem: any, favoriteId?: string) {
+function getVisualizationTitle(visualizationItem: any) {
+  return visualizationItem.title
+    ? visualizationItem.title
+    : visualizationItem.type &&
+      visualizationItem.hasOwnProperty(_.camelCase(visualizationItem.type))
+    ? _.isPlainObject(visualizationItem[_.camelCase(visualizationItem.type)])
+      ? visualizationItem[_.camelCase(visualizationItem.type)].title
+      : undefined
+    : undefined;
+}
+
+function getFavoriteDetails(visualizationItem: any) {
   if (!visualizationItem) {
     return null;
   }
@@ -78,9 +100,5 @@ function getFavoriteDetails(visualizationItem: any, favoriteId?: string) {
         useTypeAsBase: true,
         requireAnalytics: true
       }
-    : {
-        id: favoriteId !== '' ? favoriteId : generateUid(),
-        name: getVisualizationName(visualizationItem),
-        type: _.camelCase(visualizationItem.type)
-      };
+    : null;
 }

@@ -5,6 +5,7 @@ export interface ChartConfiguration {
   subtitle: string;
   xAxisType: any[];
   yAxisType: string;
+  zAxisType: string[];
   showData: boolean;
   hideTitle: boolean;
   hideSubtitle: boolean;
@@ -21,7 +22,9 @@ export interface ChartConfiguration {
   baseLineLabel: string;
   legendAlign: string;
   reverseLegend: boolean;
-  rangeAxisMaxValue: number,
-  rangeAxisMinValue: number,
+  rangeAxisMaxValue: number;
+  rangeAxisMinValue: number;
   axes: any[];
+  dataSelections?: any;
+  touched?: boolean;
 }

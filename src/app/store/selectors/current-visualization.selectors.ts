@@ -1,7 +1,7 @@
 import { createSelector } from '@ngrx/store';
-import { getRootState, AppState } from '../reducers';
+
+import { AppState, getRootState } from '../reducers';
 import { CurrentVisualizationState } from '../reducers/current-visualization.reducer';
-import { VisualizationLayer } from '../../shared/modules/ngx-dhis2-visualization/models';
 
 export const getCurrentVisualization = createSelector(
   getRootState,

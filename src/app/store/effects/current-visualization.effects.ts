@@ -1,48 +1,45 @@
 import { Injectable } from '@angular/core';
-import * as _ from 'lodash';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Observable } from 'rxjs';
-import { UserActionTypes, AddCurrentUser, Go } from '../actions';
-import {
-  map,
-  withLatestFrom,
-  first,
-  take,
-  tap,
-  switchMap
-} from 'rxjs/operators';
+import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { Store } from '@ngrx/store';
-import { AppState } from '../reducers';
-import { getCurrentVisualization, getQueryParams } from '../selectors';
-import { CurrentVisualizationState } from '../reducers/current-visualization.reducer';
-import { getDefaultVisualizationLayer } from '../../shared/modules/ngx-dhis2-visualization/helpers/get-default-visualization-layer.helper';
-import {
-  AddOrUpdateCurrentVisualizationAction,
-  CurrentVisualizationActionTypes,
-  UpdateCurrentVisualizationWithDataSelectionsAction,
-  SimulateVisualizationAction,
-  AddVisualizationItemAction
-} from '../actions/current-visualization.actions';
-import {
-  generateUid,
-  getSelectionDimensionsFromFavorite,
-  getVisualizationLayerType
-} from '../../shared/modules/ngx-dhis2-visualization/helpers';
-import { LoadVisualizationAnalyticsAction } from '../../shared/modules/ngx-dhis2-visualization/store';
+import * as _ from 'lodash';
+import { Observable } from 'rxjs';
+import { first, map, take, tap, withLatestFrom } from 'rxjs/operators';
+import { getSelectedFunctions } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors/function.selectors';
 
-import * as fromFunctionSelectors from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors';
 import * as fromFunctionRuleActions from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
+import {
+  AddFunctions,
+  FunctionActionTypes,
+  SetActiveFunction
+} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
+import {
+  getSelectionDimensionsFromFavorite,
+  getVisualizationLayerType,
+  getVisualizationLayersFromFavorite,
+  getStandardizedVisualizationUiConfig
+} from '../../shared/modules/ngx-dhis2-visualization/helpers';
+import { getDefaultVisualizationLayer } from '../../shared/modules/ngx-dhis2-visualization/helpers/get-default-visualization-layer.helper';
 import {
   VisualizationDataSelection,
   VisualizationLayer
 } from '../../shared/modules/ngx-dhis2-visualization/models';
 import { FavoriteService } from '../../shared/modules/ngx-dhis2-visualization/services';
-import { ROUTER_NAVIGATION, RouterNavigationAction } from '@ngrx/router-store';
 import {
-  SetActiveFunction,
-  FunctionActionTypes,
-  AddFunctions
-} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
+  LoadVisualizationAnalyticsAction,
+  VisualizationLayerActionTypes
+} from '../../shared/modules/ngx-dhis2-visualization/store';
+import { AddCurrentUser, Go, UserActionTypes } from '../actions';
+import {
+  AddOrUpdateCurrentVisualizationAction,
+  AddVisualizationItemAction,
+  CurrentVisualizationActionTypes,
+  UpdateCurrentVisualizationWithDataSelectionsAction
+} from '../actions/current-visualization.actions';
+import { AppState } from '../reducers';
+import { CurrentVisualizationState } from '../reducers/current-visualization.reducer';
+import { getCurrentVisualization, getQueryParams } from '../selectors';
+import { generateUid } from 'src/app/core';
 
 @Injectable()
 export class CurrentVisualizationEffects {
@@ -56,7 +53,7 @@ export class CurrentVisualizationEffects {
         CurrentVisualizationState
       ]) => {
         this.store
-          .select(fromFunctionSelectors.getSelectedFunctions)
+          .select(getSelectedFunctions)
           .pipe(
             first((selectedFunctions: any[]) => selectedFunctions.length > 0)
           )
@@ -97,12 +94,8 @@ export class CurrentVisualizationEffects {
       ]) =>
         new LoadVisualizationAnalyticsAction(
           currentVisualization.id,
-          _.map(currentVisualization.layers, layer => {
-            return {
-              ...layer,
-              dataSelections: action.dataSelections
-            };
-          })
+          [],
+          action.dataSelections
         )
     )
   );
@@ -196,63 +189,50 @@ export class CurrentVisualizationEffects {
   addVisualizationItem$: Observable<any> = this.actions$.pipe(
     ofType(CurrentVisualizationActionTypes.AddVisualizationItem),
     tap((action: AddVisualizationItemAction) => {
-      this.store.dispatch(
-        new AddOrUpdateCurrentVisualizationAction({
-          id: action.visualizationItem.id,
-          type: action.visualizationItem.type,
+      if (
+        action.favorite &&
+        action.favorite.dashboardTypeDetails &&
+        action.favorite.dashboardTypeDetails.type &&
+        action.favorite.id
+      ) {
+        const visualizationType = action.favorite.dashboardTypeDetails.type;
+        const visualizationObject = {
+          id: generateUid(),
+          type: visualizationType,
+          name: action.favorite.name,
+          uiConfig: getStandardizedVisualizationUiConfig({
+            type: visualizationType
+          }),
           loading: true,
-          error: null,
           layers: []
-        })
-      );
-      const favorite =
-        action.visualizationItem[_.camelCase(action.visualizationItem.type)];
+        };
+        this.store.dispatch(
+          new AddOrUpdateCurrentVisualizationAction(visualizationObject)
+        );
 
-      if (favorite) {
         this.favoriteService
           .getFavorite({
-            type: _.camelCase(action.visualizationItem.type),
-            id: favorite.id,
+            type: _.camelCase(visualizationType),
+            id: action.favorite.id,
             useTypeAsBase: true
           })
           .subscribe(
             (favoriteObject: any) => {
-              const visualizationLayers: VisualizationLayer[] = _.map(
-                favoriteObject.mapViews || [favoriteObject],
-                (favoriteLayer: any) => {
-                  const dataSelections = getSelectionDimensionsFromFavorite(
-                    favoriteLayer
-                  );
-                  return {
-                    id: favoriteLayer.id,
-                    dataSelections,
-                    layerType: getVisualizationLayerType(
-                      favorite.type,
-                      favoriteLayer
-                    ),
-                    analytics: null,
-                    config: {
-                      ...favoriteLayer,
-                      type: favoriteLayer.type ? favoriteLayer.type : 'COLUMN',
-                      visualizationType: action.visualizationItem.type
-                    }
-                  };
-                }
-              );
               this.store.dispatch(
                 new AddOrUpdateCurrentVisualizationAction({
-                  id: action.visualizationItem.id,
-                  type: action.visualizationItem.type,
+                  ...visualizationObject,
                   loading: false,
-                  layers: visualizationLayers
+                  layers: getVisualizationLayersFromFavorite(
+                    favoriteObject,
+                    visualizationType
+                  )
                 })
               );
             },
             error => {
               this.store.dispatch(
                 new AddOrUpdateCurrentVisualizationAction({
-                  id: action.visualizationItem.id,
-                  type: action.visualizationItem.type,
+                  ...visualizationObject,
                   loading: false,
                   error,
                   layers: []
@@ -318,6 +298,12 @@ export class CurrentVisualizationEffects {
         this.store.dispatch(new Go({ path: ['/'], query: queryParams }));
       }
     })
+  );
+
+  @Effect()
+  visualizationAnalyticsLoaded$: Observable<any> = this.actions$.pipe(
+    ofType(VisualizationLayerActionTypes.LOAD_VISUALIZATION_ANALYTICS_SUCCESS),
+    map(() => new fromFunctionRuleActions.UpdateActiveFunctionRule())
   );
   constructor(
     private actions$: Actions,

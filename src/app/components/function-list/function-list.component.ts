@@ -1,14 +1,13 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { FunctionObject } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/models';
-import {
-  AddFunction,
-  DeleteFunction
-} from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
-import { AppState } from '../../store/reducers/index';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ToasterService } from 'angular2-toaster';
-import { FunctionService } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/services/function.service';
 import * as _ from 'lodash';
+import { FunctionObject } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
+
+import { FunctionService } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/services/function.service';
+import { AddFunction } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
+import { AppState } from '../../store/reducers';
+import { User } from 'src/app/core';
 
 @Component({
   selector: 'app-function-list',
@@ -18,6 +17,12 @@ import * as _ from 'lodash';
 export class FunctionListComponent implements OnInit {
   @Input()
   functionList: FunctionObject[];
+
+  @Input()
+  activeFunction: FunctionObject;
+
+  @Input()
+  currentUser: User;
 
   newLoading: boolean;
 
@@ -67,6 +72,7 @@ export class FunctionListComponent implements OnInit {
   deleteFunctionObject(functionObject) {
     this.delete.emit(functionObject);
   }
+
   onActivate(e, functionObject: FunctionObject) {
     e.stopPropagation();
     if (!functionObject.active) {
@@ -83,7 +89,7 @@ export class FunctionListComponent implements OnInit {
 
   create() {
     this.newLoading = true;
-    this.functionService.create().subscribe(
+    this.functionService.create(this.currentUser).subscribe(
       (functionObject: any) => {
         this.store.dispatch(
           new AddFunction({
@@ -114,9 +120,9 @@ export class FunctionListComponent implements OnInit {
   onSave(functionObject) {
     this.save.emit(functionObject);
   }
-  filter(field){
-    return (o)=>{
+  filter(field) {
+    return o => {
       return o[field];
-    }
+    };
   }
 }
