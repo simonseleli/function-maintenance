@@ -53,8 +53,8 @@ export function reducer(state = initialState, action: FunctionActions): State {
         activeFunctionId: selectedFunction
           ? selectedFunction.id
           : action.functions && action.functions[0]
-            ? action.functions[0].id
-            : ''
+          ? action.functions[0].id
+          : ''
       });
     }
 
@@ -96,15 +96,11 @@ export function reducer(state = initialState, action: FunctionActions): State {
     }
 
     case FunctionActionTypes.SetActiveFunction: {
-      const activeFunction = state.entities[action.functionObject.id];
-      return activeFunction
-        ? adapter.updateOne(
-            { id: action.functionObject.id, changes: { selected: true } },
-            {
-              ...state,
-              activeFunctionId: action.functionObject.id
-            }
-          )
+      return action.functionObject
+        ? {
+            ...state,
+            activeFunctionId: action.functionObject.id
+          }
         : state;
     }
 

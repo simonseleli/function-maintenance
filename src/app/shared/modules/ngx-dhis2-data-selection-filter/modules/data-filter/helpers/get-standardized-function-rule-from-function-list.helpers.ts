@@ -9,9 +9,11 @@ export function getStandardizedFunctionRulesFromFunctionList(
     _.map(functionList || [], (functionObject: any) => functionObject.rules)
   );
 
-  return _.map(
-    functionRules,
-    (functionRule: any, functionRuleIndex: number) => {
+  return _.filter(
+    _.map(functionRules, (functionRule: any, functionRuleIndex: number) => {
+      if (!functionRule) {
+        return null;
+      }
       const selectedRule = _.find(functionRules, [
         'id',
         ruleId !== '' ? ruleId : functionRuleIndex === 0 ? functionRule.id : ''
@@ -21,6 +23,7 @@ export function getStandardizedFunctionRulesFromFunctionList(
         type: 'FUNCTION_RULE',
         selected: selectedRule && selectedRule.id === functionRule.id
       };
-    }
+    }),
+    functionRule => functionRule
   );
 }

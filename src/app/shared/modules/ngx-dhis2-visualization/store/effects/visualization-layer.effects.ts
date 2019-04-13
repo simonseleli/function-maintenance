@@ -60,7 +60,7 @@ export class VisualizationLayerEffects {
                 .select(getFunctionLoadedStatus)
                 .pipe(
                   filter((loaded: boolean) => loaded),
-                  switchMap(() => this.store.select(getFunctions)),
+                  switchMap(() => this.store.select(getFunctions())),
                   take(1)
                 )
                 .subscribe((functions: any[]) => {

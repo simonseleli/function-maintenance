@@ -32,41 +32,44 @@ export const getActiveFunction = createSelector(
     functionEntities[activeFunctionId]
 );
 
-export const getFunctions = createSelector(
-  fromFunction.getAllFunctions,
-  fromFunctionRuleReducer.getFunctionRuleEntities,
-  getActiveFunctionId,
-  (
-    functionList: fromModels.FunctionObject[],
-    functionRuleEntities: any,
-    activeFunctionId: string
-  ) =>
-    _.map(functionList, (functionObject: fromModels.FunctionObject) => {
-      return functionObject
-        ? {
-            id: functionObject.id,
-            name: functionObject.name,
-            items: _.filter(
-              _.map(functionObject.rules || [], ruleId => {
-                const functionRule = functionRuleEntities[ruleId];
-                return functionRule
-                  ? {
-                      id: functionRule.id,
-                      name: functionRule.name,
-                      ruleDefinition: functionRule,
-                      functionObject: {
-                        id: functionObject.id,
-                        functionString: functionObject.function
+export const getFunctions = (ruleKeyName?: string) =>
+  createSelector(
+    fromFunction.getAllFunctions,
+    fromFunctionRuleReducer.getFunctionRuleEntities,
+    getActiveFunctionId,
+    (
+      functionList: fromModels.FunctionObject[],
+      functionRuleEntities: any,
+      activeFunctionId: string
+    ) =>
+      _.map(functionList, (functionObject: fromModels.FunctionObject) => {
+        return functionObject
+          ? {
+              id: functionObject.id,
+              name: functionObject.name,
+              active: functionObject.id === activeFunctionId,
+              [ruleKeyName || 'items']: _.filter(
+                _.map(functionObject.rules || [], ruleId => {
+                  const functionRule = functionRuleEntities[ruleId];
+                  return functionRule
+                    ? {
+                        id: functionRule.id,
+                        name: functionRule.name,
+                        ruleDefinition: functionRule,
+                        functionObject: {
+                          id: functionObject.id,
+                          functionString: functionObject.function
+                        },
+                        type: 'FUNCTION_RULE'
                       }
-                    }
-                  : null;
-              }),
-              functionRule => functionRule
-            )
-          }
-        : null;
-    })
-);
+                    : null;
+                }),
+                functionRule => functionRule
+              )
+            }
+          : null;
+      })
+  );
 
 export const getFunctionById = functionId =>
   createSelector(

@@ -44,8 +44,8 @@ export function reducer(
         activeFunctionRuleId: selectedFunctionRule
           ? selectedFunctionRule.id
           : action.functionRules && action.functionRules[0]
-            ? action.functionRules[0].id
-            : ''
+          ? action.functionRules[0].id
+          : ''
       });
     }
 
@@ -81,12 +81,8 @@ export function reducer(
     }
 
     case FunctionRuleActionTypes.SetActiveFunctionRule: {
-      const activeFunctionRule = state.entities[action.functionRule.id];
-      return activeFunctionRule
-        ? adapter.updateOne(
-            { id: action.functionRule.id, changes: { selected: true } },
-            { ...state, activeFunctionRuleId: action.functionRule.id }
-          )
+      return action.functionRule
+        ? { ...state, activeFunctionRuleId: action.functionRule.id }
         : state;
     }
 

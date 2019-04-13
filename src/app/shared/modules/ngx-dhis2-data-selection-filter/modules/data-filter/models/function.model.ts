@@ -2,6 +2,7 @@ export interface FunctionObject {
   selected?: boolean;
   unsaved?: boolean;
   active?: boolean;
+  deleting?: boolean;
   id?: string;
   name?: string;
   displayName?: string;

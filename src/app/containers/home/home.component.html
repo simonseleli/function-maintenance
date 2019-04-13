@@ -94,20 +94,7 @@
   <!-- function operation section -->
   <div class="row" style="margin-top: 20px;" *ngIf="(functionsLoaded$ | async)">
     <div [ngStyle]="{ display: loadingSave ? 'none' : 'block' }" class="col-12">
-      <app-function-management
-        [functionList]="functionList$ | async"
-        [functionRules]="functionRules$ | async"
-        [currentVisualizationDataSelections]="
-          currentVisualizationDataSelections$ | async
-        "
-        (activateFunction)="onActivateFunctionObject($event)"
-        (activateFunctionRule)="onActivateFunctionRule($event)"
-        (simulate)="onSimulate($event)"
-        (newFunction)="onNewFunctionObject($event)"
-        (newFunctionRule)="onNewFunctionRule($event)"
-        (save)="onSave($event)"
-        (delete)="onDelete($event)"
-      ></app-function-management>
+      <app-function-management></app-function-management>
     </div>
     <div [ngStyle]="{ display: loadingSave ? 'block' : 'none' }" class="col-12">
       <img src="assets/img/balls-3.svg" /> Saving...

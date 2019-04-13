@@ -18,7 +18,7 @@ const getCurrentDataFilterGroupId = createSelector(
 );
 
 const getDataFilterGroupEntities = createSelector(
-  fromFunctionSelectors.getFunctions,
+  fromFunctionSelectors.getFunctions(),
   fromIndicatorGroupSelectors.getIndicatorGroups,
   (functions: any[], indicatorGroups: any[]) => {
     return { fn: functions, in: indicatorGroups };

@@ -19,6 +19,9 @@ export class FunctionListComponent implements OnInit {
   functionList: FunctionObject[];
 
   @Input()
+  activeFunction: FunctionObject;
+
+  @Input()
   currentUser: User;
 
   newLoading: boolean;
@@ -69,6 +72,7 @@ export class FunctionListComponent implements OnInit {
   deleteFunctionObject(functionObject) {
     this.delete.emit(functionObject);
   }
+
   onActivate(e, functionObject: FunctionObject) {
     e.stopPropagation();
     if (!functionObject.active) {

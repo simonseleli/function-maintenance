@@ -25,7 +25,10 @@ import {
   VisualizationLayer
 } from '../../shared/modules/ngx-dhis2-visualization/models';
 import { FavoriteService } from '../../shared/modules/ngx-dhis2-visualization/services';
-import { LoadVisualizationAnalyticsAction } from '../../shared/modules/ngx-dhis2-visualization/store';
+import {
+  LoadVisualizationAnalyticsAction,
+  VisualizationLayerActionTypes
+} from '../../shared/modules/ngx-dhis2-visualization/store';
 import { AddCurrentUser, Go, UserActionTypes } from '../actions';
 import {
   AddOrUpdateCurrentVisualizationAction,
@@ -295,6 +298,12 @@ export class CurrentVisualizationEffects {
         this.store.dispatch(new Go({ path: ['/'], query: queryParams }));
       }
     })
+  );
+
+  @Effect()
+  visualizationAnalyticsLoaded$: Observable<any> = this.actions$.pipe(
+    ofType(VisualizationLayerActionTypes.LOAD_VISUALIZATION_ANALYTICS_SUCCESS),
+    map(() => new fromFunctionRuleActions.UpdateActiveFunctionRule())
   );
   constructor(
     private actions$: Actions,
