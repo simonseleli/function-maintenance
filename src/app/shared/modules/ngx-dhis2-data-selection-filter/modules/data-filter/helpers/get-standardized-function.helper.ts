@@ -13,13 +13,18 @@ export function getStandardizedFunctions(
         functionId !== ''
           ? functionId
           : functionItemIndex === 0
-            ? functionItem.id
-            : ''
+          ? functionItem.id
+          : ''
       ]);
       return {
         ...functionItem,
         selected: selectedFunction && selectedFunction.id === functionItem.id,
-        rules: _.map(functionItem.rules || [], (rule: any) => rule.id)
+        rules: _.filter(
+          _.map(functionItem.rules || [], (rule: any) =>
+            rule ? rule.id : undefined
+          ),
+          rule => rule
+        )
       };
     }
   );
