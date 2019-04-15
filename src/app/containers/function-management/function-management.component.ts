@@ -34,7 +34,8 @@ import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visua
 import { User } from 'src/app/core';
 import {
   getCurrentUser,
-  getCurrentVisualizationDataSelections
+  getCurrentVisualizationDataSelections,
+  getSelectedFunctionParameters
 } from 'src/app/store/selectors';
 import { FunctionService } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/services';
 import { ToasterService } from 'angular2-toaster';
@@ -47,11 +48,11 @@ import { ToasterService } from 'angular2-toaster';
 export class FunctionManagementComponent implements OnInit {
   functionList$: Observable<FunctionObject[]>;
   functionRules$: Observable<FunctionRule[]>;
-  currentVisualizationDataSelections$: Observable<VisualizationDataSelection[]>;
   activeEditor: string;
   activeFunction$: Observable<FunctionObject>;
   activeFunctionRule$: Observable<FunctionRule>;
   currentUser$: Observable<User>;
+  selectedFunctionParameters$: Observable<any>;
 
   constructor(
     private readonly store: Store<AppState>,
@@ -65,11 +66,11 @@ export class FunctionManagementComponent implements OnInit {
     this.activeFunction$ = this.store.select(getActiveFunction);
     this.activeFunctionRule$ = this.store.select(getActiveFunctionRule);
     this.currentUser$ = this.store.select(getCurrentUser);
-    this.currentVisualizationDataSelections$ = this.store.select(
-      getCurrentVisualizationDataSelections
-    );
     this.functionList$ = this.store.select(getFunctions(true, 'rules'));
     this.functionRules$ = this.store.select(getFunctionRulesForActiveFunction);
+    this.selectedFunctionParameters$ = this.store.select(
+      getSelectedFunctionParameters
+    );
   }
 
   onNewFunctionObject(functionObject: FunctionObject) {
@@ -112,9 +113,10 @@ export class FunctionManagementComponent implements OnInit {
 
   onActivateFunctionObject(
     functionObject: FunctionObject,
-    functionRuleId?: string
+    functionRuleId?: string,
+    activeEditor?: string
   ) {
-    this.activeEditor = 'FUNCTION';
+    this.activeEditor = activeEditor || 'FUNCTION';
     this.store.dispatch(new SetActiveFunction(functionObject));
     if (functionObject.rules && functionObject.rules[0]) {
       this.store.dispatch(
@@ -140,21 +142,15 @@ export class FunctionManagementComponent implements OnInit {
     functionRule: FunctionRule;
     functionObject: FunctionObject;
   }) {
-    this.activeEditor = 'RULE';
     if (
       functionRuleDetails &&
       functionRuleDetails.functionObject &&
       functionRuleDetails.functionRule
     ) {
-      this.store.dispatch(
-        new SetActiveFunctionRule(
-          functionRuleDetails.functionRule.id,
-          functionRuleDetails.functionObject
-        )
-      );
       this.onActivateFunctionObject(
         functionRuleDetails.functionObject,
-        functionRuleDetails.functionRule.id
+        functionRuleDetails.functionRule.id,
+        'RULE'
       );
     }
   }

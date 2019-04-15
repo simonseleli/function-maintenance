@@ -1,18 +1,27 @@
 <div class="card">
   <div class="function-list-title">
-    Functions
+    <span class="function-list-label">Functions</span>
+    <i class="fa fa-search"></i>
+    <input
+      type="text"
+      class="function-list-search-input"
+      [(ngModel)]="functionFilter.name"
+      placeholder="Search for Functions"
+    />
     <button
       [disabled]="newLoading"
       class="btn btn-sm btn-primary float-right"
       (click)="create()"
+      title="Add New Function"
     >
-      <ng-container *ngIf="!newLoading">
+      <div *ngIf="!newLoading">
         <i class="fa fa-plus"></i>
-        <span class="new-button" style="margin-left: 10px;"> Add New</span>
-      </ng-container>
-      <ng-container *ngIf="newLoading">
-        <img src="assets/img/balls-3.svg" height="20px" />
-      </ng-container>
+        <span class="add-new-button">Add New</span>
+      </div>
+      <div *ngIf="newLoading">
+        <img src="assets/icons/balls-3.svg" height="20px" />
+        <span class="add-new-button">Adding..</span>
+      </div>
     </button>
   </div>
   <div class="table-responsive">
@@ -21,12 +30,6 @@
         <tr>
           <td colspan="100%">
             <div class="form-group">
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="functionFilter.name"
-                placeholder="Function Name"
-              />
               <span class="badge badge-primary">
                 {{
                   lodash.filter(
