@@ -60,9 +60,8 @@
         >
           <app-function-editor
             [functionObject]="activeFunction$ | async"
-            [currentVisualizationDataSelections]="
-              currentVisualizationDataSelections$ | async
-            "
+            [activeFunctionRule]="activeFunctionRule$ | async"
+            [selectedFunctionParameters]="selectedFunctionParameters$ | async"
             (simulate)="onSimulateFunction($event)"
             (delete)="onDeleteFunction($event)"
             (save)="onSaveFunction($event)"

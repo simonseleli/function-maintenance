@@ -1,40 +1,79 @@
 <div class="card">
   <div class="function-rule-list-title">
     Rules
-    <button [disabled]="newLoading" class="btn btn-sm btn-primary float-right" (click)="create()">
-    <ng-container *ngIf="!newLoading">
-      <i class="fa fa-plus"></i> <span class="new-button" style="margin-left: 10px;"> Add New</span>
-    </ng-container>
-    <ng-container *ngIf="newLoading">
-      <img src="assets/img/balls-3.svg" height="20px"/>
-    </ng-container>
-  </button>
+    <button
+      [disabled]="newLoading"
+      class="btn btn-sm btn-primary float-right"
+      (click)="create()"
+    >
+      <ng-container *ngIf="!newLoading">
+        <i class="fa fa-plus"></i> <span class="new-button"> Add New</span>
+      </ng-container>
+      <ng-container *ngIf="newLoading">
+        <img src="assets/img/balls-3.svg" height="20px" />
+      </ng-container>
+    </button>
   </div>
   <div class="table-responsive">
     <table class="table table-hover function-rule-list-table">
       <thead>
-      <tr><td colspan="100%">
-        <div class="form-group">
-          <input type="text" class="form-control" [(ngModel)]="ruleFilter.name" placeholder="Rule Name">
-          <span class="badge badge-primary">
-            {{lodash.filter((functionRules | filterBy: ruleFilter),filter("selected")).length}}
-            Selected</span>
-          <span class="badge badge-danger">
-            {{lodash.filter((functionRules | filterBy: ruleFilter),filter("unsaved")).length}}
-            Unsaved</span>
-        </div>
-      </td></tr>
+        <tr>
+          <td colspan="100%">
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="ruleFilter.name"
+                placeholder="Rule Name"
+              />
+              <span class="badge badge-primary">
+                {{
+                  lodash.filter(
+                    functionRules | filterBy: ruleFilter,
+                    filter('selected')
+                  ).length
+                }}
+                Selected</span
+              >
+              <span class="badge badge-danger">
+                {{
+                  lodash.filter(
+                    functionRules | filterBy: ruleFilter,
+                    filter('unsaved')
+                  ).length
+                }}
+                Unsaved</span
+              >
+            </div>
+          </td>
+        </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let functionRule of functionRules | filterBy: ruleFilter | paginate: { itemsPerPage: pager.pageSize, currentPage: pager.page }" [ngClass]="{'selected-function-rule': functionRule.active}" (click)="onActivate($event, functionRule)">
+        <tr
+          *ngFor="
+            let functionRule of (functionRules
+              | filterBy: ruleFilter
+              | paginate
+                : { itemsPerPage: pager.pageSize, currentPage: pager.page })
+          "
+          [ngClass]="{ 'selected-function-rule': functionRule.active }"
+          (click)="onActivate($event, functionRule)"
+        >
           <td width="80%">
             <div class="function-rule-title">
-              {{functionRule.name}} <span *ngIf="functionRule.selected" class="badge badge-secondary pull-right">Selected</span>
+              {{ functionRule.name }}
+              <span
+                *ngIf="functionRule.selected"
+                class="badge badge-secondary pull-right"
+                >Selected</span
+              >
             </div>
           </td>
           <td width="20%">
             <div class="function-rule-btns">
-              <button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+              <button class="btn btn-sm btn-danger">
+                <i class="fa fa-trash"></i>
+              </button>
             </div>
           </td>
         </tr>
@@ -42,28 +81,62 @@
     </table>
   </div>
   <div class="card-footer">
-    <span *ngIf="(functionRules | filterBy: ruleFilter).length > 0" style="font-size: 14px;">
-              Showing {{(((pager.page?pager.page:1)-1) * pager.pageSize) + 1}} to {{((pager.page?pager.page:1) * pager.pageSize) > (functionRules | filterBy: ruleFilter).length?(functionRules | filterBy: ruleFilter).length:((pager.page?pager.page:1)
-            * pager.pageSize)}} of {{(functionRules | filterBy: ruleFilter).length}}
-            </span>
+    <span
+      *ngIf="(functionRules | filterBy: ruleFilter).length > 0"
+      style="font-size: 14px;"
+    >
+      Showing {{ ((pager.page ? pager.page : 1) - 1) * pager.pageSize + 1 }} to
+      {{
+        (pager.page ? pager.page : 1) * pager.pageSize >
+        (functionRules | filterBy: ruleFilter).length
+          ? (functionRules | filterBy: ruleFilter).length
+          : (pager.page ? pager.page : 1) * pager.pageSize
+      }}
+      of {{ (functionRules | filterBy: ruleFilter).length }}
+    </span>
     <span style="display: inline-block;margin-left: 15px;">
-              <pagination [totalItems]="(functionRules | filterBy: ruleFilter).length" [(ngModel)]="pager.page" [itemsPerPage]="pager.pageSize" [maxSize]="5" class="pagination-sm"
-                          [boundaryLinks]="true" [rotate]="false" (pageChanged)="pageChanged($event)"
-                          previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"
-              ></pagination>
-            </span>
-      <div class="btn-group pull-right" dropdown>
-        <button type="button" class="btn btn-default btn-sm" disabled>Show</button>
-        <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split btn-sm" dropdownToggle>
-          <span>{{pager.pageSize}}</span>
-          <span class="caret"></span>
-          <span class="sr-only">Split button!</span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-right" *dropdownMenu role="menu" aria-labelledby="split-button">
-          <li role="menuitem" *ngFor="let selectedPageSize of pageClustering">
-            <a class="dropdown-item pull-right" (click)="setPageSize(selectedPageSize.value)">{{selectedPageSize.name}}</a>
-          </li>
-        </ul>
-      </div>
+      <pagination
+        [totalItems]="(functionRules | filterBy: ruleFilter).length"
+        [(ngModel)]="pager.page"
+        [itemsPerPage]="pager.pageSize"
+        [maxSize]="5"
+        class="pagination-sm"
+        [boundaryLinks]="true"
+        [rotate]="false"
+        (pageChanged)="pageChanged($event)"
+        previousText="&lsaquo;"
+        nextText="&rsaquo;"
+        firstText="&laquo;"
+        lastText="&raquo;"
+      ></pagination>
+    </span>
+    <div class="btn-group pull-right" dropdown>
+      <button type="button" class="btn btn-default btn-sm" disabled>
+        Show
+      </button>
+      <button
+        type="button"
+        class="btn btn-default dropdown-toggle dropdown-toggle-split btn-sm"
+        dropdownToggle
+      >
+        <span>{{ pager.pageSize }}</span>
+        <span class="caret"></span>
+        <span class="sr-only">Split button!</span>
+      </button>
+      <ul
+        class="dropdown-menu dropdown-menu-right"
+        *dropdownMenu
+        role="menu"
+        aria-labelledby="split-button"
+      >
+        <li role="menuitem" *ngFor="let selectedPageSize of pageClustering">
+          <a
+            class="dropdown-item pull-right"
+            (click)="setPageSize(selectedPageSize.value)"
+            >{{ selectedPageSize.name }}</a
+          >
+        </li>
+      </ul>
+    </div>
   </div>
 </div>

@@ -6,12 +6,10 @@
   display: block;
   padding: 10px;
 }
-.function-rule-list-title button span.new-button{
-  display:none;
+.new-button {
+  margin-left: 2px;
 }
-.function-rule-list-title button:hover span.new-button{
-  display:inline-block;
-}
+
 .function-rule-title {
   padding-top: 2px;
 }

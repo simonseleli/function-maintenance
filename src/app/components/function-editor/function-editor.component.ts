@@ -7,12 +7,13 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
-import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
-import { FunctionObject } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
+import {
+  FunctionObject,
+  FunctionRule
+} from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
 
 import { VisualizationDataSelection } from '../../shared/modules/ngx-dhis2-visualization/models';
-import { AppState } from '../../store/reducers';
 
 @Component({
   selector: 'app-function-editor',
@@ -24,7 +25,10 @@ export class FunctionEditorComponent implements OnInit, OnChanges {
   functionObject: FunctionObject;
 
   @Input()
-  currentVisualizationDataSelections: VisualizationDataSelection[];
+  activeFunctionRule: FunctionRule;
+
+  @Input()
+  selectedFunctionParameters: any;
 
   showEditor = true;
   showParameters = true;
@@ -67,53 +71,9 @@ export class FunctionEditorComponent implements OnInit, OnChanges {
   ];
   deleteFuntion = false;
 
-  constructor(private store: Store<AppState>) {}
+  constructor() {}
 
-  parameters: any = {};
-
-  ngOnInit() {
-    this._setParameters(this.currentVisualizationDataSelections);
-  }
-
-  _setParameters(selections) {
-    // Get ou parameters
-    const ouDimension = _.find(selections, ['dimension', 'ou']);
-    const ouParameters = _.join(
-      _.map(ouDimension ? ouDimension.items : [], (item: any) => item.id),
-      ';'
-    );
-
-    // Get pe parameters
-    const peDimension = _.find(selections, ['dimension', 'pe']);
-    const peParameters = _.join(
-      _.map(peDimension ? peDimension.items : [], (item: any) => item.id),
-      ';'
-    );
-
-    // Get rule parameters
-    const ruleDimension = _.find(selections, ['dimension', 'dx']);
-    const ruleDefinition = _.map(
-      ruleDimension ? ruleDimension.items : [],
-      (item: any) => {
-        if (
-          item &&
-          item.ruleDefinition &&
-          typeof item.ruleDefinition.json === 'string'
-        ) {
-          item.ruleDefinition.json = JSON.parse(item.ruleDefinition.json);
-        }
-        return item.ruleDefinition;
-      }
-    )[0];
-
-    if (ouParameters !== '' && peParameters !== '' && ruleDefinition) {
-      this.parameters.ou = ouParameters;
-      this.parameters.pe = peParameters;
-      this.parameters.rule = ruleDefinition;
-      this.parameters.success = analyticsObject => {};
-      this.parameters.error = error => {};
-    }
-  }
+  ngOnInit() {}
 
   onSimulate(e) {
     e.stopPropagation();
@@ -162,17 +122,6 @@ export class FunctionEditorComponent implements OnInit, OnChanges {
         this.showEditor = false;
         setTimeout(() => {
           this.showEditor = true;
-        });
-      }
-    }
-    if (changes.currentVisualizationDataSelections) {
-      if (changes.currentVisualizationDataSelections.currentValue) {
-        this.showParameters = false;
-        this._setParameters(
-          changes.currentVisualizationDataSelections.currentValue
-        );
-        setTimeout(() => {
-          this.showParameters = true;
         });
       }
     }
