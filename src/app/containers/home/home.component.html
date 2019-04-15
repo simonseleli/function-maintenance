@@ -1,6 +1,17 @@
 <toaster-container></toaster-container>
 <div class="container-fluid">
   <!-- header section -->
+  <nav
+    class="navbar navbar-light bg-light justify-content-between function-navbar"
+  >
+    <a class="navbar-brand function-navbar-brand">
+      <img src="assets/img/function.png" alt="" />
+      <span class="function-navbar-brand-label">Function Maintenance</span></a
+    >
+  </nav>
+  <!-- end of header section -->
+
+  <!-- selection section -->
   <div
     class="row"
     style="margin-bottom: 20px;"
@@ -23,7 +34,7 @@
       ></app-favorite-filter>
     </div>
   </div>
-  <!-- end of header section -->
+  <!-- end of selection section -->
 
   <!-- function loading section -->
   <div class="row" *ngIf="(loadingFunctions$ | async)">
