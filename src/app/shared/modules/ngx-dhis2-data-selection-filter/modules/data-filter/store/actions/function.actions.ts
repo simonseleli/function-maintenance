@@ -2,6 +2,7 @@ import { Action } from '@ngrx/store';
 import { Update } from '@ngrx/entity';
 import * as fromModels from '../../models';
 import { User } from 'src/app/core';
+import { FunctionObject } from '../../models';
 
 export enum FunctionActionTypes {
   LoadFunctionsInitiated = '[Function] Load Functions initiated',
@@ -17,7 +18,10 @@ export enum FunctionActionTypes {
   DeleteFunction = '[Function] Delete Function',
   DeleteFunctions = '[Function] Delete Functions',
   ClearFunctions = '[Function] Clear Functions',
-  SetActiveFunction = '[Function] Set active Function'
+  SetActiveFunction = '[Function] Set active Function',
+  SaveFunction = '[Function] Save Function',
+  SaveFunctionSuccess = '[Function] Save Function success',
+  SaveFunctionFails = '[Function] Save Function fail'
 }
 
 export class LoadFunctionsInitiated implements Action {
@@ -95,6 +99,21 @@ export class ClearFunctions implements Action {
   readonly type = FunctionActionTypes.ClearFunctions;
 }
 
+export class SaveFunction implements Action {
+  readonly type = FunctionActionTypes.SaveFunction;
+  constructor(public functionObject: FunctionObject, public currentUser: any) {}
+}
+
+export class SaveFunctionSuccess implements Action {
+  readonly type = FunctionActionTypes.SaveFunctionSuccess;
+  constructor(public functionObject: FunctionObject) {}
+}
+
+export class SaveFunctionFails implements Action {
+  readonly type = FunctionActionTypes.SaveFunctionFails;
+  constructor(public functionObject: FunctionObject, public error: any) {}
+}
+
 export class SetActiveFunction implements Action {
   readonly type = FunctionActionTypes.SetActiveFunction;
   constructor(public functionObject: fromModels.FunctionObject) {}
@@ -118,4 +137,7 @@ export type FunctionActions =
   | DeleteFunctions
   | ClearFunctions
   | SetActiveFunction
-  | UpdateActiveFunction;
+  | UpdateActiveFunction
+  | SaveFunction
+  | SaveFunctionSuccess
+  | SaveFunctionFails;

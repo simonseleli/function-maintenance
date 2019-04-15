@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import { NgxDhis2HttpClientService } from '@hisptz/ngx-dhis2-http-client';
 import { mergeMap, catchError, switchMap, map } from 'rxjs/operators';
-import { forkJoin, of, Observable } from 'rxjs';
+import { forkJoin, of, Observable, throwError } from 'rxjs';
 import { FunctionObject } from '../models';
 import { User, generateUid } from 'src/app/core';
 import {
@@ -11,6 +11,7 @@ import {
   EARLY_COMPLETENESS_FUNCTION,
   COMPLETENESS_FUNCTION
 } from '../constants';
+import { prepareFunctionForSaving } from '../helpers';
 
 @Injectable({ providedIn: 'root' })
 export class FunctionService {
@@ -55,32 +56,18 @@ export class FunctionService {
     return this.http.get(`${this._dataStoreUrl}/${id}`);
   }
 
-  save(sFunction: FunctionObject, currentUser: any) {
+  save(functionObject: FunctionObject, currentUser: any) {
     return this.http.get('system/info').pipe(
       mergeMap((systemInfo: any) => {
-        const newFunctionObject = {
-          ...sFunction,
-          lastUpdated: new Date(),
-          displayName: sFunction.name,
-          href:
-            systemInfo.contextPath + '?api/dataStore/functions/' + sFunction.id
-        };
-
-        return this._save(
-          sFunction.isNew
-            ? _.omit(
-                {
-                  ...newFunctionObject,
-                  created: newFunctionObject.lastUpdated,
-                  user: {
-                    id: currentUser.id
-                  }
-                },
-                'isNew'
-              )
-            : _.omit(newFunctionObject, 'isNew'),
-          sFunction.isNew ? 'POST' : 'PUT'
+        const functionObjectToSave = prepareFunctionForSaving(
+          functionObject,
+          systemInfo.contextPath,
+          currentUser
         );
+        return this._save(
+          functionObjectToSave,
+          functionObject.isNew ? 'POST' : 'PUT'
+        ).pipe(map(() => functionObjectToSave));
       })
     );
   }
@@ -737,11 +724,19 @@ export class FunctionService {
     return successError || errorError;
   }
 
-  private _save(sFunction: FunctionObject, method: string) {
-    const functionUrl = 'dataStore/functions/' + sFunction.id;
+  private _save(functionObject: FunctionObject, method: string) {
+    if (!functionObject) {
+      return throwError({
+        status: 500,
+        statusText: 'Error',
+        message: 'Function object to be saved is not defined or malformed'
+      });
+    }
+    const functionUrl = 'dataStore/functions/' + functionObject.id;
+
     return method === 'POST'
-      ? this.http.post(functionUrl, sFunction)
-      : this.http.put(functionUrl, sFunction);
+      ? this.http.post(functionUrl, functionObject)
+      : this.http.put(functionUrl, functionObject);
   }
 
   private getId(number?) {

@@ -1,8 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { withLatestFrom, tap, map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import {
+  withLatestFrom,
+  tap,
+  map,
+  mergeMap,
+  take,
+  catchError
+} from 'rxjs/operators';
 
 import * as fromFunctionReducer from '../reducers/function.reducer';
 
@@ -12,6 +19,7 @@ import * as fromHelpers from '../../helpers';
 
 import { FunctionObject } from '../../models/function.model';
 import { FunctionService } from '../../services/function.service';
+import { getStandardizedFunction } from '../../helpers';
 
 @Injectable()
 export class FunctionEffects {
@@ -54,6 +62,40 @@ export class FunctionEffects {
         }
       }
     )
+  );
+
+  @Effect()
+  saveFunction$: Observable<any> = this.actions$.pipe(
+    ofType(fromFunctionActions.FunctionActionTypes.SaveFunction),
+    mergeMap((action: fromFunctionActions.SaveFunction) => {
+      return this.functionStore
+        .select(
+          fromFuctionSelectors.getFunctionById(
+            action.functionObject ? action.functionObject.id : ''
+          )
+        )
+        .pipe(
+          take(1),
+          mergeMap((functionObject: FunctionObject) =>
+            this.functionService.save(functionObject, action.currentUser).pipe(
+              map(
+                (savedFunctionObject: FunctionObject) =>
+                  new fromFunctionActions.SaveFunctionSuccess(
+                    getStandardizedFunction(savedFunctionObject)
+                  )
+              ),
+              catchError(error =>
+                of(
+                  new fromFunctionActions.SaveFunctionFails(
+                    functionObject,
+                    error
+                  )
+                )
+              )
+            )
+          )
+        );
+    })
   );
 
   constructor(

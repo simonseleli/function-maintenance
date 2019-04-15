@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FunctionRule } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
+import {
+  FunctionRule,
+  FunctionObject
+} from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
 
 @Component({
   selector: 'app-function-rule-editor',
@@ -9,13 +12,22 @@ import { FunctionRule } from 'src/app/shared/modules/ngx-dhis2-data-selection-fi
 export class FunctionRuleEditorComponent implements OnInit {
   @Input()
   functionRule: FunctionRule;
+  @Input()
+  functionObject: FunctionObject;
 
   showEditor = true;
 
   @Output()
   simulate: EventEmitter<FunctionRule> = new EventEmitter<FunctionRule>();
+
   @Output()
-  save: EventEmitter<FunctionRule> = new EventEmitter<FunctionRule>();
+  save: EventEmitter<{
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }> = new EventEmitter<{
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }>();
   constructor() {}
 
   ngOnInit() {}
@@ -24,10 +36,12 @@ export class FunctionRuleEditorComponent implements OnInit {
     e.stopPropagation();
     this.simulate.emit(this.functionRule);
   }
+
   onSave(e) {
     e.stopPropagation();
-    this.save.emit(this.functionRule);
+    this.save.emit({
+      functionRule: this.functionRule,
+      functionObject: this.functionObject
+    });
   }
-
-  onChange(event) {}
 }

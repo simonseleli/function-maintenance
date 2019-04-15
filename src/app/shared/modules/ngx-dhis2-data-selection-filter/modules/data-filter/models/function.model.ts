@@ -9,8 +9,8 @@ export interface FunctionObject {
   function?: string;
   rules?: Array<any>;
   description?: string;
-  lastUpdated?: Date;
-  created?: Date;
+  lastUpdated?: string;
+  created?: string;
   externalAccess?: boolean;
   userGroupAccesses?: Array<any>;
   attributeValues?: Array<any>;
