@@ -3,12 +3,33 @@
 }
 
 .function-list-title {
-  display: block;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 10px;
 }
 
-.new-button {
-  margin-left: 2px;
+.function-list-label {
+  margin-right: 10px;
+}
+
+.function-list-search-input {
+  border: 0;
+  width: 50%;
+  border-bottom: solid thin #eeeeee;
+  outline: none !important;
+  margin-right: 5px;
+  padding: 5px;
+  font-size: 14px;
+}
+
+.add-new-button {
+  margin-left: 5px;
+}
+
+.function-list-search-input:focus,
+.function-list-search-input:active {
+  border-bottom: solid thin #dddddd;
 }
 
 .function-title {
@@ -28,4 +49,9 @@
   color: #31708f;
   background-color: #d9edf7;
   border-color: #bce8f1;
+}
+
+.function-list-options {
+  display: flex;
+  justify-content: flex-end;
 }

@@ -3,15 +3,33 @@
 }
 
 .function-rule-list-title {
-  display: block;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 10px;
 }
-.new-button {
-  margin-left: 2px;
+
+.function-rule-list-label {
+  margin-right: 10px;
 }
 
-.function-rule-title {
-  padding-top: 2px;
+.function-rule-list-search-input {
+  border: 0;
+  width: 60%;
+  border-bottom: solid thin #eeeeee;
+  outline: none !important;
+  margin-right: 5px;
+  padding: 5px;
+  font-size: 14px;
+}
+
+.add-new-button {
+  margin-left: 5px;
+}
+
+.function-rule-list-search-input:focus,
+.function-rule-list-search-input:active {
+  border-bottom: solid thin #dddddd;
 }
 
 .function-rule-btns {
