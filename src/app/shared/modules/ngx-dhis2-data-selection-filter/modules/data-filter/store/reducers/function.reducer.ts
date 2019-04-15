@@ -113,6 +113,30 @@ export function reducer(state = initialState, action: FunctionActions): State {
           )
         : state;
     }
+
+    case FunctionActionTypes.SaveFunction: {
+      return action.functionObject
+        ? adapter.updateOne(
+            {
+              id: action.functionObject.id,
+              changes: { ...action.functionObject, saving: true }
+            },
+            state
+          )
+        : state;
+    }
+
+    case FunctionActionTypes.SaveFunctionSuccess: {
+      return action.functionObject
+        ? adapter.updateOne(
+            {
+              id: action.functionObject.id,
+              changes: { ...action.functionObject, saving: false }
+            },
+            state
+          )
+        : state;
+    }
     default: {
       return state;
     }

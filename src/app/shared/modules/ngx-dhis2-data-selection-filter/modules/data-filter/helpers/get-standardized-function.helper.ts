@@ -1,31 +1,18 @@
+import { FunctionObject } from '../models';
 import * as _ from 'lodash';
-import { FunctionObject } from '../models/function.model';
 
-export function getStandardizedFunctions(
-  functionList,
-  functionId: string = ''
-): FunctionObject[] {
-  return _.map(
-    functionList || [],
-    (functionItem: any, functionItemIndex: number) => {
-      const selectedFunction = _.find(functionList || [], [
-        'id',
-        functionId !== ''
-          ? functionId
-          : functionItemIndex === 0
-          ? functionItem.id
-          : ''
-      ]);
-      return {
-        ...functionItem,
-        selected: selectedFunction && selectedFunction.id === functionItem.id,
-        rules: _.filter(
-          _.map(functionItem.rules || [], (rule: any) =>
-            rule ? rule.id : undefined
-          ),
-          rule => rule
-        )
-      };
-    }
-  );
+export function getStandardizedFunction(
+  functionItem: any,
+  isSelected?: boolean
+) {
+  return {
+    ...functionItem,
+    selected: isSelected,
+    rules: _.filter(
+      _.map(functionItem.rules || [], (rule: any) =>
+        rule ? rule.id : undefined
+      ),
+      rule => rule
+    )
+  };
 }

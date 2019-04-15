@@ -74,7 +74,18 @@ export const getFunctions = (ruleKeyName?: string) =>
 export const getFunctionById = functionId =>
   createSelector(
     fromFunction.getFunctionEntities,
-    (functionEntities: any) => functionEntities[functionId]
+    fromFunctionRuleReducer.getFunctionRuleEntities,
+    (functionEntities: any, functionRuleEntities: any) => {
+      const functionObject = functionEntities[functionId];
+      return functionObject && functionRuleEntities
+        ? {
+            ...functionObject,
+            rules: (functionObject.rules || []).map(
+              (ruleId: string) => functionRuleEntities[ruleId]
+            )
+          }
+        : null;
+    }
   );
 
 export const getSelectedFunctions = createSelector(

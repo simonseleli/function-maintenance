@@ -16,7 +16,8 @@ import {
   AddFunction,
   SetActiveFunction,
   UpdateFunction,
-  DeleteFunction
+  DeleteFunction,
+  SaveFunction
 } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
 import {
   getActiveFunctionRule,
@@ -191,27 +192,31 @@ export class FunctionManagementComponent implements OnInit {
   }
 
   onSaveFunction(functionObject: FunctionObject) {
-    this.activeFunctionRule$
-      .pipe(take(1))
-      .subscribe((activeFunctionRule: FunctionRule) => {
-        this.onSave({
-          functionObject,
-          functionRule: activeFunctionRule,
-          item: 'FUNCTION'
-        });
-      });
+    this.currentUser$.pipe(take(1)).subscribe((currentUser: User) => {
+      this.store.dispatch(new SaveFunction(functionObject, currentUser));
+    });
   }
 
-  onSaveFunctionRule(functionRule: FunctionRule) {
-    this.activeFunction$
-      .pipe(take(1))
-      .subscribe((activeFunction: FunctionObject) => {
-        this.onSave({
-          functionObject: activeFunction,
-          functionRule,
-          item: 'FUNCTION_RULE'
-        });
-      });
+  onSaveFunctionRule(functionRuleDetails: {
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }) {
+    if (
+      functionRuleDetails &&
+      functionRuleDetails.functionRule &&
+      functionRuleDetails.functionObject
+    ) {
+      // Update rule in the store
+      this.store.dispatch(
+        new UpdateFunctionRule(
+          functionRuleDetails.functionRule.id,
+          functionRuleDetails.functionRule
+        )
+      );
+
+      // save the function
+      this.onSaveFunction(functionRuleDetails.functionObject);
+    }
   }
 
   /*
@@ -233,89 +238,90 @@ export class FunctionManagementComponent implements OnInit {
     functionObject: FunctionObject;
     item: string;
   }) {
-    if (functionDetails.item === 'FUNCTION' && functionDetails.functionObject) {
-      this.store.dispatch(
-        new UpdateFunction(functionDetails.functionObject.id, {
-          ...functionDetails.functionObject,
-          saving: true,
-          rules: _.map(
-            functionDetails.functionObject.rules,
-            (rule: any) => rule.id
-          )
-        })
-      );
-    } else if (
-      functionDetails.item === 'FUNCTION_RULE' &&
-      functionDetails.functionRule
-    ) {
-      this.store.dispatch(
-        new UpdateFunctionRule(functionDetails.functionRule.id, {
-          ...functionDetails.functionRule,
-          saving: true
-        })
-      );
-    }
+    console.log(functionDetails);
+    // if (functionDetails.item === 'FUNCTION' && functionDetails.functionObject) {
+    //   this.store.dispatch(
+    //     new UpdateFunction(functionDetails.functionObject.id, {
+    //       ...functionDetails.functionObject,
+    //       saving: true,
+    //       rules: _.map(
+    //         functionDetails.functionObject.rules,
+    //         (rule: any) => rule.id
+    //       )
+    //     })
+    //   );
+    // } else if (
+    //   functionDetails.item === 'FUNCTION_RULE' &&
+    //   functionDetails.functionRule
+    // ) {
+    //   this.store.dispatch(
+    //     new UpdateFunctionRule(functionDetails.functionRule.id, {
+    //       ...functionDetails.functionRule,
+    //       saving: true
+    //     })
+    //   );
+    // }
 
-    if (
-      functionDetails.functionObject.name &&
-      functionDetails.functionObject.name !== ''
-    ) {
-      this.upsert(
-        functionDetails.functionObject.rules,
-        'id',
-        _.omit(functionDetails.functionRule, [
-          'saving',
-          'unsaved',
-          'simulating',
-          'selected',
-          'active'
-        ])
-      );
-      this.currentUser$
-        .pipe(
-          take(1),
-          switchMap((currentUser: any) =>
-            this.functionService.save(
-              _.omit(functionDetails.functionObject, [
-                'saving',
-                'unsaved',
-                'simulating',
-                'selected',
-                'active'
-              ]),
-              currentUser
-            )
-          )
-        )
-        .subscribe(
-          results => {
-            this.onSimulate({
-              ...functionDetails,
-              functionObject: {
-                ...functionDetails.functionObject,
-                saving: false,
-                isNew: false,
-                unsaved: false
-              },
-              functionRule: { ...functionDetails.functionRule, saving: false }
-            });
-            this.toasterService.pop(
-              'success',
-              'Success',
-              'Function saved successfully.'
-            );
-          },
-          error => {
-            this.toasterService.pop('error', 'Saving Error', error.message);
-          }
-        );
-    } else {
-      this.toasterService.pop(
-        'error',
-        'Saving Error',
-        'Please write name of function'
-      );
-    }
+    // if (
+    //   functionDetails.functionObject.name &&
+    //   functionDetails.functionObject.name !== ''
+    // ) {
+    //   this.upsert(
+    //     functionDetails.functionObject.rules,
+    //     'id',
+    //     _.omit(functionDetails.functionRule, [
+    //       'saving',
+    //       'unsaved',
+    //       'simulating',
+    //       'selected',
+    //       'active'
+    //     ])
+    //   );
+    //   this.currentUser$
+    //     .pipe(
+    //       take(1),
+    //       switchMap((currentUser: any) =>
+    //         this.functionService.save(
+    //           _.omit(functionDetails.functionObject, [
+    //             'saving',
+    //             'unsaved',
+    //             'simulating',
+    //             'selected',
+    //             'active'
+    //           ]),
+    //           currentUser
+    //         )
+    //       )
+    //     )
+    //     .subscribe(
+    //       results => {
+    //         this.onSimulate({
+    //           ...functionDetails,
+    //           functionObject: {
+    //             ...functionDetails.functionObject,
+    //             saving: false,
+    //             isNew: false,
+    //             unsaved: false
+    //           },
+    //           functionRule: { ...functionDetails.functionRule, saving: false }
+    //         });
+    //         this.toasterService.pop(
+    //           'success',
+    //           'Success',
+    //           'Function saved successfully.'
+    //         );
+    //       },
+    //       error => {
+    //         this.toasterService.pop('error', 'Saving Error', error.message);
+    //       }
+    //     );
+    // } else {
+    //   this.toasterService.pop(
+    //     'error',
+    //     'Saving Error',
+    //     'Please write name of function'
+    //   );
+    // }
   }
 
   onDeleteFunction(functionObject: FunctionObject) {
