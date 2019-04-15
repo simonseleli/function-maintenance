@@ -32,7 +32,10 @@ export const getActiveFunction = createSelector(
     functionEntities[activeFunctionId]
 );
 
-export const getFunctions = (ruleKeyName?: string) =>
+export const getFunctions = (
+  onlyRuleIds: boolean = false,
+  ruleKeyName?: string
+) =>
   createSelector(
     fromFunction.getAllFunctions,
     fromFunctionRuleReducer.getFunctionRuleEntities,
@@ -48,24 +51,26 @@ export const getFunctions = (ruleKeyName?: string) =>
               id: functionObject.id,
               name: functionObject.name,
               active: functionObject.id === activeFunctionId,
-              [ruleKeyName || 'items']: _.filter(
-                _.map(functionObject.rules || [], ruleId => {
-                  const functionRule = functionRuleEntities[ruleId];
-                  return functionRule
-                    ? {
-                        id: functionRule.id,
-                        name: functionRule.name,
-                        ruleDefinition: functionRule,
-                        functionObject: {
-                          id: functionObject.id,
-                          functionString: functionObject.function
-                        },
-                        type: 'FUNCTION_RULE'
-                      }
-                    : null;
-                }),
-                functionRule => functionRule
-              )
+              [ruleKeyName || 'items']: onlyRuleIds
+                ? functionObject.rules
+                : _.filter(
+                    _.map(functionObject.rules || [], ruleId => {
+                      const functionRule = functionRuleEntities[ruleId];
+                      return functionRule
+                        ? {
+                            id: functionRule.id,
+                            name: functionRule.name,
+                            ruleDefinition: functionRule,
+                            functionObject: {
+                              id: functionObject.id,
+                              functionString: functionObject.function
+                            },
+                            type: 'FUNCTION_RULE'
+                          }
+                        : null;
+                    }),
+                    functionRule => functionRule
+                  )
             }
           : null;
       })

@@ -1,4 +1,3 @@
-import { FunctionObject } from '../models';
 import * as _ from 'lodash';
 
 export function getStandardizedFunction(

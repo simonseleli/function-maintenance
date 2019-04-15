@@ -81,8 +81,8 @@ export function reducer(
     }
 
     case FunctionRuleActionTypes.SetActiveFunctionRule: {
-      return action.functionRule
-        ? { ...state, activeFunctionRuleId: action.functionRule.id }
+      return action.functionRuleId
+        ? { ...state, activeFunctionRuleId: action.functionRuleId }
         : state;
     }
 

@@ -5,19 +5,19 @@ import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs';
 import { first, map, take, tap, withLatestFrom } from 'rxjs/operators';
+import { generateUid } from 'src/app/core';
 import { getSelectedFunctions } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/selectors/function.selectors';
 
 import * as fromFunctionRuleActions from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
 import {
   AddFunctions,
   FunctionActionTypes,
-  SetActiveFunction
+  SetActiveFunction,
+  UpdateActiveFunction
 } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
 import {
-  getSelectionDimensionsFromFavorite,
-  getVisualizationLayerType,
-  getVisualizationLayersFromFavorite,
-  getStandardizedVisualizationUiConfig
+  getStandardizedVisualizationUiConfig,
+  getVisualizationLayersFromFavorite
 } from '../../shared/modules/ngx-dhis2-visualization/helpers';
 import { getDefaultVisualizationLayer } from '../../shared/modules/ngx-dhis2-visualization/helpers/get-default-visualization-layer.helper';
 import {
@@ -34,12 +34,12 @@ import {
   AddOrUpdateCurrentVisualizationAction,
   AddVisualizationItemAction,
   CurrentVisualizationActionTypes,
+  SimulateVisualizationAction,
   UpdateCurrentVisualizationWithDataSelectionsAction
 } from '../actions/current-visualization.actions';
 import { AppState } from '../reducers';
 import { CurrentVisualizationState } from '../reducers/current-visualization.reducer';
 import { getCurrentVisualization, getQueryParams } from '../selectors';
-import { generateUid } from 'src/app/core';
 
 @Injectable()
 export class CurrentVisualizationEffects {
@@ -107,82 +107,87 @@ export class CurrentVisualizationEffects {
       CurrentVisualizationActionTypes.SimulateVisualization
     ),
     withLatestFrom(this.store.select(getCurrentVisualization)),
-    tap(([action, currentVisualization]: [any, CurrentVisualizationState]) => {
-      const dataSelections: VisualizationDataSelection[] =
-        currentVisualization.layers && currentVisualization.layers[0]
-          ? currentVisualization.layers[0].dataSelections
-          : [];
-      const dxDataSelection: VisualizationDataSelection = _.find(
-        dataSelections,
-        ['dimension', 'dx']
-      );
-
-      const dxDataSelectionIndex = dataSelections.indexOf(dxDataSelection);
-
-      const newItem =
-        action.functionObject && action.functionRule
-          ? {
-              id: action.functionRule.id,
-              name: action.functionRule.name,
-              ruleDefinition: action.functionRule,
-              functionObject: {
-                id: action.functionObject.id,
-                functionString: action.functionObject.function
-              },
-              type: 'FUNCTION_RULE'
-            }
-          : null;
-
-      if (newItem && dxDataSelection) {
-        const dxItems = dxDataSelection.items || [];
-        const availableItem = _.find(dxItems, ['id', newItem.id]);
-        const availableItemIndex = dxItems.indexOf(availableItem);
-
-        const newDxItems =
-          availableItemIndex !== -1
-            ? [
-                ..._.slice(dxItems, 0, availableItemIndex),
-                newItem,
-                ..._.slice(dxItems, availableItemIndex + 1)
-              ]
-            : [...dxItems, newItem];
-
-        const newDataSelections: VisualizationDataSelection[] = [
-          ..._.slice(dataSelections, 0, dxDataSelectionIndex),
-          {
-            ...dxDataSelection,
-            items: newDxItems
-          },
-          ..._.slice(dataSelections, dxDataSelectionIndex + 1)
-        ];
-
-        const newCurrentVisualization: CurrentVisualizationState = {
-          ...currentVisualization,
-          layers: _.map(
-            currentVisualization.layers,
-            (layer: VisualizationLayer) => {
-              return {
-                ...layer,
-                dataSelections: newDataSelections
-              };
-            }
-          )
-        };
-
-        this.store.dispatch(
-          new AddOrUpdateCurrentVisualizationAction(newCurrentVisualization)
+    tap(
+      ([action, currentVisualization]: [
+        SimulateVisualizationAction,
+        CurrentVisualizationState
+      ]) => {
+        const dataSelections: VisualizationDataSelection[] =
+          currentVisualization.layers && currentVisualization.layers[0]
+            ? currentVisualization.layers[0].dataSelections
+            : [];
+        const dxDataSelection: VisualizationDataSelection = _.find(
+          dataSelections,
+          ['dimension', 'dx']
         );
 
-        if (action.simulate) {
-          this.store.dispatch(
-            new LoadVisualizationAnalyticsAction(
-              newCurrentVisualization.id,
-              newCurrentVisualization.layers
+        const dxDataSelectionIndex = dataSelections.indexOf(dxDataSelection);
+
+        const newItem =
+          action.functionObject && action.functionRule
+            ? {
+                id: action.functionRule.id,
+                name: action.functionRule.name,
+                ruleDefinition: action.functionRule,
+                functionObject: {
+                  id: action.functionObject.id,
+                  functionString: action.functionObject.function
+                },
+                type: 'FUNCTION_RULE'
+              }
+            : null;
+
+        if (newItem && dxDataSelection) {
+          const dxItems = dxDataSelection.items || [];
+          const availableItem = _.find(dxItems, ['id', newItem.id]);
+          const availableItemIndex = dxItems.indexOf(availableItem);
+
+          const newDxItems =
+            availableItemIndex !== -1
+              ? [
+                  ..._.slice(dxItems, 0, availableItemIndex),
+                  newItem,
+                  ..._.slice(dxItems, availableItemIndex + 1)
+                ]
+              : [...dxItems, newItem];
+
+          const newDataSelections: VisualizationDataSelection[] = [
+            ..._.slice(dataSelections, 0, dxDataSelectionIndex),
+            {
+              ...dxDataSelection,
+              items: newDxItems
+            },
+            ..._.slice(dataSelections, dxDataSelectionIndex + 1)
+          ];
+
+          const newCurrentVisualization: CurrentVisualizationState = {
+            ...currentVisualization,
+            layers: _.map(
+              currentVisualization.layers,
+              (layer: VisualizationLayer) => {
+                return {
+                  ...layer,
+                  dataSelections: newDataSelections
+                };
+              }
             )
+          };
+
+          this.store.dispatch(
+            new AddOrUpdateCurrentVisualizationAction(newCurrentVisualization)
           );
+
+          if (action.simulate) {
+            this.store.dispatch(
+              new LoadVisualizationAnalyticsAction(
+                newCurrentVisualization.id,
+                newCurrentVisualization.layers
+              )
+            );
+          }
         }
       }
-    })
+    )
   );
 
   @Effect({ dispatch: false })
@@ -263,9 +268,7 @@ export class CurrentVisualizationEffects {
         if (queryParams.rule) {
           this.store.dispatch(
             new fromFunctionRuleActions.SetActiveFunctionRule(
-              {
-                id: queryParams.rule
-              },
+              queryParams.rule,
               {
                 id: queryParams.function
               }
@@ -303,7 +306,7 @@ export class CurrentVisualizationEffects {
   @Effect()
   visualizationAnalyticsLoaded$: Observable<any> = this.actions$.pipe(
     ofType(VisualizationLayerActionTypes.LOAD_VISUALIZATION_ANALYTICS_SUCCESS),
-    map(() => new fromFunctionRuleActions.UpdateActiveFunctionRule())
+    map(() => new UpdateActiveFunction())
   );
   constructor(
     private actions$: Actions,

@@ -18,7 +18,13 @@ export class FunctionRuleEditorComponent implements OnInit {
   showEditor = true;
 
   @Output()
-  simulate: EventEmitter<FunctionRule> = new EventEmitter<FunctionRule>();
+  simulate: EventEmitter<{
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }> = new EventEmitter<{
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }>();
 
   @Output()
   save: EventEmitter<{
@@ -34,7 +40,10 @@ export class FunctionRuleEditorComponent implements OnInit {
 
   onSimulate(e) {
     e.stopPropagation();
-    this.simulate.emit(this.functionRule);
+    this.simulate.emit({
+      functionRule: this.functionRule,
+      functionObject: this.functionObject
+    });
   }
 
   onSave(e) {

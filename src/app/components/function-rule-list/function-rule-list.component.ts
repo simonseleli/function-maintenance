@@ -4,7 +4,10 @@ import { AppState } from '../../store/reducers/index';
 import { ToasterService } from 'angular2-toaster';
 import { FunctionService } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/services/function.service';
 import * as _ from 'lodash';
-import { FunctionRule } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
+import {
+  FunctionRule,
+  FunctionObject
+} from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
 import { AddFunctionRule } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
 
 @Component({
@@ -16,13 +19,28 @@ export class FunctionRuleListComponent implements OnInit {
   @Input()
   functionRules: FunctionRule[];
 
-  @Output()
-  activate: EventEmitter<FunctionRule> = new EventEmitter<FunctionRule>();
+  @Input()
+  functionObject: FunctionObject;
 
   @Output()
-  newFunctionRule: EventEmitter<FunctionRule> = new EventEmitter<
-    FunctionRule
-  >();
+  activate: EventEmitter<{
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }> = new EventEmitter<{
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }>();
+
+  @Output()
+  newFunctionRule: EventEmitter<{
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }> = new EventEmitter<{
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }>();
+
+  newLoading;
 
   lodash = _;
 
@@ -57,7 +75,7 @@ export class FunctionRuleListComponent implements OnInit {
   onActivate(e, functionRule: FunctionRule) {
     e.stopPropagation();
     if (!functionRule.active) {
-      this.activate.emit(functionRule);
+      this.activate.emit({ functionRule, functionObject: this.functionObject });
     }
   }
 
@@ -67,7 +85,6 @@ export class FunctionRuleListComponent implements OnInit {
   setPageSize(size) {
     this.pager.pageSize = size;
   }
-  newLoading;
   create() {
     this.newLoading = true;
     this.functionService.createRule().subscribe(
@@ -80,7 +97,10 @@ export class FunctionRuleListComponent implements OnInit {
             }
           })
         );
-        this.newFunctionRule.emit(functionRule);
+        this.newFunctionRule.emit({
+          functionRule,
+          functionObject: this.functionObject
+        });
         this.newLoading = false;
       },
       error => {

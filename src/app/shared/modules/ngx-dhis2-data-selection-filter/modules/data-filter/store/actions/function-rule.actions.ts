@@ -83,7 +83,7 @@ export class ClearFunctionRules implements Action {
 export class SetActiveFunctionRule implements Action {
   readonly type = FunctionRuleActionTypes.SetActiveFunctionRule;
   constructor(
-    public functionRule: fromModels.FunctionRule,
+    public functionRuleId: string,
     public functionObject: fromModels.FunctionObject
   ) {}
 }

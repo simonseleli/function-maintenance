@@ -68,7 +68,7 @@ export class FunctionManagementComponent implements OnInit {
     this.currentVisualizationDataSelections$ = this.store.select(
       getCurrentVisualizationDataSelections
     );
-    this.functionList$ = this.store.select(getFunctions('rules'));
+    this.functionList$ = this.store.select(getFunctions(true, 'rules'));
     this.functionRules$ = this.store.select(getFunctionRulesForActiveFunction);
   }
 
@@ -87,22 +87,41 @@ export class FunctionManagementComponent implements OnInit {
     this.onActivateFunctionObject(functionObject);
   }
 
-  onNewFunctionRule(functionRule: FunctionRule) {
+  onNewFunctionRule(functionRuleDetails: {
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }) {
     this.activeEditor = 'RULE';
-    this.store.dispatch(
-      new AddFunctionRule({
-        functionRule: functionRule
-      })
-    );
-    this.onActivateFunctionRule(functionRule);
+
+    if (
+      functionRuleDetails &&
+      functionRuleDetails.functionObject &&
+      functionRuleDetails.functionRule
+    ) {
+      this.store.dispatch(
+        new AddFunctionRule({
+          functionRule: functionRuleDetails.functionRule
+        })
+      );
+      this.onActivateFunctionObject(
+        functionRuleDetails.functionObject,
+        functionRuleDetails.functionRule.id
+      );
+    }
   }
 
-  onActivateFunctionObject(functionObject: FunctionObject) {
+  onActivateFunctionObject(
+    functionObject: FunctionObject,
+    functionRuleId?: string
+  ) {
     this.activeEditor = 'FUNCTION';
     this.store.dispatch(new SetActiveFunction(functionObject));
     if (functionObject.rules && functionObject.rules[0]) {
       this.store.dispatch(
-        new SetActiveFunctionRule(functionObject.rules[0], functionObject)
+        new SetActiveFunctionRule(
+          functionRuleId || functionObject.rules[0],
+          functionObject
+        )
       );
 
       this.store.dispatch(
@@ -110,22 +129,34 @@ export class FunctionManagementComponent implements OnInit {
           path: ['/'],
           query: {
             function: functionObject.id,
-            rule: functionObject.rules[0].id
+            rule: functionRuleId || functionObject.rules[0]
           }
         })
       );
     }
   }
 
-  onActivateFunctionRule(functionRule: FunctionRule) {
+  onActivateFunctionRule(functionRuleDetails: {
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }) {
     this.activeEditor = 'RULE';
-    this.activeFunction$
-      .pipe(take(1))
-      .subscribe((activeFunction: FunctionObject) => {
-        this.store.dispatch(
-          new SetActiveFunctionRule(functionRule, activeFunction)
-        );
-      });
+    if (
+      functionRuleDetails &&
+      functionRuleDetails.functionObject &&
+      functionRuleDetails.functionRule
+    ) {
+      this.store.dispatch(
+        new SetActiveFunctionRule(
+          functionRuleDetails.functionRule.id,
+          functionRuleDetails.functionObject
+        )
+      );
+      this.onActivateFunctionObject(
+        functionRuleDetails.functionObject,
+        functionRuleDetails.functionRule.id
+      );
+    }
   }
 
   onSetActiveEditor(e, editor: string) {
@@ -145,16 +176,14 @@ export class FunctionManagementComponent implements OnInit {
       });
   }
 
-  onSimulateFunctionRule(functionRule: FunctionRule) {
-    this.activeFunction$
-      .pipe(take(1))
-      .subscribe((activeFunction: FunctionObject) => {
-        this.onSimulate({
-          functionObject: activeFunction,
-          functionRule,
-          item: 'FUNCTION_RULE'
-        });
-      });
+  onSimulateFunctionRule(functionRuleDetails: {
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }) {
+    this.onSimulate({
+      ...functionRuleDetails,
+      item: 'FUNCTION_RULE'
+    });
   }
 
   onSimulate(functionDetails: {
@@ -164,20 +193,13 @@ export class FunctionManagementComponent implements OnInit {
   }) {
     this.store.dispatch(
       new UpdateFunction(functionDetails.functionObject.id, {
-        ...functionDetails.functionObject,
         simulating: true,
-        selected: true,
-        rules: _.map(
-          functionDetails.functionObject.rules,
-          (rule: any) => rule.id
-        )
+        selected: true
       })
     );
 
     this.store.dispatch(
       new UpdateFunctionRule(functionDetails.functionRule.id, {
-        ...functionDetails.functionRule,
-        simulating: true,
         selected: true
       })
     );
