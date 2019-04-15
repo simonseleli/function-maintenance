@@ -4,6 +4,7 @@
     <app-function-list
       [functionList]="functionList$ | async"
       [activeFunction]="activeFunction$ | async"
+      [currentUser]="currentUser$ | async"
       (delete)="onDeleteFunction($event)"
       (save)="onSaveFunction($event)"
       (activate)="onActivateFunctionObject($event)"
