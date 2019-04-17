@@ -88,7 +88,8 @@ export class FunctionListComponent implements OnInit {
     this.pager.pageSize = size;
   }
 
-  create() {
+  create(event) {
+    event.stopPropagation();
     this.newLoading = true;
     this.functionService.create(this.currentUser).subscribe(
       (functionObject: any) => {
