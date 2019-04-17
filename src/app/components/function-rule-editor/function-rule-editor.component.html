@@ -71,7 +71,7 @@
             <button
               class="btn btn-primary"
               (click)="onSimulate($event)"
-              [disabled]="functionRule.simulating"
+              [disabled]="functionObject.simulating"
             >
               <i class="fa fa-eye"></i>
               {{ functionObject.simulating ? 'Simulating...' : 'Simulate' }}

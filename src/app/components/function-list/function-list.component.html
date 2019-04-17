@@ -11,7 +11,7 @@
     <button
       [disabled]="newLoading"
       class="btn btn-sm btn-primary float-right"
-      (click)="create()"
+      (click)="create($event)"
       title="Add New Function"
     >
       <div *ngIf="!newLoading">

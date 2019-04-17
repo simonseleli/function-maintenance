@@ -91,24 +91,12 @@ export class FunctionListComponent implements OnInit {
     this.newLoading = true;
     this.functionService.create(this.currentUser).subscribe(
       (functionObject: any) => {
-        this.store.dispatch(
-          new AddFunction({
-            function: {
-              ...functionObject,
-              rules: _.filter(
-                _.map(functionObject.rules || [], (rule: any) =>
-                  rule ? rule.id : undefined
-                ),
-                ruleId => ruleId
-              )
-            }
-          })
-        );
         this.newFunction.emit(functionObject);
         this.newLoading = false;
       },
       error => {
         this.toasterService.pop('error', 'Error', error.message);
+        this.newLoading = false;
       }
     );
   }

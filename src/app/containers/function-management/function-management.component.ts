@@ -41,6 +41,7 @@ import {
 } from 'src/app/store/selectors';
 import { FunctionService } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/services';
 import { ToasterService } from 'angular2-toaster';
+import { getStandardizedFunction } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/helpers';
 
 @Component({
   selector: 'app-function-management',
@@ -76,18 +77,26 @@ export class FunctionManagementComponent implements OnInit {
   }
 
   onNewFunctionObject(functionObject: FunctionObject) {
-    this.activeEditor = 'FUNCTION';
-    this.store.dispatch(
-      new AddFunction({
-        function: functionObject
-      })
-    );
-    this.store.dispatch(
-      new AddFunctionRule({
-        functionRule: functionObject.rules[0]
-      })
-    );
-    this.onActivateFunctionObject(functionObject);
+    if (functionObject) {
+      this.activeEditor = 'FUNCTION';
+      const standardizedFunction = getStandardizedFunction(
+        functionObject,
+        true
+      );
+      this.store.dispatch(
+        new AddFunction({
+          function: standardizedFunction
+        })
+      );
+
+      this.onActivateFunctionObject(standardizedFunction);
+
+      this.store.dispatch(
+        new AddFunctionRule({
+          functionRule: functionObject.rules[0]
+        })
+      );
+    }
   }
 
   onNewFunctionRule(functionRuleDetails: {
@@ -261,7 +270,6 @@ export class FunctionManagementComponent implements OnInit {
     functionObject: FunctionObject;
     functionRule: FunctionRule;
   }) {
-    console.log(functionRuleDetails);
     if (functionRuleDetails) {
       if (functionRuleDetails.functionRule) {
         this.store.dispatch(
