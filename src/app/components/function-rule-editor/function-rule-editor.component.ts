@@ -3,7 +3,6 @@ import {
   FunctionRule,
   FunctionObject
 } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
-import { e } from '@angular/core/src/render3';
 
 @Component({
   selector: 'app-function-rule-editor',
