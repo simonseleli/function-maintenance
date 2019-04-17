@@ -96,7 +96,16 @@ export const getFunctionById = functionId =>
 export const getSelectedFunctions = createSelector(
   fromFunction.getAllFunctions,
   fromFunctionRuleReducer.getFunctionRuleEntities,
-  (functionList: fromModels.FunctionObject[], functionRuleEntities: any) => {
+  getFunctionLoadedStatus,
+  (
+    functionList: fromModels.FunctionObject[],
+    functionRuleEntities: any,
+    functionLoaded: boolean
+  ) => {
+    if (!functionLoaded) {
+      return [];
+    }
+
     return functionList.length > 0 && _.keys(functionRuleEntities).length > 0
       ? _.filter(
           _.map(
@@ -114,14 +123,13 @@ export const getSelectedFunctions = createSelector(
                         selectedFunction.rules || [],
                         ruleId => functionRuleEntities[ruleId]
                       ),
-                      functionRule =>
-                        functionRule !== null && functionRule.selected
+                      functionRule => functionRule && functionRule.selected
                     )
                   }
                 : null;
             }
           ),
-          functionObject => functionObject !== null
+          functionObject => functionObject
         )
       : [];
   }

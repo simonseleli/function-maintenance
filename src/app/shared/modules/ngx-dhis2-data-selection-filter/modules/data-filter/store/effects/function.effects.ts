@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
+import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import {
@@ -20,6 +21,7 @@ import * as fromHelpers from '../../helpers';
 import { FunctionObject } from '../../models/function.model';
 import { FunctionService } from '../../services/function.service';
 import { getStandardizedFunction } from '../../helpers';
+import { getSelectedFunctionRule } from '../../helpers/get-selected-function-rule.helper';
 
 @Injectable()
 export class FunctionEffects {
@@ -40,15 +42,26 @@ export class FunctionEffects {
           );
           this.functionService.loadAll(action.currentUser).subscribe(
             (functions: FunctionObject[]) => {
+              const standardizedFunctions = fromHelpers.getStandardizedFunctions(
+                functions,
+                action.routeParams ? action.routeParams.function || '' : ''
+              );
+              const selectedFunction = _.find(standardizedFunctions, [
+                'selected',
+                true
+              ]);
+
+              const selectedRuleId = getSelectedFunctionRule(
+                selectedFunction.rules || [],
+                action.routeParams ? action.routeParams.rule || '' : ''
+              );
+
               this.functionStore.dispatch(
                 new fromFunctionActions.AddFunctions(
-                  fromHelpers.getStandardizedFunctions(
-                    functions,
-                    action.routeParams ? action.routeParams.function || '' : ''
-                  ),
+                  standardizedFunctions,
                   fromHelpers.getStandardizedFunctionRulesFromFunctionList(
                     functions,
-                    action.routeParams ? action.routeParams.rule || '' : ''
+                    selectedRuleId
                   )
                 )
               );

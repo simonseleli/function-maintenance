@@ -290,15 +290,18 @@ export class CurrentVisualizationEffects {
         true
       ]);
 
-      if (!routeQueryParams.function && !routeQueryParams.rule) {
-        const queryParams =
-          selectedFunction && selectedFunctionRule
-            ? {
-                function: selectedFunction.id,
-                rule: selectedFunctionRule.id
-              }
-            : {};
-        this.store.dispatch(new Go({ path: ['/'], query: queryParams }));
+      if (selectedFunction && selectedFunctionRule) {
+        if (
+          (!routeQueryParams.function && !routeQueryParams.rule) ||
+          (selectedFunction.id !== routeQueryParams.function &&
+            selectedFunctionRule.id !== routeQueryParams.rule)
+        ) {
+          const queryParams = {
+            function: selectedFunction.id,
+            rule: selectedFunctionRule.id
+          };
+          this.store.dispatch(new Go({ path: ['/'], query: queryParams }));
+        }
       }
     })
   );

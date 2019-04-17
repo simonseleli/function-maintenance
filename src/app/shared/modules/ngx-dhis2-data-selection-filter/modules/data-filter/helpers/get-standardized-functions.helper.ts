@@ -6,6 +6,10 @@ export function getStandardizedFunctions(
   functionList,
   selectedFunctionId: string = ''
 ): FunctionObject[] {
+  const selectedFunction =
+    _.find(functionList || [], ['id', selectedFunctionId]) ||
+    (functionList || [])[0];
+
   return _.filter(
     _.map(
       functionList || [],
@@ -13,14 +17,7 @@ export function getStandardizedFunctions(
         if (!functionItem) {
           return null;
         }
-        const selectedFunction = _.find(functionList || [], [
-          'id',
-          selectedFunctionId !== ''
-            ? selectedFunctionId
-            : functionItemIndex === 0
-            ? functionItem.id
-            : ''
-        ]);
+
         return getStandardizedFunction(
           functionItem,
           selectedFunction && selectedFunction.id === functionItem.id
