@@ -5,8 +5,10 @@
         <label for="">Name:</label>
         <input
           type="text"
+          tabindex="1"
+          (change)="onChange($event, 'name')"
           class="form-control"
-          [(ngModel)]="functionRule.name"
+          [ngModel]="functionRule.name"
         />
       </div>
 
@@ -14,11 +16,13 @@
         <label for="">Description:</label>
         <textarea
           name=""
+          tabindex="2"
           class="form-control"
           id=""
           cols="30"
           rows="2"
-          [(ngModel)]="functionRule.name"
+          (change)="onChange($event, 'description')"
+          [ngModel]="functionRule.description"
         ></textarea>
       </div>
 
@@ -26,11 +30,12 @@
         <label for="">JSON:</label>
         <editor
           *ngIf="showEditor"
+          tabindex="3"
           [mode]="'javascript'"
           [code]="functionRule.json"
           [readonly]="operation == 'test'"
           [snippets]="snippets"
-          (onCodeUpdate)="onChange($event)"
+          (onCodeUpdate)="onRuleCodeEdited($event)"
         ></editor>
       </div>
 

@@ -31,7 +31,7 @@ export function reducer(
     }
 
     case FunctionRuleActionTypes.UpsertFunctionRule: {
-      return adapter.upsertOne(action.payload.functionRule, state);
+      return adapter.upsertOne(action.functionRule, state);
     }
 
     case FunctionRuleActionTypes.AddFunctionRules: {

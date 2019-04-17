@@ -66,6 +66,7 @@
             (simulate)="onSimulateFunction($event)"
             (delete)="onDeleteFunction($event)"
             (save)="onSaveFunction($event)"
+            (update)="onUpdateFunction($event)"
           ></app-function-editor>
         </div>
         <div
@@ -81,6 +82,7 @@
             [functionObject]="activeFunction$ | async"
             (simulate)="onSimulateFunctionRule($event)"
             (save)="onSaveFunctionRule($event)"
+            (update)="onUpdateFunctionRule($event)"
           ></app-function-rule-editor>
         </div>
       </div>

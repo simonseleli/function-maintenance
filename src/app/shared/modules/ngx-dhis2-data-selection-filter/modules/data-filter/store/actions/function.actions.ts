@@ -48,7 +48,7 @@ export class AddFunction implements Action {
 export class UpsertFunction implements Action {
   readonly type = FunctionActionTypes.UpsertFunction;
 
-  constructor(public payload: { function: fromModels.FunctionObject }) {}
+  constructor(public functionObject: FunctionObject) {}
 }
 
 export class AddFunctions implements Action {

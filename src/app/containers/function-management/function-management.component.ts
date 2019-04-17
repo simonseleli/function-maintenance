@@ -10,14 +10,16 @@ import {
 import {
   AddFunctionRule,
   SetActiveFunctionRule,
-  UpdateFunctionRule
+  UpdateFunctionRule,
+  UpsertFunctionRule
 } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
 import {
   AddFunction,
   SetActiveFunction,
   UpdateFunction,
   DeleteFunction,
-  SaveFunction
+  SaveFunction,
+  UpsertFunction
 } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function.actions';
 import {
   getActiveFunctionRule,
@@ -253,5 +255,27 @@ export class FunctionManagementComponent implements OnInit {
         this.toasterService.pop('error', 'Error', error.message);
       }
     );
+  }
+
+  onUpdateFunctionRule(functionRuleDetails: {
+    functionObject: FunctionObject;
+    functionRule: FunctionRule;
+  }) {
+    console.log(functionRuleDetails);
+    if (functionRuleDetails) {
+      if (functionRuleDetails.functionRule) {
+        this.store.dispatch(
+          new UpsertFunctionRule(functionRuleDetails.functionRule)
+        );
+      }
+
+      if (functionRuleDetails.functionObject) {
+        this.onUpdateFunction(functionRuleDetails.functionObject);
+      }
+    }
+  }
+
+  onUpdateFunction(functionObject: FunctionObject) {
+    this.store.dispatch(new UpsertFunction(functionObject));
   }
 }

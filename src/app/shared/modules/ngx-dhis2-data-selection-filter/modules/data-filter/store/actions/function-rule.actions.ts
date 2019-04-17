@@ -32,7 +32,7 @@ export class AddFunctionRule implements Action {
 export class UpsertFunctionRule implements Action {
   readonly type = FunctionRuleActionTypes.UpsertFunctionRule;
 
-  constructor(public payload: { functionRule: fromModels.FunctionRule }) {}
+  constructor(public functionRule: fromModels.FunctionRule) {}
 }
 
 export class AddFunctionRules implements Action {

@@ -42,6 +42,9 @@ export class FunctionEditorComponent implements OnInit, OnChanges {
   @Output()
   delete: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
 
+  @Output()
+  update: EventEmitter<FunctionObject> = new EventEmitter<FunctionObject>();
+
   snippets = [
     {
       name: 'Aggregate Analytics',
@@ -80,23 +83,24 @@ export class FunctionEditorComponent implements OnInit, OnChanges {
     this.simulate.emit(this.functionObject);
   }
 
-  onChange(event) {
-    this.upsertFunction();
+  onChange(event, attributeName: string) {
+    this._onFunctionEdited({
+      ...this.functionObject,
+      [attributeName]: event.target.value,
+      unsaved: true
+    });
   }
 
-  onFunctionEdited(event) {
-    const functionObjectClone = _.clone(this.functionObject);
-    functionObjectClone.function = event;
-    this.functionObject = functionObjectClone;
-    this.upsertFunction();
+  onFunctionCodeEdited(event) {
+    this._onFunctionEdited({
+      ...this.functionObject,
+      function: event,
+      unsaved: true
+    });
   }
 
-  upsertFunction() {
-    if (!this.functionObject.unsaved) {
-      this.functionObject.unsaved = true;
-    }
-
-    // this.store.dispatch(new UpsertFunction({function: this.functionObject}));
+  private _onFunctionEdited(functionObject: FunctionObject) {
+    this.update.emit(functionObject);
   }
 
   onSave(e) {

@@ -3,6 +3,7 @@ import {
   FunctionRule,
   FunctionObject
 } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
+import { e } from '@angular/core/src/render3';
 
 @Component({
   selector: 'app-function-rule-editor',
@@ -34,6 +35,15 @@ export class FunctionRuleEditorComponent implements OnInit {
     functionRule: FunctionRule;
     functionObject: FunctionObject;
   }>();
+
+  @Output()
+  update: EventEmitter<{
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }> = new EventEmitter<{
+    functionRule: FunctionRule;
+    functionObject: FunctionObject;
+  }>();
   constructor() {}
 
   ngOnInit() {}
@@ -51,6 +61,33 @@ export class FunctionRuleEditorComponent implements OnInit {
     this.save.emit({
       functionRule: this.functionRule,
       functionObject: this.functionObject
+    });
+  }
+
+  onChange(event, attributeName: string) {
+    event.stopPropagation();
+    if (event.target) {
+      this._onRuleEdited({
+        ...this.functionRule,
+        [attributeName]: event.target.value
+      });
+    }
+  }
+
+  onRuleCodeEdited(ruleCode) {
+    this._onRuleEdited({
+      ...this.functionRule,
+      json: ruleCode
+    });
+  }
+
+  private _onRuleEdited(functionRule: FunctionRule) {
+    this.update.emit({
+      functionRule,
+      functionObject: {
+        ...this.functionObject,
+        unsaved: true
+      }
     });
   }
 }

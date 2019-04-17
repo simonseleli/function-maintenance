@@ -5,9 +5,10 @@
         <label for="">Name:</label>
         <input
           type="text"
-          (ngModelChange)="onChange($event)"
+          (change)="onChange($event, 'name')"
+          tabindex="1"
           class="form-control"
-          [(ngModel)]="functionObject.name"
+          [ngModel]="functionObject.name"
         />
       </div>
 
@@ -16,11 +17,12 @@
         <textarea
           name=""
           class="form-control"
+          tabindex="2"
           id=""
           cols="30"
           rows="2"
-          (ngModelChange)="onChange($event)"
-          [(ngModel)]="functionObject.description"
+          (change)="onChange($event, 'description')"
+          [ngModel]="functionObject.description"
         ></textarea>
       </div>
 
@@ -37,11 +39,12 @@
 
         <editor
           *ngIf="showEditor"
+          tabindex="2"
           [mode]="'javascript'"
           [code]="functionObject.function"
           [readonly]="operation == 'test'"
           [snippets]="snippets"
-          (onCodeUpdate)="onFunctionEdited($event)"
+          (onCodeUpdate)="onFunctionCodeEdited($event)"
         ></editor>
       </div>
 

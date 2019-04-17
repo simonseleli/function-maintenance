@@ -41,7 +41,7 @@ export function reducer(state = initialState, action: FunctionActions): State {
     }
 
     case FunctionActionTypes.UpsertFunction: {
-      return adapter.upsertOne(action.payload.function, state);
+      return adapter.upsertOne(action.functionObject, state);
     }
 
     case FunctionActionTypes.AddFunctions: {
