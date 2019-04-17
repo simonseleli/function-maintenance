@@ -95,7 +95,12 @@ export class FunctionListComponent implements OnInit {
           new AddFunction({
             function: {
               ...functionObject,
-              rules: _.map(functionObject.rules, (rule: any) => rule.id)
+              rules: _.filter(
+                _.map(functionObject.rules || [], (rule: any) =>
+                  rule ? rule.id : undefined
+                ),
+                ruleId => ruleId
+              )
             }
           })
         );

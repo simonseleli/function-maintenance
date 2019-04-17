@@ -93,14 +93,18 @@ export class HomeComponent implements OnInit {
       item => item.type === 'FUNCTION_RULE'
     );
     _.each(functionRuleList, (functionRule: any) => {
-      this.store.dispatch(
-        new UpdateFunctionRule(functionRule.id, { selected: true })
-      );
-
-      if (functionRule.functionObject) {
+      if (functionRule) {
         this.store.dispatch(
-          new UpdateFunction(functionRule.functionObject.id, { selected: true })
+          new UpdateFunctionRule(functionRule.id, { selected: true })
         );
+
+        if (functionRule.functionObject) {
+          this.store.dispatch(
+            new UpdateFunction(functionRule.functionObject.id, {
+              selected: true
+            })
+          );
+        }
       }
     });
   }
@@ -111,14 +115,16 @@ export class HomeComponent implements OnInit {
       .pipe(take(1))
       .subscribe((selectedFunctions: any[]) => {
         _.each(selectedFunctions, (selectedFunction: any) => {
-          this.store.dispatch(
-            new UpdateFunction(selectedFunction.id, { selected: false })
-          );
-          _.each(selectedFunction.rules, (selectedRule: any) => {
+          if (selectedFunction) {
             this.store.dispatch(
-              new UpdateFunctionRule(selectedRule.id, { selected: false })
+              new UpdateFunction(selectedFunction.id, { selected: false })
             );
-          });
+            _.each(selectedFunction.rules, (selectedRule: any) => {
+              this.store.dispatch(
+                new UpdateFunctionRule(selectedRule.id, { selected: false })
+              );
+            });
+          }
         });
       });
   }

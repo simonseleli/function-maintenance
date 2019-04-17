@@ -6,21 +6,26 @@ export function getStandardizedFunctions(
   functionList,
   selectedFunctionId: string = ''
 ): FunctionObject[] {
-  return _.map(
-    functionList || [],
-    (functionItem: any, functionItemIndex: number) => {
-      const selectedFunction = _.find(functionList || [], [
-        'id',
-        selectedFunctionId !== ''
-          ? selectedFunctionId
-          : functionItemIndex === 0
-          ? functionItem.id
-          : ''
-      ]);
-      return getStandardizedFunction(
-        functionItem,
-        selectedFunction && selectedFunction.id === functionItem.id
-      );
-    }
+  return _.filter(
+    _.map(
+      functionList || [],
+      (functionItem: any, functionItemIndex: number) => {
+        if (!functionItem) {
+          return null;
+        }
+        const selectedFunction = _.find(functionList || [], [
+          'id',
+          selectedFunctionId !== ''
+            ? selectedFunctionId
+            : functionItemIndex === 0
+            ? functionItem.id
+            : ''
+        ]);
+        return getStandardizedFunction(
+          functionItem,
+          selectedFunction && selectedFunction.id === functionItem.id
+        );
+      }
+    )
   );
 }

@@ -22,15 +22,15 @@ export class FunctionService {
 
   loadAll(currentUser: any): Observable<any> {
     return this._loadAll().pipe(
-      switchMap((functions: any[]) =>
+      mergeMap((functions: any[]) =>
         functions.length === 0
-          ? this.createDefaultFunctions(currentUser)
+          ? this._createDefaultFunctions(currentUser)
           : of(functions)
       )
     );
   }
 
-  createDefaultFunctions(currentUser: any) {
+  private _createDefaultFunctions(currentUser: any) {
     return forkJoin([
       this._createPredictorFunction(currentUser),
       this._createCompletenessFunction(currentUser),
@@ -38,7 +38,7 @@ export class FunctionService {
       this._createReportingRateByFilledDataFunction(currentUser),
       this._createProportionOfOrgUnitsNotReportFunction(currentUser),
       this._createOrgUnitsReportedOnDataSetFunction(currentUser)
-    ]).pipe(map(() => this._loadAll()));
+    ]).pipe(mergeMap(() => this._loadAll()));
   }
 
   private _loadAll() {
