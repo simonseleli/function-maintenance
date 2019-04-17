@@ -118,9 +118,7 @@
               </button>
               <button
                 class="btn btn-sm btn-danger"
-                (click)="
-                  $event.stopPropagation(); deleteFunctionObject(functionObject)
-                "
+                (click)="deleteFunctionObject($event, functionObject)"
               >
                 Yes
               </button>

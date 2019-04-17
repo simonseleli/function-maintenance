@@ -258,6 +258,19 @@ export class FunctionManagementComponent implements OnInit {
             id: functionObject.id
           })
         );
+
+        this.functionList$
+          .pipe(take(1))
+          .subscribe((functions: FunctionObject[]) => {
+            const functionObjectToBeActive = (functions || []).filter(
+              (functionItem: FunctionObject) =>
+                functionItem.id !== functionObject.id
+            )[0];
+
+            if (functionObjectToBeActive) {
+              this.onActivateFunctionObject(functionObjectToBeActive);
+            }
+          });
       },
       error => {
         functionObject.deleting = false;

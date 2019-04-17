@@ -69,7 +69,8 @@ export class FunctionListComponent implements OnInit {
     }
     this.pageClustering.push({ name: 'All', value: this.pager.total });
   }
-  deleteFunctionObject(functionObject) {
+  deleteFunctionObject(event, functionObject) {
+    event.stopPropagation();
     this.delete.emit(functionObject);
   }
 
