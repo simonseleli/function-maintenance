@@ -308,7 +308,10 @@ export class CurrentVisualizationEffects {
 
   @Effect()
   visualizationAnalyticsLoaded$: Observable<any> = this.actions$.pipe(
-    ofType(VisualizationLayerActionTypes.LOAD_VISUALIZATION_ANALYTICS_SUCCESS),
+    ofType(
+      VisualizationLayerActionTypes.LOAD_VISUALIZATION_ANALYTICS_SUCCESS,
+      VisualizationLayerActionTypes.LOAD_VISUALIZATION_ANALYTICS_FAIL
+    ),
     map(() => new UpdateActiveFunction())
   );
   constructor(

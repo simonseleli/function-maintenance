@@ -22,7 +22,8 @@ import {
   LoadVisualizationAnalyticsAction,
   LoadVisualizationAnalyticsSuccessAction,
   UpdateVisualizationLayerAction,
-  VisualizationLayerActionTypes
+  VisualizationLayerActionTypes,
+  LoadVisualizationAnalyticsFailAction
 } from '../actions/visualization-layer.actions';
 import { UpdateVisualizationObjectAction } from '../actions/visualization-object.actions';
 import { VisualizationState } from '../reducers';
@@ -137,6 +138,12 @@ export class VisualizationLayerEffects {
                       );
                     },
                     error => {
+                      this.store.dispatch(
+                        new LoadVisualizationAnalyticsFailAction(
+                          action.visualizationId,
+                          error
+                        )
+                      );
                       this.store.dispatch(
                         new UpdateVisualizationObjectAction(
                           action.visualizationId,
