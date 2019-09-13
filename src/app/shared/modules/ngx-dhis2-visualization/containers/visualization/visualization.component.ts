@@ -88,7 +88,7 @@ export class VisualizationComponent implements OnInit {
   @Output()
   deleteVisualization: EventEmitter<any> = new EventEmitter<any>();
 
-  @ViewChild(VisualizationBodySectionComponent)
+  @ViewChild(VisualizationBodySectionComponent, { static: false })
   visualizationBody: VisualizationBodySectionComponent;
 
   private _visualizationInputs$: Subject<VisualizationInputs> = new Subject();
