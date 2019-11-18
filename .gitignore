@@ -24,7 +24,7 @@ upload.sh
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-proxy-config.json
+
 
 # misc
 /.sass-cache
@@ -40,3 +40,4 @@ testem.log
 .DS_Store
 Thumbs.db
 node_modules
+proxy-config.json
