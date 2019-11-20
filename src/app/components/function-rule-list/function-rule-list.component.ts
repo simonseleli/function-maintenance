@@ -1,19 +1,19 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../store/reducers/index';
-import { ToasterService } from 'angular2-toaster';
-import { FunctionService } from '../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/services/function.service';
-import * as _ from 'lodash';
+import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Store } from "@ngrx/store";
+import { AppState } from "../../store/reducers/index";
+import { ToasterService } from "angular2-toaster";
+import { FunctionService } from "../../shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/services/function.service";
+import * as _ from "lodash";
 import {
   FunctionRule,
   FunctionObject
-} from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models';
-import { AddFunctionRule } from 'src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions';
+} from "src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/models";
+import { AddFunctionRule } from "src/app/shared/modules/ngx-dhis2-data-selection-filter/modules/data-filter/store/actions/function-rule.actions";
 
 @Component({
-  selector: 'app-function-rule-list',
-  templateUrl: './function-rule-list.component.html',
-  styleUrls: ['./function-rule-list.component.css']
+  selector: "app-function-rule-list",
+  templateUrl: "./function-rule-list.component.html",
+  styleUrls: ["./function-rule-list.component.css"]
 })
 export class FunctionRuleListComponent implements OnInit {
   @Input()
@@ -49,7 +49,7 @@ export class FunctionRuleListComponent implements OnInit {
     pageSize: 5
   };
   pageClustering;
-  ruleFilter: any = { name: '' };
+  ruleFilter: any = { name: "" };
   constructor(
     private functionService: FunctionService,
     private store: Store<AppState>,
@@ -69,7 +69,7 @@ export class FunctionRuleListComponent implements OnInit {
         value: possibleValues[i]
       });
     }
-    this.pageClustering.push({ name: 'All', value: this.pager.total });
+    this.pageClustering.push({ name: "All", value: this.pager.total });
   }
 
   onActivate(e, functionRule: FunctionRule) {
@@ -104,12 +104,12 @@ export class FunctionRuleListComponent implements OnInit {
         this.newLoading = false;
       },
       error => {
-        this.toasterService.pop('error', 'Error', error.message);
+        this.toasterService.pop("error", "Error", error.message);
       }
     );
   }
   order(functionOne, functionTwo) {
-    if (typeof true === 'boolean') {
+    if (typeof true === "boolean") {
       if (functionOne) {
         return 1;
       } else {

@@ -1,11 +1,11 @@
-import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import * as _ from 'lodash';
-import { FunctionRule } from '../../models/function-rule.model';
+import { EntityState, EntityAdapter, createEntityAdapter } from "@ngrx/entity";
+import * as _ from "lodash";
+import { FunctionRule } from "../../models/function-rule.model";
 import {
   FunctionRuleActions,
   FunctionRuleActionTypes
-} from '../actions/function-rule.actions';
-import { createSelector, createFeatureSelector } from '@ngrx/store';
+} from "../actions/function-rule.actions";
+import { createSelector, createFeatureSelector } from "@ngrx/store";
 
 export interface State extends EntityState<FunctionRule> {
   // additional entities state properties
@@ -18,7 +18,7 @@ export const adapter: EntityAdapter<FunctionRule> = createEntityAdapter<
 
 export const initialState: State = adapter.getInitialState({
   // additional entity state properties
-  activeFunctionRuleId: ''
+  activeFunctionRuleId: ""
 });
 
 export function reducer(
@@ -36,7 +36,7 @@ export function reducer(
 
     case FunctionRuleActionTypes.AddFunctionRules: {
       const selectedFunctionRule = _.find(action.functionRules, [
-        'selected',
+        "selected",
         true
       ]);
       return adapter.addMany(action.functionRules, {
@@ -45,7 +45,7 @@ export function reducer(
           ? selectedFunctionRule.id
           : action.functionRules && action.functionRules[0]
           ? action.functionRules[0].id
-          : ''
+          : ""
       });
     }
 
@@ -88,7 +88,7 @@ export function reducer(
 
     case FunctionRuleActionTypes.UpdateActiveFunctionRule: {
       const activeFunctionRuleId = state.activeFunctionRuleId;
-      return activeFunctionRuleId !== ''
+      return activeFunctionRuleId !== ""
         ? adapter.updateOne(
             { id: activeFunctionRuleId, changes: { simulating: false } },
             state
@@ -103,7 +103,7 @@ export function reducer(
 }
 
 export const getFunctionRuleState = createFeatureSelector<State>(
-  'functionRule'
+  "functionRule"
 );
 
 export const {
