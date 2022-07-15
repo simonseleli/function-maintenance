@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from '../models';
-import { NgxDhis2HttpClientService } from '@hisptz/ngx-dhis2-http-client';
+import { NgxDhis2HttpClientService } from '@iapps/ngx-dhis2-http-client';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -17,40 +17,46 @@ export class UserService {
     dataViewOrganisationUnits[id,name,level],organisationUnits[id,name,level],userCredentials[username]`);
   }
 
-  userGroups
-  getUserGroups(){
-    return new Observable((observable)=>{
-      if(this.userGroups){
+  userGroups;
+  getUserGroups() {
+    return new Observable((observable) => {
+      if (this.userGroups) {
         observable.next(this.userGroups);
         observable.complete();
-      }else{
-        this.httpClient.get("userGroups").subscribe((results:any)=>{
-          this.userGroups = results.userGroups;
-          observable.next(this.userGroups);
-          observable.complete();
-        },(error)=>{
-          observable.error(error.json());
-          observable.complete();
-        })
+      } else {
+        this.httpClient.get('userGroups').subscribe(
+          (results: any) => {
+            this.userGroups = results.userGroups;
+            observable.next(this.userGroups);
+            observable.complete();
+          },
+          (error) => {
+            observable.error(error.json());
+            observable.complete();
+          }
+        );
       }
-    })
+    });
   }
-  user
-  getCurrentUser(){
-    return new Observable((observable)=>{
-      if(this.user){
+  user;
+  getCurrentUser() {
+    return new Observable((observable) => {
+      if (this.user) {
         observable.next(this.user);
         observable.complete();
-      }else{
-        this.loadCurrentUser().subscribe((results)=>{
-          this.user = results;
-          observable.next(this.user);
-          observable.complete();
-        },(error)=>{
-          observable.error(error.json());
-          observable.complete();
-        })
+      } else {
+        this.loadCurrentUser().subscribe(
+          (results) => {
+            this.user = results;
+            observable.next(this.user);
+            observable.complete();
+          },
+          (error) => {
+            observable.error(error.json());
+            observable.complete();
+          }
+        );
       }
-    })
+    });
   }
 }

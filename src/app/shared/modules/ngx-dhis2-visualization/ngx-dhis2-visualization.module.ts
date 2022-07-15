@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NgxDhis2DictionaryModule } from '@hisptz/ngx-dhis2-dictionary';
+import { NgxDhis2DictionaryModule } from '@iapps/ngx-dhis2-dictionary';
+import { NgxDhis2HttpClientModule } from '@iapps/ngx-dhis2-http-client';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { TranslateModule } from '@ngx-translate/core';
@@ -33,14 +34,19 @@ import { reducers } from './store/reducers';
     NgxDhis2DictionaryModule,
     NgxDhis2SelectionFiltersModule,
     MapModule,
-    ReportsModule
+    ReportsModule,
+    NgxDhis2HttpClientModule.forRoot({
+      version: 1,
+      namespace: 'iapps',
+      models: {},
+    }),
   ],
   declarations: [
     ...pipes,
     ...components,
     ...containers,
-    VisualizationWidgetComponent
+    VisualizationWidgetComponent,
   ],
-  exports: [...containers, ...components]
+  exports: [...containers, ...components],
 })
 export class NgxDhis2VisualizationModule {}

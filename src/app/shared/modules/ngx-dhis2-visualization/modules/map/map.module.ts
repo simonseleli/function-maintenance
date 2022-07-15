@@ -16,7 +16,7 @@ import * as fromServices from './services';
 
 import { NgxPaginationModule } from 'ngx-pagination';
 
-import { NgxDnDModule } from '@swimlane/ngx-dnd';
+// import { NgxDnDModule } from '@swimlane/ngx-dnd';
 
 // Filters Modules
 import { filterModules } from '../../../ngx-dhis2-data-selection-filter/modules';
@@ -26,13 +26,12 @@ import { filterModules } from '../../../ngx-dhis2-data-selection-filter/modules'
     CommonModule,
     NgxPaginationModule,
     ColorPickerModule,
-    NgxDnDModule,
     ...filterModules,
     StoreModule.forFeature('map', reducers),
-    EffectsModule.forFeature(effects)
+    EffectsModule.forFeature(effects),
   ],
   providers: [...fromServices.services],
   declarations: [...fromContainers.containers, ...fromComponents.components],
-  exports: [...fromContainers.containers, ...fromComponents.components]
+  exports: [...fromContainers.containers, ...fromComponents.components],
 })
 export class MapModule {}

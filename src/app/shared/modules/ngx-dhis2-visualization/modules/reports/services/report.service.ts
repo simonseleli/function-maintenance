@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { NgxDhis2HttpClientService } from '@hisptz/ngx-dhis2-http-client';
+import { NgxDhis2HttpClientService } from '@iapps/ngx-dhis2-http-client';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ReportService {
   private _reportEntities$: BehaviorSubject<any> = new BehaviorSubject({});
@@ -14,7 +14,7 @@ export class ReportService {
     this.getReportEntities().subscribe((availableReportEntities: any) => {
       const reports = (reportIds || [])
         .map((reportId: string) => availableReportEntities[reportId])
-        .filter(report => report);
+        .filter((report) => report);
       if (reports.length === 0) {
         this.http
           .get(
@@ -29,9 +29,7 @@ export class ReportService {
               (reportEntity, report) => {
                 reportEntity[report.id] = {
                   ...report,
-                  url: `../../../dhis-web-reporting/getReportParams.action?mode=report&uid=${
-                    report.id
-                  }`
+                  url: `../../../dhis-web-reporting/getReportParams.action?mode=report&uid=${report.id}`,
                 };
                 return reportEntity;
               },
@@ -39,7 +37,7 @@ export class ReportService {
             );
             this._reportEntities$.next({
               ...availableReportEntities,
-              ...reportEntities
+              ...reportEntities,
             });
           });
       }
@@ -55,7 +53,7 @@ export class ReportService {
       map((reportEntities: any) => {
         return (reportIds || [])
           .map((reportId: string) => reportEntities[reportId])
-          .filter(report => report);
+          .filter((report) => report);
       })
     );
   }

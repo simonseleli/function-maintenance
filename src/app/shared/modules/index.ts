@@ -5,5 +5,5 @@ import { NgxDhis2VisualizationModule } from './ngx-dhis2-visualization/ngx-dhis2
 export const modules: any[] = [
   NgxDhis2SelectionFiltersModule,
   FavoriteFilterModule,
-  NgxDhis2VisualizationModule
+  NgxDhis2VisualizationModule,
 ];

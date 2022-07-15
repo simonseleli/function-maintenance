@@ -13,7 +13,9 @@ export const getFunctionInitiatedStatus = createSelector(
 
 export const getFunctionLoadingStatus = createSelector(
   fromFunction.getFunctionState,
-  (functionState: fromFunction.State) => functionState.loading
+  (functionState: fromFunction.State) => {
+    return functionState.loading;
+  }
 );
 
 export const getFunctionLoadedStatus = createSelector(
@@ -54,7 +56,7 @@ export const getFunctions = (
               [ruleKeyName || 'items']: onlyRuleIds
                 ? functionObject.rules
                 : _.filter(
-                    _.map(functionObject.rules || [], ruleId => {
+                    _.map(functionObject.rules || [], (ruleId) => {
                       const functionRule = functionRuleEntities[ruleId];
                       return functionRule
                         ? {
@@ -63,20 +65,20 @@ export const getFunctions = (
                             ruleDefinition: functionRule,
                             functionObject: {
                               id: functionObject.id,
-                              functionString: functionObject.function
+                              functionString: functionObject.function,
                             },
-                            type: 'FUNCTION_RULE'
+                            type: 'FUNCTION_RULE',
                           }
                         : null;
                     }),
-                    functionRule => functionRule
-                  )
+                    (functionRule) => functionRule
+                  ),
             }
           : null;
       })
   );
 
-export const getFunctionById = functionId =>
+export const getFunctionById = (functionId) =>
   createSelector(
     fromFunction.getFunctionEntities,
     fromFunctionRuleReducer.getFunctionRuleEntities,
@@ -87,7 +89,7 @@ export const getFunctionById = functionId =>
             ...functionObject,
             rules: (functionObject.rules || []).map(
               (ruleId: string) => functionRuleEntities[ruleId]
-            )
+            ),
           }
         : null;
     }
@@ -121,15 +123,15 @@ export const getSelectedFunctions = createSelector(
                     rules: _.filter(
                       _.map(
                         selectedFunction.rules || [],
-                        ruleId => functionRuleEntities[ruleId]
+                        (ruleId) => functionRuleEntities[ruleId]
                       ),
-                      functionRule => functionRule && functionRule.selected
-                    )
+                      (functionRule) => functionRule && functionRule.selected
+                    ),
                   }
                 : null;
             }
           ),
-          functionObject => functionObject
+          (functionObject) => functionObject
         )
       : [];
   }

@@ -7,7 +7,7 @@ import { NgxDhis2HttpClientService } from '@iapps/ngx-dhis2-http-client';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
   constructor(
@@ -16,11 +16,10 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.httpClient.rootUrl().subscribe(rootUrl => {
-      console.log(rootUrl);
+    this.httpClient.rootUrl().subscribe((rootUrl) => {
       if (Fn) {
         Fn.init({
-          baseUrl: `${rootUrl}api/`
+          baseUrl: `${rootUrl}api/`,
         });
       }
     });

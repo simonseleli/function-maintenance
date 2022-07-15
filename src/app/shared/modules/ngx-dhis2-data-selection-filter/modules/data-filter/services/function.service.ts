@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
-import { NgxDhis2HttpClientService } from '@hisptz/ngx-dhis2-http-client';
+import { NgxDhis2HttpClientService } from '@iapps/ngx-dhis2-http-client';
 import { mergeMap, catchError, switchMap, map } from 'rxjs/operators';
-import { forkJoin, of, Observable, throwError } from 'rxjs';
+import { forkJoin, of, Observable, throwError, zip } from 'rxjs';
 import { FunctionObject } from '../models';
 import { User, generateUid } from 'src/app/core';
 import {
   PREDICTOR_FUNCTION,
   REPORTING_RATE_BY_FILLED_DATA,
   EARLY_COMPLETENESS_FUNCTION,
-  COMPLETENESS_FUNCTION
+  COMPLETENESS_FUNCTION,
 } from '../constants';
 import { prepareFunctionForSaving } from '../helpers';
 
@@ -22,11 +22,11 @@ export class FunctionService {
 
   loadAll(currentUser: any): Observable<any> {
     return this._loadAll().pipe(
-      mergeMap((functions: any[]) =>
-        functions.length === 0
+      mergeMap((functions: any[]) => {
+        return functions.length === 0
           ? this._createDefaultFunctions(currentUser)
-          : of(functions)
-      )
+          : of(functions);
+      })
     );
   }
 
@@ -37,15 +37,21 @@ export class FunctionService {
       this._createEarlyCompletenessFunction(currentUser),
       this._createReportingRateByFilledDataFunction(currentUser),
       this._createProportionOfOrgUnitsNotReportFunction(currentUser),
-      this._createOrgUnitsReportedOnDataSetFunction(currentUser)
+      this._createOrgUnitsReportedOnDataSetFunction(currentUser),
     ]).pipe(mergeMap(() => this._loadAll()));
   }
 
   private _loadAll() {
     return this.http.get(this._dataStoreUrl).pipe(
       mergeMap((functionIds: Array<string>) =>
-        forkJoin(
-          _.map(functionIds, (functionId: string) => this.load(functionId))
+        zip(
+          ..._.map(functionIds, (functionId: string) =>
+            this.load(functionId).pipe(
+              map((response) => {
+                return response;
+              })
+            )
+          )
         ).pipe(catchError(() => of([])))
       ),
       catchError(() => of([]))
@@ -53,7 +59,11 @@ export class FunctionService {
   }
 
   load(id: string) {
-    return this.http.get(`${this._dataStoreUrl}/${id}`);
+    return this.http.get(`${this._dataStoreUrl}/${id}`).pipe(
+      map((response) => {
+        return response;
+      })
+    );
   }
 
   save(functionObject: FunctionObject, currentUser: any) {
@@ -73,7 +83,7 @@ export class FunctionService {
   }
 
   create(currentUser: User) {
-    return new Observable(observable => {
+    return new Observable((observable) => {
       this.getId(2).subscribe(
         (results: any) => {
           this.http.get('dataElements.json?pageSize=1').subscribe(
@@ -88,7 +98,7 @@ export class FunctionService {
                 isNew: true,
                 unSaved: true,
                 user: {
-                  id: currentUser.id
+                  id: currentUser.id,
                 },
                 attributeValues: [],
                 translations: [],
@@ -120,21 +130,21 @@ export class FunctionService {
                       dataElementResults.dataElements[0].displayName +
                       '".',
                     json: JSON.stringify({
-                      data: dataElementResults.dataElements[0].id
-                    })
-                  }
-                ]
+                      data: dataElementResults.dataElements[0].id,
+                    }),
+                  },
+                ],
               };
               observable.next(functionObject);
               observable.complete();
             },
-            error => {
+            (error) => {
               observable.error(error);
               observable.complete();
             }
           );
         },
-        error => {
+        (error) => {
           observable.error(error);
           observable.complete();
         }
@@ -143,7 +153,7 @@ export class FunctionService {
   }
 
   createRule() {
-    return new Observable(observable => {
+    return new Observable((observable) => {
       this.getId().subscribe(
         (results: any) => {
           this.http.get('dataElements.json?pageSize=1').subscribe(
@@ -157,19 +167,19 @@ export class FunctionService {
                   dataElementResults.dataElements[0].displayName +
                   '".',
                 json: JSON.stringify({
-                  data: dataElementResults.dataElements[0].id
-                })
+                  data: dataElementResults.dataElements[0].id,
+                }),
               };
               observable.next(functionRule);
               observable.complete();
             },
-            error => {
+            (error) => {
               observable.error(error);
               observable.complete();
             }
           );
         },
-        error => {
+        (error) => {
           observable.error(error);
           observable.complete();
         }
@@ -178,13 +188,13 @@ export class FunctionService {
   }
 
   delete(sFunction: FunctionObject) {
-    return new Observable(observable => {
+    return new Observable((observable) => {
       this.http.delete('dataStore/functions/' + sFunction.id).subscribe(
-        results => {
+        (results) => {
           observable.next(results);
           observable.complete();
         },
-        error => {
+        (error) => {
           observable.error(error);
           observable.complete();
         }
@@ -193,12 +203,12 @@ export class FunctionService {
   }
 
   getAll(currentUser: any) {
-    return new Observable(observ => {
+    return new Observable((observ) => {
       this.http.get('dataStore/functions').subscribe(
         (results: any) => {
           const observable = [];
           if (results.length > 0) {
-            results.forEach(id => {
+            results.forEach((id) => {
               observable.push(this.http.get('dataStore/functions/' + id));
             });
             forkJoin(observable).subscribe(
@@ -210,7 +220,7 @@ export class FunctionService {
                 observ.next(functions);
                 observ.complete();
               },
-              error => {
+              (error) => {
                 observ.error(error);
                 observ.complete();
               }
@@ -220,17 +230,17 @@ export class FunctionService {
               forkJoin(this.getFunctionCreationPromises(currentUser)).subscribe(
                 (responses: any) => {
                   this.getAll(currentUser).subscribe(
-                    funcs => {
+                    (funcs) => {
                       observ.next(funcs);
                       observ.complete();
                     },
-                    error => {
+                    (error) => {
                       observ.error(error);
                       observ.complete();
                     }
                   );
                 },
-                error => {
+                (error) => {
                   observ.error(error);
                   observ.complete();
                 }
@@ -238,7 +248,7 @@ export class FunctionService {
             });
           }
         },
-        error => {
+        (error) => {
           if (error.status === 404) {
             const observable = [];
             this.http.get('system/info').subscribe((response: any) => {
@@ -249,13 +259,13 @@ export class FunctionService {
                       observ.next(funcs);
                       observ.complete();
                     },
-                    error => {
+                    (error) => {
                       observ.error(error);
                       observ.complete();
                     }
                   );
                 },
-                error => {
+                (error) => {
                   observ.error(error);
                   observ.complete();
                 }
@@ -277,12 +287,12 @@ export class FunctionService {
       this._createEarlyCompletenessFunction(currentUser),
       this._createReportingRateByFilledDataFunction(currentUser),
       this._createProportionOfOrgUnitsNotReportFunction(currentUser),
-      this._createOrgUnitsReportedOnDataSetFunction(currentUser)
+      this._createOrgUnitsReportedOnDataSetFunction(currentUser),
     ];
   }
 
   createStockOutFunctions(currentUser) {
-    return new Observable(observable => {
+    return new Observable((observable) => {
       const stockout: any = {
         function:
           '//Example of function implementation\nparameters.progress(50);\nfunction calculatePercentageForOU(ou){\n' +
@@ -306,7 +316,7 @@ export class FunctionService {
           '(analytics);\n},function(error){\nparameters.error(error);\n})\n},error:function(error){\nreject(error);\n}\n});',
         rules: [],
         name: 'Facilities With Stockout',
-        description: 'Number of facilities with stockout'
+        description: 'Number of facilities with stockout',
       };
       this.http
         .get(
@@ -319,7 +329,7 @@ export class FunctionService {
             } else {
               this.getId(dataElementResults.dataElements.length).subscribe(
                 (codeResults: any) => {
-                  dataElementResults.dataElements.forEach(dataElement => {
+                  dataElementResults.dataElements.forEach((dataElement) => {
                     if (
                       dataElement.displayName
                         .toLowerCase()
@@ -332,7 +342,7 @@ export class FunctionService {
                           'This is the rule. Using the data set "' +
                           dataElement.displayName +
                           '".',
-                        json: { data: dataElement.id }
+                        json: { data: dataElement.id },
                       };
                       if (stockout.rules.length === 0) {
                         rule.isDefault = true;
@@ -349,7 +359,7 @@ export class FunctionService {
                         'This is the rule. Using the data element "' +
                         dataElementResults.dataElements[0].displayName +
                         '".',
-                      json: { data: dataElementResults.dataElements[0].id }
+                      json: { data: dataElementResults.dataElements[0].id },
                     });
                   }
                   this.save(stockout, currentUser).subscribe(
@@ -357,20 +367,20 @@ export class FunctionService {
                       observable.next(res);
                       observable.complete();
                     },
-                    error => {
+                    (error) => {
                       observable.error(error);
                       observable.complete();
                     }
                   );
                 },
-                error => {
+                (error) => {
                   observable.error(error);
                   observable.complete();
                 }
               );
             }
           },
-          error => {
+          (error) => {
             observable.error(error);
             observable.complete();
           }
@@ -378,7 +388,7 @@ export class FunctionService {
     });
   }
   createPredictors(currentUser: any) {
-    return new Observable(observable => {
+    return new Observable((observable) => {
       const stockout: any = {
         function:
           '//Example of function implementation\nparameters.progress(50);\nfunction calculatePercentageForOU(ou){\n    return new Promise(function(resolve,reject){\n      $.ajax({\n                    \turl: "../../../api' +
@@ -386,7 +396,7 @@ export class FunctionService {
           '/analytics.json?dimension=pe:" + parameters.pe + "&dimension=ou:" + parameters.ou + "&skipData=true",\n    type: "GET",\n    success: function(dummyAnalyticsResults) {\n        var promises = [];\n        var analytics;\n        dummyAnalyticsResults.metaData.ou.forEach(function(ou){\n            promises.push(calculatePercentageForOU(ou).then(function(analyticsResults){\n                if(!analytics){\n                    analytics = analyticsResults;\n                }else{\n                   analytics.metaData.ou = analytics.metaData.ou.concat(analyticsResults.metaData.ou);\n                   analyticsResults.metaData.ou.forEach(function(ouid){\n                       analytics.metaData.names[ouid] = analyticsResults.metaData.names[ouid];\n                   })\n                    analytics.rows = analytics.rows.concat(analyticsResults.rows);\n                }\n            }));\n        })\n        \n        Promise.all(promises).then(function(){\n            parameters.success(analytics);\n        },function(error){\n            parameters.error(error);\n        })\n},error:function(error){\n    reject(error);\n}\n});',
         rules: [],
         name: 'Facilities With Stockout',
-        description: 'Number of facilities with stockout'
+        description: 'Number of facilities with stockout',
       };
       this.http
         .get(
@@ -399,7 +409,7 @@ export class FunctionService {
             } else {
               this.getId(dataElementResults.dataElements.length).subscribe(
                 (codeResults: any) => {
-                  dataElementResults.dataElements.forEach(dataElement => {
+                  dataElementResults.dataElements.forEach((dataElement) => {
                     if (
                       dataElement.displayName
                         .toLowerCase()
@@ -412,7 +422,7 @@ export class FunctionService {
                           "This is the rule. Using the data set '" +
                           dataElement.displayName +
                           "'.",
-                        json: { data: dataElement.id }
+                        json: { data: dataElement.id },
                       };
                       if (stockout.rules.length === 0) {
                         rule.isDefault = true;
@@ -429,7 +439,7 @@ export class FunctionService {
                         "This is the rule. Using the data element '" +
                         dataElementResults.dataElements[0].displayName +
                         "'.",
-                      json: { data: dataElementResults.dataElements[0].id }
+                      json: { data: dataElementResults.dataElements[0].id },
                     });
                   }
                   this.save(stockout, currentUser).subscribe(
@@ -437,20 +447,20 @@ export class FunctionService {
                       observable.next(res);
                       observable.complete();
                     },
-                    error => {
+                    (error) => {
                       observable.error(error);
                       observable.complete();
                     }
                   );
                 },
-                error => {
+                (error) => {
                   observable.error(error);
                   observable.complete();
                 }
               );
             }
           },
-          error => {
+          (error) => {
             observable.error(error);
             observable.complete();
           }
@@ -470,7 +480,7 @@ export class FunctionService {
             function: COMPLETENESS_FUNCTION,
             rules: this._generateCompletenessFunctionRules(
               dataSetsResponse ? dataSetsResponse.dataSets : []
-            )
+            ),
           },
           currentUser
         )
@@ -487,7 +497,7 @@ export class FunctionService {
           dataSet.displayName +
           '.',
         json: { data: dataSet.id },
-        isDefault: dataSetIndex === 0
+        isDefault: dataSetIndex === 0,
       };
     });
   }
@@ -504,7 +514,7 @@ export class FunctionService {
             function: EARLY_COMPLETENESS_FUNCTION,
             rules: this._generateEarlyCompletenessFunctionRules(
               dataSetsResponse ? dataSetsResponse.dataSets : []
-            )
+            ),
           },
           currentUser
         )
@@ -520,7 +530,7 @@ export class FunctionService {
         description:
           'This is the rule. Using the data set ' + dataSet.displayName + '.',
         json: { data: dataSet.id },
-        isDefault: dataSetIndex === 0
+        isDefault: dataSetIndex === 0,
       };
     });
   }
@@ -537,7 +547,7 @@ export class FunctionService {
             function: REPORTING_RATE_BY_FILLED_DATA,
             rules: this._generateReportingRateByFilledDataFunctionRules(
               dataSetsResponse ? dataSetsResponse.dataSets : []
-            )
+            ),
           },
           currentUser
         )
@@ -553,7 +563,7 @@ export class FunctionService {
         description:
           'This is the rule. Using the data set ' + dataSet.displayName + '.',
         json: { data: dataSet.id },
-        isDefault: dataSetIndex === 0
+        isDefault: dataSetIndex === 0,
       };
     });
   }
@@ -570,7 +580,7 @@ export class FunctionService {
             function: REPORTING_RATE_BY_FILLED_DATA,
             rules: this._generateOrgUnitsReportedOnDataSetFunctionRules(
               dataSetsResponse ? dataSetsResponse.dataSets : []
-            )
+            ),
           },
           currentUser
         )
@@ -586,7 +596,7 @@ export class FunctionService {
         description:
           'This is the rule. Using the data set ' + dataSet.displayName + '.',
         json: { data: dataSet.id },
-        isDefault: dataSetIndex === 0
+        isDefault: dataSetIndex === 0,
       };
     });
   }
@@ -603,7 +613,7 @@ export class FunctionService {
             function: PREDICTOR_FUNCTION,
             rules: this._generatePredictorFunctionRules(
               dataElementsResponse ? dataElementsResponse.dataElements : []
-            )
+            ),
           },
           currentUser
         )
@@ -633,10 +643,10 @@ export class FunctionService {
               '})',
             missingValueStrategy: 'SKIP_IF_ALL_VALUES_MISSING',
             dataElements: [],
-            sampleElements: []
-          }
+            sampleElements: [],
+          },
         },
-        isDefault: dataElementIndex === 0
+        isDefault: dataElementIndex === 0,
       };
     });
   }
@@ -662,7 +672,7 @@ export class FunctionService {
               function: PREDICTOR_FUNCTION,
               rules: this._generateProportionOfOrgUnitsNotReportFunctionRules(
                 dataSetsResponse ? dataSetsResponse.dataSets : []
-              )
+              ),
             },
             currentUser
           )
@@ -682,18 +692,18 @@ export class FunctionService {
         description:
           'This is the rule. Using the data set ' + dataSet.displayName + '.',
         json: { data: dataSet.id, level: level },
-        isDefault: dataSetIndex === 0
+        isDefault: dataSetIndex === 0,
       };
     });
   }
   get(id) {
-    return new Observable(observable => {
+    return new Observable((observable) => {
       this.http.get('dataStore/functions/' + id).subscribe(
-        func => {
+        (func) => {
           observable.next(func);
           observable.complete();
         },
-        error => {
+        (error) => {
           observable.error(error);
           observable.complete();
         }
@@ -729,7 +739,7 @@ export class FunctionService {
       return throwError({
         status: 500,
         statusText: 'Error',
-        message: 'Function object to be saved is not defined or malformed'
+        message: 'Function object to be saved is not defined or malformed',
       });
     }
     const functionUrl = 'dataStore/functions/' + functionObject.id;

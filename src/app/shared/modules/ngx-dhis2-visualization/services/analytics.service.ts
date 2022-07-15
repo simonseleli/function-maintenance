@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import { Observable, of, forkJoin, throwError, pipe } from 'rxjs';
-import { NgxDhis2HttpClientService } from '@hisptz/ngx-dhis2-http-client';
+import { NgxDhis2HttpClientService } from '@iapps/ngx-dhis2-http-client';
 
 import { VisualizationDataSelection } from '../models';
 import {
   getAnalyticsUrl,
   getSanitizedAnalytics,
   getStandardizedAnalyticsObject,
-  getMergedAnalytics
+  getMergedAnalytics,
 } from '../helpers';
 import { mergeMap, map, tap } from 'rxjs/operators';
 
@@ -60,7 +60,7 @@ export class AnalyticsService {
               ? this.http.get(
                   getAnalyticsUrl(dataSelections, layerType, {
                     ...config,
-                    eventClustering: false
+                    eventClustering: false,
                   })
                 )
               : of(analytics)
@@ -75,12 +75,18 @@ export class AnalyticsService {
     }
     const ouObject = _.find(dataSelections, ['dimension', 'ou']);
     const ouValue = ouObject
-      ? _.join(_.map(ouObject.items, item => item.id), ';')
+      ? _.join(
+          _.map(ouObject.items, (item) => item.id),
+          ';'
+        )
       : '';
 
     const peObject = _.find(dataSelections, ['dimension', 'pe']);
     const peValue = peObject
-      ? _.join(_.map(peObject.items, item => item.id), ';')
+      ? _.join(
+          _.map(peObject.items, (item) => item.id),
+          ';'
+        )
       : '';
 
     const dimensions = _.filter(
@@ -110,12 +116,12 @@ export class AnalyticsService {
               dimensions,
               rule: {
                 ...dxItem.ruleDefinition,
-                json: functionRuleJson
+                json: functionRuleJson,
               },
               dataSelections,
-              success: result => {},
-              error: error => {},
-              progress: progress => {}
+              success: (result) => {},
+              error: (error) => {},
+              progress: (progress) => {},
             },
             dxItem.functionObject ? dxItem.functionObject.functionString : ''
           );
@@ -123,7 +129,7 @@ export class AnalyticsService {
           functionPromise = throwError({
             status: '400',
             statusText: 'Internal server error',
-            error: 'Something is wrong with your rule definition, ' + e
+            error: 'Something is wrong with your rule definition, ' + e,
           });
         }
         return functionPromise;
@@ -146,9 +152,9 @@ export class AnalyticsService {
     return _.map(
       _.filter(
         analyticsResults,
-        analyticsResultObject => analyticsResultObject !== null
+        (analyticsResultObject) => analyticsResultObject !== null
       ),
-      analytics =>
+      (analytics) =>
         getSanitizedAnalytics(
           getStandardizedAnalyticsObject(analytics, true),
           dataSelections
@@ -160,17 +166,17 @@ export class AnalyticsService {
     functionParameters: any,
     functionString: string
   ): Observable<any> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       if (!this._isError(functionString)) {
         try {
-          functionParameters.error = error => {
+          functionParameters.error = (error) => {
             observer.error(error);
           };
-          functionParameters.success = results => {
+          functionParameters.success = (results) => {
             observer.next(results);
             observer.complete();
           };
-          functionParameters.progress = results => {};
+          functionParameters.progress = (results) => {};
           const execute = Function('parameters', functionString);
 
           execute(functionParameters);
@@ -215,15 +221,14 @@ export class AnalyticsService {
   ): VisualizationDataSelection[] {
     const dxDataSelection: VisualizationDataSelection = _.find(dataSelections, [
       'dimension',
-      'dx'
+      'dx',
     ]);
 
-    const dxDataSelectionSelectionIndex = dataSelections.indexOf(
-      dxDataSelection
-    );
+    const dxDataSelectionSelectionIndex =
+      dataSelections.indexOf(dxDataSelection);
     const dxItems = _.filter(
       dxDataSelection ? dxDataSelection.items : [],
-      item => (useEqualOperator ? item.type === dxType : item.type !== dxType)
+      (item) => (useEqualOperator ? item.type === dxType : item.type !== dxType)
     );
 
     return dxDataSelectionSelectionIndex !== -1
@@ -232,9 +237,9 @@ export class AnalyticsService {
             ..._.slice(dataSelections, 0, dxDataSelectionSelectionIndex),
             {
               ...dxDataSelection,
-              items: dxItems
+              items: dxItems,
             },
-            ..._.slice(dataSelections, dxDataSelectionSelectionIndex + 1)
+            ..._.slice(dataSelections, dxDataSelectionSelectionIndex + 1),
           ]
         : []
       : dataSelections;
