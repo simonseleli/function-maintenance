@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync as  } from '@angular/core/testing';
 
 import { MapStyleComponent } from './map-style.component';
 
@@ -6,7 +6,7 @@ describe('MapStyleComponent', () => {
   let component: MapStyleComponent;
   let fixture: ComponentFixture<MapStyleComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ MapStyleComponent ]
     })
