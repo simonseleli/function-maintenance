@@ -1,0 +1,57 @@
+.function-list-table {
+  margin-bottom: 0;
+}
+
+.function-list-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.function-list-label {
+  margin-right: 10px;
+}
+
+.function-list-search-input {
+  border: 0;
+  width: 50%;
+  border-bottom: solid thin #eeeeee;
+  outline: none !important;
+  margin-right: 5px;
+  padding: 5px;
+  font-size: 14px;
+}
+
+.add-new-button {
+  margin-left: 5px;
+}
+
+.function-list-search-input:focus,
+.function-list-search-input:active {
+  border-bottom: solid thin #dddddd;
+}
+
+.function-title {
+  padding-top: 2px;
+}
+
+.function-btns {
+  display: flex;
+}
+
+.function-btns > button {
+  margin-left: 3px;
+  font-size: 11px;
+}
+
+.selected-function {
+  color: #31708f;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+}
+
+.function-list-options {
+  display: flex;
+  justify-content: flex-end;
+}
