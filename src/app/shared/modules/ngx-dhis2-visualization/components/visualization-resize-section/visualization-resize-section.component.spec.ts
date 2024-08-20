@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { VisualizationResizeSectionComponent } from './visualization-resize-section.component';
 
@@ -6,7 +6,7 @@ describe('VisualizationResizeSectionComponent', () => {
   let component: VisualizationResizeSectionComponent;
   let fixture: ComponentFixture<VisualizationResizeSectionComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ VisualizationResizeSectionComponent ]
     })
