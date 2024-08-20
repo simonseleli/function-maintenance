@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Effect, Actions, ofType } from '@ngrx/effects';
+import { createEffect, Actions, ofType } from '@ngrx/effects';
 import { tap } from 'rxjs/operators';
 
 import * as systemInfoActions from '../actions/system-info.action';
@@ -12,8 +12,8 @@ export class SystemInfoEffects {
     private httpClient: NgxDhis2HttpClientService
   ) {}
 
-  @Effect({ dispatch: false })
-  addContextPath$ = this.actions$.pipe(
+  
+  addContextPath$ = createEffect(() => this.actions$.pipe(
     ofType(systemInfoActions.ADD_CONTEXT_PATH),
     tap((action: systemInfoActions.AddContectPath) => {
       this.httpClient.get('system/info').subscribe((info) => {
@@ -25,5 +25,5 @@ export class SystemInfoEffects {
         );
       });
     })
-  );
+  ), { dispatch: false });
 }

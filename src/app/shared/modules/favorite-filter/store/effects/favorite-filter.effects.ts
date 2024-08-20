@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { FavoriteFilterService } from '../../services/favorite-filter.service';
 import { Observable, of } from 'rxjs';
 import {
@@ -13,8 +13,8 @@ import { getStandardizedFavoriteItems } from '../../helpers/get-standardized-fav
 
 @Injectable()
 export class FavoriteFilterEffects {
-  @Effect()
-  loadFavoriteFilters$: Observable<any> = this.actions$.pipe(
+  
+  loadFavoriteFilters$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(FavoriteFilterActionTypes.LoadFavoriteFilters),
     switchMap((action: LoadFavoriteFiltersAction) =>
       this.favoriteFilterService
@@ -31,7 +31,7 @@ export class FavoriteFilterEffects {
           )
         )
     )
-  );
+  ));
   constructor(
     private actions$: Actions,
     private favoriteFilterService: FavoriteFilterService

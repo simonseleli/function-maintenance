@@ -8,7 +8,7 @@ import { NgxDhis2HttpClientModule } from '@iapps/ngx-dhis2-http-client';
 import { EffectsModule } from '@ngrx/effects';
 import {
   RouterStateSerializer,
-  StoreRouterConnectingModule,
+  StoreRouterConnectingModule, FullRouterStateSerializer,
 } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -78,13 +78,13 @@ export function HttpLoaderFactory(http: HttpClient) {
     /**
      * @ngrx/router-store keeps router state up-to-date in the store
      */
-    StoreRouterConnectingModule.forRoot(),
+    StoreRouterConnectingModule.forRoot({ serializer: FullRouterStateSerializer }),
     /**
      * Menu  module
      */
     NgxDhis2MenuModule,
     StoreModule.forRoot(reducers, { metaReducers }),
-    !environment.production ? StoreDevtoolsModule.instrument() : [],
+    !environment.production ? StoreDevtoolsModule.instrument({connectInZone: true}) : [],
     EffectsModule.forRoot(effects),
   ],
   providers: [{ provide: RouterStateSerializer, useClass: RouteSerializer }],

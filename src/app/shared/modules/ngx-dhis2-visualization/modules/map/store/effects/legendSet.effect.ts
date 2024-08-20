@@ -5,7 +5,7 @@ import {
   forkJoin
 } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Effect, Actions, ofType } from '@ngrx/effects';
+import { createEffect, Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import * as legendSetAction from '../actions/legend-set.action';
@@ -21,8 +21,8 @@ export class LegendSetEffects {
     private legendSetService: fromServices.LegendSetService
   ) {}
 
-  @Effect()
-  loadLegendSets$ = this.actions$.pipe(
+  
+  loadLegendSets$ = createEffect(() => this.actions$.pipe(
     ofType(legendSetAction.LOAD_LEGEND_SET),
     switchMap(
       (action: visualizationObjectActions.CreateVisualizationObjectSuccess) => {
@@ -66,10 +66,10 @@ export class LegendSetEffects {
         );
       }
     )
-  );
+  ));
 
-  @Effect()
-  loadAllLegendSets$ = this.actions$.pipe(
+  
+  loadAllLegendSets$ = createEffect(() => this.actions$.pipe(
     ofType(legendSetAction.LOAD_LEGEND_SET_ALL),
     switchMap((action: legendSetAction.LoadAllLegendSet) => {
       return this.legendSetService.getAllLegendSets().pipe(
@@ -79,42 +79,42 @@ export class LegendSetEffects {
         catchError(error => of(new legendSetAction.LoadAllLegendSetFail(error)))
       );
     })
-  );
+  ));
 
-  @Effect()
-  addLegendSets$ = this.actions$.pipe(
+  
+  addLegendSets$ = createEffect(() => this.actions$.pipe(
     ofType(legendSetAction.ADD_LEGEND_SET),
     map(
       (action: legendSetAction.AddLegendSetSuccess) =>
         new legendSetAction.AddLegendSetSuccess(action.payload)
     ),
     catchError(error => of(new legendSetAction.AddLegendSetFail(error)))
-  );
+  ));
 
-  @Effect()
-  updateLegendSets$ = this.actions$.pipe(
+  
+  updateLegendSets$ = createEffect(() => this.actions$.pipe(
     ofType(legendSetAction.UPDATE_LEGEND_SET),
     map(
       (action: legendSetAction.UpdateLegendSet) =>
         new legendSetAction.UpdateLegendSetSuccess(action.payload)
     ),
     catchError(error => of(new legendSetAction.UpdateLegendSetFail(error)))
-  );
+  ));
 
-  @Effect()
-  changeOpacity$ = this.actions$.pipe(
+  
+  changeOpacity$ = createEffect(() => this.actions$.pipe(
     ofType(legendSetAction.CHANGE_LEGEND_SET_LAYER_OPACITY),
     map(
       (action: legendSetAction.ChangeLegendSetLayerOpacity) =>
         new legendSetAction.UpdateLegendSetSuccess(action.payload)
     ),
     catchError(error => of(new legendSetAction.UpdateLegendSetFail(error)))
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  changeLayerVisibility$ = this.actions$.pipe(
+  
+  changeLayerVisibility$ = createEffect(() => this.actions$.pipe(
     ofType(legendSetAction.CHANGE_LEGEND_SET_LAYER_VISIBILITY),
     map((action: legendSetAction.ChangeLegendSetLayerVisibility) => {}),
     catchError(error => of(new legendSetAction.UpdateLegendSetFail(error)))
-  );
+  ), { dispatch: false });
 }

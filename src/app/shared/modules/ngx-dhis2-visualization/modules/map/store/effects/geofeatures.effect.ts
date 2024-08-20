@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Effect, Actions } from '@ngrx/effects';
+import { createEffect, Actions } from '@ngrx/effects';
 import { of ,  Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as visualizationObjectActions from '../actions/visualization-object.action';

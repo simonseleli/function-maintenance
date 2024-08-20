@@ -1,6 +1,6 @@
 import { of, forkJoin } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Effect, Actions, ofType } from '@ngrx/effects';
+import { createEffect, Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { map, switchMap, catchError, tap, mergeMap } from 'rxjs/operators';
 
@@ -25,28 +25,28 @@ export class VisualizationObjectEffects {
     private analyticsService: fromServices.AnalyticsService,
     private systemService: fromServices.SystemService
   ) {}
-  @Effect()
-  createVisualizationObjet$ = this.actions$.pipe(
+  
+  createVisualizationObjet$ = createEffect(() => this.actions$.pipe(
     ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT),
     map(
       (action: visualizationObjectActions.CreateVisualizationObject) =>
         new visualizationObjectActions.CreateVisualizationObjectSuccess(action.payload)
     ),
     catchError(error => of(new visualizationObjectActions.CreateVisualizationObjectFail(error)))
-  );
+  ));
 
-  @Effect()
-  updateStyleVisualizationObjet$ = this.actions$.pipe(
+  
+  updateStyleVisualizationObjet$ = createEffect(() => this.actions$.pipe(
     ofType(layerActions.UPDATE_LAYER_STYLE),
     map(
       (action: visualizationObjectActions.UpdateVisualizationObject) =>
         new visualizationObjectActions.UpdateVisualizationObjectSuccess(action.payload)
     ),
     catchError(error => of(new visualizationObjectActions.UpdateVisualizationObjectFail(error)))
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  dispatchCreateAnalytics$ = this.actions$.pipe(
+  
+  dispatchCreateAnalytics$ = createEffect(() => this.actions$.pipe(
     ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT_SUCCESS),
     map((action: visualizationObjectActions.CreateVisualizationObjectSuccess) => {
       const layers = action.payload.layers;
@@ -56,10 +56,10 @@ export class VisualizationObjectEffects {
         this.store.dispatch(new visualizationObjectActions.LoadAnalyticsVizObj(action.payload));
       }
     })
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  dispatchAddOrgUnitGroupSet$ = this.actions$.pipe(
+  
+  dispatchAddOrgUnitGroupSet$ = createEffect(() => this.actions$.pipe(
     ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT_SUCCESS),
     tap((action: visualizationObjectActions.CreateVisualizationObjectSuccess) => {
       const layers = action.payload.layers;
@@ -68,10 +68,10 @@ export class VisualizationObjectEffects {
         this.store.dispatch(new visualizationObjectActions.AddOrgUnitGroupSetVizObj(action.payload));
       }
     })
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  dispatchAddLegendSetSet$ = this.actions$.pipe(
+  
+  dispatchAddLegendSetSet$ = createEffect(() => this.actions$.pipe(
     ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT_SUCCESS),
     tap((action: visualizationObjectActions.CreateVisualizationObjectSuccess) => {
       const layers = action.payload.layers;
@@ -80,10 +80,10 @@ export class VisualizationObjectEffects {
         this.store.dispatch(new legendSetActions.LoadLegendSet(action.payload));
       }
     })
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  dispatchCreateGeoFeatures$ = this.actions$.pipe(
+  
+  dispatchCreateGeoFeatures$ = createEffect(() => this.actions$.pipe(
     ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT_SUCCESS),
     tap((action: visualizationObjectActions.CreateVisualizationObjectSuccess) => {
       const { layers } = action.payload;
@@ -91,10 +91,10 @@ export class VisualizationObjectEffects {
       const values = Object.keys(entities).map(key => entities[key]);
       this.geofeatureService.getGeoFeaturesArray(values).pipe(map(geofeature => {}));
     })
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  dispatchAddGeoFeatures$ = this.actions$.pipe(
+  
+  dispatchAddGeoFeatures$ = createEffect(() => this.actions$.pipe(
     ofType(visualizationObjectActions.CREATE_VISUALIZATION_OBJECT),
     map((action: visualizationObjectActions.CreateVisualizationObjectSuccess) => action.payload),
     switchMap(vizObject => {
@@ -114,10 +114,10 @@ export class VisualizationObjectEffects {
         catchError(error => of(new visualizationObjectActions.AddVisualizationObjectCompleteFail(error)))
       );
     })
-  );
+  ));
 
-  @Effect()
-  dispatchAddGeoFeaturescomplete$ = this.actions$.pipe(
+  
+  dispatchAddGeoFeaturescomplete$ = createEffect(() => this.actions$.pipe(
     ofType(visualizationObjectActions.ADD_VISUALIZATION_OBJECT_COMPLETE),
     mergeMap((action: visualizationObjectActions.AddVisualizationObjectComplete) => {
       const vizObject = action.payload;
@@ -179,7 +179,7 @@ export class VisualizationObjectEffects {
         catchError(error => of(new visualizationObjectActions.UpdateVisualizationObjectFail(error)))
       );
     })
-  );
+  ));
 
   getParameterEntities(layers: Layer[]) {
     let globalEntities = {};
