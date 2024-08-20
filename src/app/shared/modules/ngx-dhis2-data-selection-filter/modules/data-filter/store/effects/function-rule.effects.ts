@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -8,13 +8,13 @@ import * as fromFunctionActions from '../actions/function.actions';
 
 @Injectable()
 export class FunctionRuleEffects {
-  @Effect()
-  addFunctions$: Observable<any> = this.actions$.pipe(
+  
+  addFunctions$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(fromFunctionActions.FunctionActionTypes.AddFunctions),
     map(
       (action: fromFunctionActions.AddFunctions) =>
         new fromFunctionRuleActions.AddFunctionRules(action.functionRules)
     )
-  );
+  ));
   constructor(private actions$: Actions) {}
 }

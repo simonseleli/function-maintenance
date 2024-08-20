@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { withLatestFrom, tap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
@@ -13,8 +13,8 @@ import * as fromServices from '../../services';
 
 @Injectable()
 export class IndicatorGroupEffects {
-  @Effect({ dispatch: false })
-  loadIndicatorGroups$: Observable<any> = this.actions$.pipe(
+  
+  loadIndicatorGroups$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(
       fromIndicatorGroupActions.IndicatorGroupActionTypes.LoadIndicatorGroups
     ),
@@ -49,7 +49,7 @@ export class IndicatorGroupEffects {
         }
       }
     )
-  );
+  ), { dispatch: false });
 
   constructor(
     private actions$: Actions,

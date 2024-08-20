@@ -1,6 +1,6 @@
 import { combineLatest as observableCombineLatest, of, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Effect, Actions, ofType } from '@ngrx/effects';
+import { createEffect, Actions, ofType } from '@ngrx/effects';
 import { map, switchMap, catchError } from 'rxjs/operators';
 
 import * as visualizationObjectActions from '../actions/visualization-object.action';
@@ -11,8 +11,8 @@ import * as fromServices from '../../services';
 export class OrganizationUnitGroupSetEffects {
   constructor(private actions$: Actions, private orgUnitService: fromServices.OrgUnitService) {}
 
-  @Effect()
-  addOrgUnitGroupSet$ = this.actions$.pipe(
+  
+  addOrgUnitGroupSet$ = createEffect(() => this.actions$.pipe(
     ofType(visualizationObjectActions.ADD_ORGANIZATIONUNITGROUPSET),
     switchMap((action: visualizationObjectActions.AddOrgUnitGroupSetVizObj) => {
       const layerIds = [];
@@ -52,5 +52,5 @@ export class OrganizationUnitGroupSetEffects {
         catchError(error => of(new visualizationObjectActions.UpdateVisualizationObjectFail(error)))
       );
     })
-  );
+  ));
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { withLatestFrom, tap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
@@ -13,8 +13,8 @@ import * as fromServices from '../../services';
 
 @Injectable()
 export class IndicatorEffects {
-  @Effect({ dispatch: false })
-  loadIndicators$: Observable<any> = this.actions$.pipe(
+  
+  loadIndicators$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(fromIndicatorActions.IndicatorActionTypes.LoadIndicators),
     withLatestFrom(
       this.indicatorStore.select(
@@ -47,7 +47,7 @@ export class IndicatorEffects {
         }
       }
     )
-  );
+  ), { dispatch: false });
 
   constructor(
     private actions$: Actions,

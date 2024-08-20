@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Effect, Actions, ofType } from '@ngrx/effects';
+import { createEffect, Actions, ofType } from '@ngrx/effects';
 import { of, Observable, interval } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as dataSelectionAction from '../actions/data-selection.action';
@@ -23,8 +23,8 @@ export class DataSelectionEffects {
     private geofeatureService: fromServices.GeoFeatureService
   ) {}
 
-  @Effect({ dispatch: false })
-  updatePe$ = this.actions$.pipe(
+  
+  updatePe$ = createEffect(() => this.actions$.pipe(
     ofType(dataSelectionAction.UPDATE_PE_SELECTION),
     map((action: dataSelectionAction.UpdatePESelection) => {
       const payload = action.payload;
@@ -32,10 +32,10 @@ export class DataSelectionEffects {
     catchError(error =>
       of(new visualizationObjectActions.UpdateVisualizationObjectFail(error))
     )
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  updateDx$ = this.actions$.pipe(
+  
+  updateDx$ = createEffect(() => this.actions$.pipe(
     ofType(dataSelectionAction.UPDATE_DX_SELECTION),
     map((action: dataSelectionAction.UpdateDXSelection) => {
       const payload = action.payload;
@@ -43,10 +43,10 @@ export class DataSelectionEffects {
     catchError(error =>
       of(new visualizationObjectActions.UpdateVisualizationObjectFail(error))
     )
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  visualizationLegendLoading$ = this.actions$.pipe(
+  
+  visualizationLegendLoading$ = createEffect(() => this.actions$.pipe(
     ofType(
       dataSelectionAction.UPDATE_OU_SELECTION,
       dataSelectionAction.UPDATE_DX_SELECTION,
@@ -63,10 +63,10 @@ export class DataSelectionEffects {
         new visualizationLegengActions.VisualizationLegendFilterSectionUpdateFail()
       )
     )
-  );
+  ));
 
-  @Effect()
-  visualizationLegendLoaded$ = this.actions$.pipe(
+  
+  visualizationLegendLoaded$ = createEffect(() => this.actions$.pipe(
     ofType(visualizationObjectActions.UPDATE_FILTER_ANALYTICS),
     map(
       (action: visualizationObjectActions.UpdateFilterAnalytics) =>
@@ -79,10 +79,10 @@ export class DataSelectionEffects {
         new visualizationLegengActions.VisualizationLegendFilterSectionUpdateFail()
       )
     )
-  );
+  ));
 
-  @Effect()
-  visualizationLegendUpdate$ = this.actions$.pipe(
+  
+  visualizationLegendUpdate$ = createEffect(() => this.actions$.pipe(
     ofType(visualizationLegengActions.VISUALIZATION_FILTER_SECTION_LOADED),
     switchMap(
       (
@@ -102,19 +102,19 @@ export class DataSelectionEffects {
         new visualizationLegengActions.VisualizationLegendFilterSectionUpdateFail()
       )
     )
-  );
+  ));
 
-  @Effect()
-  visualizationLegendFailListener$ = this.actions$.pipe(
+  
+  visualizationLegendFailListener$ = createEffect(() => this.actions$.pipe(
     ofType(visualizationObjectActions.UPDATE_VISUALIZATION_OBJECT_FAIL),
     map(
       (action: visualizationObjectActions.UpdateVisualizationObjectFail) =>
         new visualizationLegengActions.VisualizationLegendFilterSectionUpdateFail()
     )
-  );
+  ));
 
-  @Effect()
-  updateOu$ = this.actions$.pipe(
+  
+  updateOu$ = createEffect(() => this.actions$.pipe(
     ofType(dataSelectionAction.UPDATE_OU_SELECTION),
     map((action: dataSelectionAction.UpdateDXSelection) => action.payload),
     switchMap(payload => {
@@ -135,5 +135,5 @@ export class DataSelectionEffects {
         )
       );
     })
-  );
+  ));
 }

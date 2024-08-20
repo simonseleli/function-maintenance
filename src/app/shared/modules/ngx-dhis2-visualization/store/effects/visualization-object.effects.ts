@@ -3,7 +3,7 @@ import {
   NgxDhis2HttpClientService,
   SystemInfoService,
 } from '@iapps/ngx-dhis2-http-client';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
@@ -60,8 +60,8 @@ import { getCombinedVisualizationObjectById } from '../selectors';
 
 @Injectable()
 export class VisualizationObjectEffects {
-  @Effect({ dispatch: false })
-  initializeVisualizationObject$: Observable<any> = this.actions$.pipe(
+  
+  initializeVisualizationObject$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(VisualizationObjectActionTypes.INITIALIZE_VISUALIZATION_OBJECT),
     withLatestFrom(this.store.select(getVisualizationObjectEntities)),
     tap(
@@ -110,10 +110,10 @@ export class VisualizationObjectEffects {
         }
       }
     )
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  loadFavorite$: Observable<any> = this.actions$.pipe(
+  
+  loadFavorite$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(VisualizationObjectActionTypes.LOAD_VISUALIZATION_FAVORITE),
     mergeMap((action: LoadVisualizationFavoriteAction) =>
       this.favoriteService.getFavorite(action.visualization.favorite).pipe(
@@ -140,10 +140,10 @@ export class VisualizationObjectEffects {
         )
       )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  loadFavoriteSuccess$: Observable<any> = this.actions$.pipe(
+  
+  loadFavoriteSuccess$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(VisualizationObjectActionTypes.LOAD_VISUALIZATION_FAVORITE_SUCCESS),
     withLatestFrom(this.httpClient.get(`system/info`)),
     tap(
@@ -291,10 +291,10 @@ export class VisualizationObjectEffects {
         }
       }
     )
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  saveVisualizationFavorite$: Observable<any> = this.actions$.pipe(
+  
+  saveVisualizationFavorite$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(VisualizationObjectActionTypes.SaveVisualizationFavorite),
     tap((action: SaveVisualizationFavoriteAction) => {
       this.store
@@ -379,27 +379,27 @@ export class VisualizationObjectEffects {
           }
         });
     })
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  removeVisualizationObject$: Observable<any> = this.actions$.pipe(
+  
+  removeVisualizationObject$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(VisualizationObjectActionTypes.RemoveVisualizationObject),
     switchMap((action: RemoveVisualizationObjectAction) => [
       new RemoveVisualizationConfigurationAction(action.id),
       new RemoveVisualizationLayerAction(action.id),
       new RemoveVisualizationUiConfigurationAction(action.id),
     ])
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  removeVisualizationFavorite$: Observable<any> = this.actions$.pipe(
+  
+  removeVisualizationFavorite$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(VisualizationObjectActionTypes.RemoveVisualizationFavorite),
     tap((action: RemoveVisualizationFavoriteAction) => {
       this.favoriteService
         .delete(action.favoriteId, action.favoriteType)
         .subscribe();
     })
-  );
+  ), { dispatch: false });
 
   constructor(
     private actions$: Actions,

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
@@ -43,8 +43,8 @@ import { getCurrentVisualization, getQueryParams } from '../selectors';
 
 @Injectable()
 export class CurrentVisualizationEffects {
-  @Effect({ dispatch: false })
-  addCurrentUser$: Observable<any> = this.actions$.pipe(
+  
+  addCurrentUser$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(UserActionTypes.AddCurrentUser),
     withLatestFrom(this.store.select(getCurrentVisualization)),
     tap(
@@ -77,12 +77,12 @@ export class CurrentVisualizationEffects {
           });
       }
     )
-  );
+  ), { dispatch: false });
 
-  @Effect()
+  
   updateCurrentVisualizationDataSelections$: Observable<
     any
-  > = this.actions$.pipe(
+  > = createEffect(() => this.actions$.pipe(
     ofType(
       CurrentVisualizationActionTypes.UpdateCurrentVisualizationWithDataSelections
     ),
@@ -98,10 +98,10 @@ export class CurrentVisualizationEffects {
           action.dataSelections
         )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  setActiveFunctionOrSimulateFunction$: Observable<any> = this.actions$.pipe(
+  
+  setActiveFunctionOrSimulateFunction$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(
       fromFunctionRuleActions.FunctionRuleActionTypes.SetActiveFunctionRule,
       CurrentVisualizationActionTypes.SimulateVisualization
@@ -188,10 +188,10 @@ export class CurrentVisualizationEffects {
         }
       }
     )
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  addVisualizationItem$: Observable<any> = this.actions$.pipe(
+  
+  addVisualizationItem$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(CurrentVisualizationActionTypes.AddVisualizationItem),
     tap((action: AddVisualizationItemAction) => {
       if (
@@ -247,10 +247,10 @@ export class CurrentVisualizationEffects {
           );
       }
     })
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  routerNavigation$: Observable<any> = this.actions$.pipe(
+  
+  routerNavigation$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(ROUTER_NAVIGATION),
     take(1),
     tap((action: any) => {
@@ -277,10 +277,10 @@ export class CurrentVisualizationEffects {
         }
       }
     })
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  addFunctions$: Observable<any> = this.actions$.pipe(
+  
+  addFunctions$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(FunctionActionTypes.AddFunctions),
     withLatestFrom(this.store.select(getQueryParams)),
     map(([action, routeQueryParams]: [AddFunctions, any]) => {
@@ -304,16 +304,16 @@ export class CurrentVisualizationEffects {
         }
       }
     })
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  visualizationAnalyticsLoaded$: Observable<any> = this.actions$.pipe(
+  
+  visualizationAnalyticsLoaded$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(
       VisualizationLayerActionTypes.LOAD_VISUALIZATION_ANALYTICS_SUCCESS,
       VisualizationLayerActionTypes.LOAD_VISUALIZATION_ANALYTICS_FAIL
     ),
     map(() => new UpdateActiveFunction())
-  );
+  ));
   constructor(
     private actions$: Actions,
     private store: Store<AppState>,

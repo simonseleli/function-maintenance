@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
@@ -25,8 +25,8 @@ import { getSelectedFunctionRule } from '../../helpers/get-selected-function-rul
 
 @Injectable()
 export class FunctionEffects {
-  @Effect({ dispatch: false })
-  loadFunctions$: Observable<any> = this.actions$.pipe(
+  
+  loadFunctions$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(fromFunctionActions.FunctionActionTypes.LoadFunctions),
     withLatestFrom(
       this.functionStore.select(fromFuctionSelectors.getFunctionInitiatedStatus)
@@ -75,10 +75,10 @@ export class FunctionEffects {
         }
       }
     )
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  saveFunction$: Observable<any> = this.actions$.pipe(
+  
+  saveFunction$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(fromFunctionActions.FunctionActionTypes.SaveFunction),
     mergeMap((action: fromFunctionActions.SaveFunction) => {
       return this.functionStore
@@ -109,7 +109,7 @@ export class FunctionEffects {
           )
         );
     })
-  );
+  ));
 
   constructor(
     private actions$: Actions,

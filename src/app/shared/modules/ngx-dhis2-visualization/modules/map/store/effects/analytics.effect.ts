@@ -1,6 +1,6 @@
 import { combineLatest as observableCombineLatest, of, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Effect, Actions, ofType } from '@ngrx/effects';
+import { createEffect, Actions, ofType } from '@ngrx/effects';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
@@ -18,8 +18,8 @@ export class AnalyticsEffects {
     private analyticsService: fromServices.AnalyticsService
   ) {}
 
-  @Effect()
-  addAnalytics$ = this.actions$.pipe(
+  
+  addAnalytics$ = createEffect(() => this.actions$.pipe(
     ofType(visualizationObjectActions.LOAD_ANALYTICS),
     switchMap((action: visualizationObjectActions.LoadAnalyticsVizObj) => {
       const layerIds = [];
@@ -98,10 +98,10 @@ export class AnalyticsEffects {
         catchError(error => of(new visualizationObjectActions.UpdateVisualizationObjectFail(error)))
       );
     })
-  );
+  ));
 
-  @Effect()
-  updateOu$ = this.actions$.pipe(
+  
+  updateOu$ = createEffect(() => this.actions$.pipe(
     ofType(
       dataSelectionAction.UPDATE_OU_SELECTION,
       dataSelectionAction.UPDATE_DX_SELECTION,
@@ -126,7 +126,7 @@ export class AnalyticsEffects {
         catchError(error => of(new visualizationObjectActions.UpdateVisualizationObjectFail(error)))
       );
     })
-  );
+  ));
 
   createParams(payload) {
     const { layer, filterType, newdimension } = payload;
