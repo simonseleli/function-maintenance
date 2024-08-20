@@ -1,0 +1,16 @@
+.form-container {
+  padding: 15px;
+}
+
+.function-form-buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.function-form-buttons > button:first-child {
+  margin-left: 0;
+}
+
+.function-form-buttons > button {
+  margin-left: 5px;
+}
