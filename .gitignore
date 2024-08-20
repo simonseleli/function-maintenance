@@ -27,6 +27,7 @@ upload.sh
 
 
 # misc
+/.angular/cache
 /.sass-cache
 /connect.lock
 /coverage
