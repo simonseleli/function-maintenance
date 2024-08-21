@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 
 import * as fromDataFilterActions from '../actions/data-filter.actions';
 import * as fromFunctionActions from '../actions/function.actions';
@@ -10,14 +10,14 @@ import { switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class DataFilterEffects {
-  @Effect()
-  loadDataFilters$: Observable<any> = this.actions$.pipe(
+  
+  loadDataFilters$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(fromDataFilterActions.DataFilterActionTypes.LoadDataFilters),
     switchMap((action: fromDataFilterActions.LoadDataFilters) => [
       new fromFunctionActions.LoadFunctions(action.currentUser),
       new fromIndicatorGroupActions.LoadIndicatorGroups(),
       new fromIndicatorActions.LoadIndicators()
     ])
-  );
+  ));
   constructor(private actions$: Actions) {}
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { forkJoin, Observable } from 'rxjs';
@@ -32,8 +32,8 @@ import { Action } from 'rxjs/internal/scheduler/Action';
 
 @Injectable()
 export class VisualizationLayerEffects {
-  @Effect({ dispatch: false })
-  loadAnalytics$: Observable<any> = this.actions$.pipe(
+  
+  loadAnalytics$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(VisualizationLayerActionTypes.LOAD_VISUALIZATION_ANALYTICS),
     tap((action: LoadVisualizationAnalyticsAction) => {
       this.store
@@ -197,7 +197,7 @@ export class VisualizationLayerEffects {
           }
         });
     })
-  );
+  ), { dispatch: false });
 
   constructor(
     private actions$: Actions,

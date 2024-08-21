@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
@@ -24,8 +24,8 @@ export class UserEffects {
     private store: Store<fromRoot.AppState>
   ) {}
 
-  @Effect()
-  loadCurrentUser$: Observable<any> = this.actions$.pipe(
+  
+  loadCurrentUser$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(UserActionTypes.LoadCurrentUser),
     switchMap((action: LoadCurrentUser) =>
       this.userService.loadCurrentUser().pipe(
@@ -33,15 +33,15 @@ export class UserEffects {
         catchError((error: any) => of(new LoadCurrentUserFail(error)))
       )
     )
-  );
+  ));
 
-  @Effect()
-  addCurrentUser$: Observable<any> = this.actions$.pipe(
+  
+  addCurrentUser$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(UserActionTypes.AddCurrentUser),
     withLatestFrom(this.store.select(getQueryParams)),
     map(
       ([action, queryParams]: [AddCurrentUser, any]) =>
         new LoadFunctions(action.currentUser, queryParams)
     )
-  );
+  ));
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 
 import * as fromDynamicDimensionActions from '../actions/dynamic-dimension.actions';
@@ -12,8 +12,8 @@ import { getSanitizedDynamicDimensions } from '../../helpers';
 
 @Injectable()
 export class DynamicDimensionEffects {
-  @Effect({ dispatch: false })
-  loadDynamicDimension$: Observable<any> = this.actions$.pipe(
+  
+  loadDynamicDimension$: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType(
       fromDynamicDimensionActions.DynamicDimensionActionTypes
         .LoadDynamicDimensions
@@ -52,7 +52,7 @@ export class DynamicDimensionEffects {
         }
       }
     )
-  );
+  ), { dispatch: false });
 
   constructor(
     private actions$: Actions,
