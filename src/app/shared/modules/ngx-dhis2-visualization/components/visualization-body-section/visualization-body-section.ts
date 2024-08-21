@@ -54,10 +54,10 @@ export class VisualizationBodySectionComponent implements OnInit {
   @Output()
   updateVisualizationLayer: EventEmitter<any> = new EventEmitter<any>();
 
-  @ViewChild(TableListComponent, { static: false })
+  @ViewChild(TableListComponent)
   tableList: TableListComponent;
 
-  @ViewChild(ChartListComponent, { static: false })
+  @ViewChild(ChartListComponent)
   chartList: ChartListComponent;
 
   layers: VisualizationLayer[];

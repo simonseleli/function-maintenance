@@ -19,7 +19,7 @@ export class TableItemComponent implements OnInit {
   @Input()
   legendSets: LegendSet[];
 
-  @ViewChild('table', { static: false })
+  @ViewChild('table')
   table: ElementRef;
 
   tableObject: any;
